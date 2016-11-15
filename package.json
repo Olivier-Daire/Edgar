@@ -1,0 +1,25 @@
+{
+  "name": "Edgar",
+  "version": "0.0.1",
+  "description": "A web-based VR experience using Cardboard.",
+  "main": "build/webvr-manager.js",
+  "dependencies": {
+    "es6-promise": "^4.0.5",
+    "three": "^0.81.2",
+    "webvr-polyfill": "^0.9.3"
+  },
+  "devDependencies": {
+    "browserify": "latest",
+    "derequire": "latest",
+    "watchify": "latest"
+  },
+  "scripts": {
+    "build": "browserify src/webvr-manager.js --standalone WebVRManager | derequire > build/webvr-manager.js",
+    "watch": "watchify src/webvr-manager.js --standalone WebVRManager -v -d -o 'derequire > build/webvr-manager.js'",
+    "copy-polyfill": "cp ../webvr-polyfill/build/webvr-polyfill.js node_modules/webvr-polyfill/build/webvr-polyfill.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Olivier-Daire/Edgar.git"
+  }
+}
