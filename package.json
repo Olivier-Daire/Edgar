@@ -11,11 +11,12 @@
   "devDependencies": {
     "browserify": "latest",
     "derequire": "latest",
-    "watchify": "latest"
+    "watchify": "latest",
+    "uglify-js": "latest"
   },
   "scripts": {
-    "build": "browserify src/webvr-manager.js --standalone WebVRManager | derequire > build/webvr-manager.js",
-    "watch": "watchify src/webvr-manager.js --standalone WebVRManager -v -d -o 'derequire > build/webvr-manager.js'",
+    "build": "browserify src/main.js | uglifyjs > build/main.js",
+    "watch": "watchify src/main.js -v -d -o 'uglifyjs > build/main.js'",
     "copy-polyfill": "cp ../webvr-polyfill/build/webvr-polyfill.js node_modules/webvr-polyfill/build/webvr-polyfill.js"
   },
   "repository": {
