@@ -1,0 +1,4 @@
+{
+    "extends": ".jshintrc",
+    "devel"         : true     // Development/debugging (alert, confirm, etc)
+}

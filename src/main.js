@@ -1,3 +1,4 @@
+"use strict";
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -40,7 +41,7 @@ function onTextureLoaded(texture) {
   });
 
   // Align the skybox to the floor (which is at y=0).
-  skybox = new THREE.Mesh(geometry, material);
+  var skybox = new THREE.Mesh(geometry, material);
   skybox.position.y = boxSize/2;
   Scene.scene.add(skybox);
 
@@ -68,7 +69,7 @@ function initMesh() {
     model.scale.x = model.scale.y = model.scale.z = 0.15;
     Scene.scene.add(model);
     model.position.set(0, Scene.controls.userHeight, -1);
-  })
+  });
 }
 
 initMesh();
@@ -142,7 +143,7 @@ function setStageDimensions(stage) {
 
   // Size the skybox according to the size of the actual stage.
   var geometry = new THREE.BoxGeometry(stage.sizeX, boxSize, stage.sizeZ);
-  skybox = new THREE.Mesh(geometry, material);
+  var skybox = new THREE.Mesh(geometry, material);
 
   // Place it on the floor.
   skybox.position.y = boxSize/2;

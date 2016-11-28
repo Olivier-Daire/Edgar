@@ -1,3 +1,5 @@
+"use strict";
+
 function Scene() {
 	this.renderer = null;
 	this.scene = null;
@@ -31,6 +33,6 @@ Scene.prototype.setup = function() {
 	// Apply VR stereo rendering to renderer.
 	this.effect = new THREE.VREffect(this.renderer);
 	this.effect.setSize(window.innerWidth, window.innerHeight);
-}
+};
 
 module.exports = Scene;

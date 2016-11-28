@@ -1,3 +1,4 @@
+"use strict";
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -126,7 +127,7 @@ WebVRManager.prototype.setVRCallback = function(callback) {
 
 WebVRManager.prototype.setExitFullscreenCallback = function(callback) {
   this.exitFullscreenCallback = callback;
-}
+};
 
 /**
  * Promise returns true if there is at least one HMD device available.
@@ -161,8 +162,8 @@ WebVRManager.prototype.enterVRMode_ = function() {
 
 WebVRManager.prototype.setMode_ = function(mode) {
   var oldMode = this.mode;
-  if (mode == this.mode) {
-    console.warn('Not changing modes, already in %s', mode);
+  if (mode === this.mode) {
+    //console.warn('Not changing modes, already in %s', mode);
     return;
   }
   // console.log('Mode change: %s => %s', this.mode, mode);
@@ -215,7 +216,7 @@ WebVRManager.prototype.onFSClick_ = function() {
 WebVRManager.prototype.onVRClick_ = function() {
   // TODO: Remove this hack when iOS has fullscreen mode.
   // If this is an iframe on iOS, break out and open in no_fullscreen mode.
-  if (this.mode == Modes.NORMAL && Util.isIOS() && Util.isIFrame()) {
+  if (this.mode === Modes.NORMAL && Util.isIOS() && Util.isIFrame()) {
     if (this.vrCallback) {
       this.vrCallback();
     } else {
@@ -256,7 +257,7 @@ WebVRManager.prototype.exitFullscreen_ = function() {
 };
 
 WebVRManager.prototype.onVRDisplayPresentChange_ = function(e) {
-  console.log('onVRDisplayPresentChange_', e);
+  //console.log('onVRDisplayPresentChange_', e);
   if (this.hmd.isPresenting) {
     this.setMode_(Modes.VR);
   } else {
@@ -265,7 +266,7 @@ WebVRManager.prototype.onVRDisplayPresentChange_ = function(e) {
 };
 
 WebVRManager.prototype.onVRDisplayDeviceParamsChange_ = function(e) {
-  console.log('onVRDisplayDeviceParamsChange_', e);
+  //console.log('onVRDisplayDeviceParamsChange_', e);
 };
 
 WebVRManager.prototype.onFullscreenChange_ = function(e) {

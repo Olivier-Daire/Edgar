@@ -1,3 +1,4 @@
+"use strict";
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -40,7 +41,7 @@ function ButtonManager(opt_root) {
   var vrButton = this.createButton();
   vrButton.src = this.ICONS.cardboard;
   vrButton.title = 'Virtual reality mode';
-  var s = vrButton.style;
+  s = vrButton.style;
   s.bottom = 0;
   s.right = '48px';
   vrButton.addEventListener('click', this.createClickHandler_('vr'));
@@ -57,7 +58,7 @@ ButtonManager.prototype.createButton = function() {
   button.className = 'webvr-button';
   var s = button.style;
   s.position = 'absolute';
-  s.width = '24px'
+  s.width = '24px';
   s.height = '24px';
   s.backgroundSize = 'cover';
   s.backgroundColor = 'transparent';
@@ -88,7 +89,7 @@ ButtonManager.prototype.createButton = function() {
 };
 
 ButtonManager.prototype.setMode = function(mode, isVRCompatible) {
-  isVRCompatible = isVRCompatible || WebVRConfig.FORCE_ENABLE_VR;
+  isVRCompatible = isVRCompatible || window.WebVRConfig.FORCE_ENABLE_VR;
   if (!this.isVisible) {
     return;
   }
@@ -113,7 +114,7 @@ ButtonManager.prototype.setMode = function(mode, isVRCompatible) {
   // http://goo.gl/hjgR6r
   var oldValue = this.fsButton.style.display;
   this.fsButton.style.display = 'inline-block';
-  this.fsButton.offsetHeight;
+  //this.fsButton.offsetHeight;
   this.fsButton.style.display = oldValue;
 };
 

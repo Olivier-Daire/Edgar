@@ -12,12 +12,19 @@
     "browserify": "latest",
     "derequire": "latest",
     "watchify": "latest",
-    "uglify-js": "latest"
+    "uglify-js": "latest",
+    "jshint": "latest"
   },
   "scripts": {
     "build": "browserify src/main.js | uglifyjs > build/main.js",
-    "watch": "watchify src/main.js -v -d -o 'uglifyjs > build/main.js'",
-    "copy-polyfill": "cp ../webvr-polyfill/build/webvr-polyfill.js node_modules/webvr-polyfill/build/webvr-polyfill.js"
+    "build-dev": "browserify src/main.js > build/main.js",
+    "watch": "watchify src/main.js -v -d -o ' > build/main.js'",
+    "copy-polyfill": "cp ../webvr-polyfill/build/webvr-polyfill.js node_modules/webvr-polyfill/build/webvr-polyfill.js",
+    "lint": "jshint src/*.js  --config .jshintrc",
+    "lint-dev": "jshint src/*.js --config .jshintrc-dev",
+
+    "prebuild": "npm run lint",
+    "prebuild-dev": "npm run lint-dev"
   },
   "repository": {
     "type": "git",
