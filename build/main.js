@@ -80,10 +80,10 @@ ButtonManager.prototype.createButton = function() {
   });
 
   // Style it on hover.
-  button.addEventListener('mouseenter', function() {
+  button.addEventListener('mouseenter', function(e) {
     s.filter = s.webkitFilter = 'drop-shadow(0 0 5px rgba(255,255,255,1))';
   });
-  button.addEventListener('mouseleave', function() {
+  button.addEventListener('mouseleave', function(e) {
     s.filter = s.webkitFilter = '';
   });
   return button;
@@ -296,7 +296,7 @@ function animate(timestamp) {
   lastRender = timestamp;
 
   // Apply rotation to cube mesh
-  model.rotation.y += delta * 0.0006;
+  //model.rotation.y += delta * 0.0006;
 
   Scene.controls.update();
   // Render the scene through the manager.
@@ -306,7 +306,7 @@ function animate(timestamp) {
   vrDisplay.requestAnimationFrame(animate);
 }
 
-function onResize() {
+function onResize(e) {
   Scene.effect.setSize(window.innerWidth, window.innerHeight);
   Scene.camera.aspect = window.innerWidth / window.innerHeight;
   Scene.camera.updateProjectionMatrix();
@@ -542,7 +542,7 @@ function WebVRManager(renderer, effect, params) {
   if (this.hideButton) {
     this.button.setVisibility(false);
   }
-  console.log(VRDisplay);
+
   // Check if the browser is compatible with WebVR.
   this.getDeviceByType_(VRDisplay).then(function(hmd) {
     this.hmd = hmd;
