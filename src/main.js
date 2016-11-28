@@ -24,7 +24,7 @@ window.WebVRManager = WebVRManager;
 var Scene = new Scene();
 
 // Add a repeating grid as a skybox.
-var boxSize = 5;
+var boxSize = 15;
 var loader = new THREE.TextureLoader();
 loader.load('img/box.png', onTextureLoaded);
 
@@ -67,6 +67,7 @@ function initMesh() {
   loader.load('asset_src/test_model.json' , function(geometry, materials) {
     model = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial( materials ));
     model.scale.x = model.scale.y = model.scale.z = 0.15;
+    model.castShadow = true;
     Scene.scene.add(model);
     model.position.set(0, Scene.controls.userHeight, -1);
   });
@@ -74,11 +75,26 @@ function initMesh() {
 
 initMesh();
 
+// TODO Ground scene
+var ground = null;
+function initGround() {
+  	var groundMaterial = new THREE.MeshPhongMaterial( { color: 0xffffff } );
+  	ground = new THREE.Mesh( new THREE.PlaneBufferGeometry( 20, 20 ), groundMaterial );
+  	ground.position.set(0, Scene.controls.userHeight - 0.5, 0);
+  	ground.rotation.x = - Math.PI / 2;
+  	ground.receiveShadow = true;
+  	Scene.scene.add( ground );
+}
+
+initGround();
+
 
 // TODO Light class
 function initLights() {
-    var light = new THREE.AmbientLight(0xffffff);
-    Scene.scene.add(light);
+  var spotLight = new THREE.SpotLight( 0xffffff );
+  spotLight.position.set( 0, Scene.controls.userHeight+8, 0 );
+  spotLight.castShadow = true;
+  Scene.scene.add( spotLight );
 }
 
 initLights();
@@ -99,12 +115,17 @@ window.addEventListener('vrdisplaypresentchange', onResize, true);
 
 // Request animation frame loop function
 var lastRender = 0;
+var theta = 0;
 function animate(timestamp) {
-  var delta = Math.min(timestamp - lastRender, 500);
+  var delta = Math.PI / 100;
+  var radius = 5;
+
   lastRender = timestamp;
 
   // Apply rotation to cube mesh
-  model.rotation.y += delta * 0.0006;
+  model.position.x = Math.cos(theta) * radius;
+  model.position.z = Math.sin(theta) * radius;
+  theta += delta;
 
   Scene.controls.update();
   // Render the scene through the manager.
