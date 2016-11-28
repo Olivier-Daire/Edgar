@@ -104,7 +104,7 @@ function animate(timestamp) {
   lastRender = timestamp;
 
   // Apply rotation to cube mesh
-  model.rotation.y += delta * 0.0006;
+  // model.rotation.y += delta * 0.0006;
 
   Scene.controls.update();
   // Render the scene through the manager.
