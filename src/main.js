@@ -24,7 +24,7 @@ window.WebVRManager = WebVRManager;
 var Scene = new Scene();
 
 // Add a repeating grid as a skybox.
-var boxSize = 5;
+var boxSize = 15;
 var loader = new THREE.TextureLoader();
 loader.load('img/box.png', onTextureLoaded);
 
@@ -73,6 +73,19 @@ function initMesh() {
 }
 
 initMesh();
+
+var ground = null;
+// TODO Ground scene
+function initGround() {
+  	var groundMaterial = new THREE.MeshPhongMaterial( { color: 0xffffff, specular: 0x111111 } );
+  	ground = new THREE.Mesh( new THREE.PlaneBufferGeometry( 20000, 20000 ), groundMaterial );
+  	ground.position.y = 0.5;
+  	ground.rotation.x = - Math.PI / 2;
+  	ground.receiveShadow = true;
+  	Scene.scene.add( ground );
+}
+
+initGround();
 
 
 // TODO Light class
