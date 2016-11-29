@@ -254,7 +254,7 @@ var manager = new WebVRManager(scene1.renderer, scene1.effect, params);
 
 // Load 3D model
 var cube = new Model('asset_src/test_model.json', function() {
-  cube.model.position.set(0, scene1.controls.userHeight, -1);
+  cube.model.position.set(0, scene1.controls.userHeight, Math.sin(-1) * radius);
   cube.model.scale.x = cube.model.scale.y = cube.model.scale.z = 0.15;
   cube.castShadow = true;
   // TODO Move to constructor ?
@@ -305,6 +305,8 @@ window.addEventListener('click', onClick);
 var lastRender = 0;
 var theta = 0;
 var radius = 5;
+var isMoving = false;
+var nextPos;
 
 function animate(timestamp) {
   var delta = Math.PI / 100;
@@ -312,9 +314,12 @@ function animate(timestamp) {
   lastRender = timestamp;
 
   // Apply rotation to cube mesh
-  cube.model.position.x = Math.cos(theta) * radius;
-  cube.model.position.z = Math.sin(theta) * radius;
-  theta += delta;
+  //cube.model.position.x = Math.cos(theta) * radius;
+  //cube.model.position.z = Math.sin(theta) * radius;
+  //theta += delta;
+
+
+  console.log(nextPos);
 
   scene1.controls.update();
   // Render the scene through the manager.
@@ -326,7 +331,7 @@ function animate(timestamp) {
 
 function onClick() {
   var x = (( event.clientX / window.innerWidth ) * 2 - 1) * radius;
-  console.log(x);
+  nextPos = x;
 }
 
 function onResize(e) {
