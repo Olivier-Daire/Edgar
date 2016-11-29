@@ -15,7 +15,7 @@ Scene.prototype.setup = function() {
 	// Setup three.js WebGL renderer. Note: Antialiasing is a big performance hit.
 	// Only enable it if you actually need to.
 	this.renderer = new THREE.WebGLRenderer({antialias: true});
-	this.renderer.shadowMapEnabled = true;
+	this.renderer.shadowMap.enabled = true;
 	this.renderer.setPixelRatio(window.devicePixelRatio);
 
 	// Append the canvas element created by the renderer to document body element.

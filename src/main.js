@@ -64,6 +64,7 @@ var manager = new WebVRManager(scene1.renderer, scene1.effect, params);
 var cube = new Model('asset_src/test_model.json', function() {
   cube.model.position.set(0, scene1.controls.userHeight, -1);
   cube.model.scale.x = cube.model.scale.y = cube.model.scale.z = 0.15;
+  cube.castShadow = true;
   // TODO Move to constructor ?
   scene1.scene.add(cube.model);
 });
@@ -106,13 +107,15 @@ initLights();
 
 window.addEventListener('resize', onResize, true);
 window.addEventListener('vrdisplaypresentchange', onResize, true);
+window.addEventListener('click', onClick);
 
 // Request animation frame loop function
 var lastRender = 0;
 var theta = 0;
+var radius = 5;
+
 function animate(timestamp) {
   var delta = Math.PI / 100;
-  var radius = 5;
 
   lastRender = timestamp;
 
@@ -127,6 +130,11 @@ function animate(timestamp) {
   scene1.effect.render(scene1.scene, scene1.camera);
 
   vrDisplay.requestAnimationFrame(animate);
+}
+
+function onClick() {
+  var x = (( event.clientX / window.innerWidth ) * 2 - 1) * radius;
+  console.log(x);
 }
 
 function onResize(e) {
