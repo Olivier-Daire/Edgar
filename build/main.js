@@ -144,7 +144,7 @@ ButtonManager.prototype.loadIcons_ = function() {
 
 module.exports = ButtonManager;
 
-},{"./emitter.js":2,"./modes.js":4,"./util.js":6}],2:[function(require,module,exports){
+},{"./emitter.js":2,"./modes.js":5,"./util.js":7}],2:[function(require,module,exports){
 "use strict";
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
@@ -208,12 +208,13 @@ module.exports = Emitter;
 
 var WebVRManager = require('./webvr-manager.js');
 var Scene = require('./scene.js');
+var Model = require('./model.js');
 
 // TODO Load JSON ???
 window.WebVRConfig = window.WebVRConfig || {};
 window.WebVRManager = WebVRManager;
 
-var Scene = new Scene();
+var scene1 = new Scene();
 
 // Add a repeating grid as a skybox.
 var boxSize = 15;
@@ -235,7 +236,7 @@ function onTextureLoaded(texture) {
   // Align the skybox to the floor (which is at y=0).
   var skybox = new THREE.Mesh(geometry, material);
   skybox.position.y = boxSize/2;
-  Scene.scene.add(skybox);
+  scene1.scene.add(skybox);
 
   // For high end VR devices like Vive and Oculus, take into account the stage
   // parameters provided.
@@ -248,34 +249,27 @@ var params = {
   hideButton: false, // Default: false.
   isUndistorted: false // Default: false.
 };
-var manager = new WebVRManager(Scene.renderer, Scene.effect, params);
+var manager = new WebVRManager(scene1.renderer, scene1.effect, params);
 
 
-// TODO model class
 // Load 3D model
-var model = null;
-function initMesh() {
-  var loader = new THREE.JSONLoader();
-  loader.load('asset_src/test_model.json' , function(geometry, materials) {
-    model = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial( materials ));
-    model.scale.x = model.scale.y = model.scale.z = 0.15;
-    model.castShadow = true;
-    Scene.scene.add(model);
-    model.position.set(0, Scene.controls.userHeight, -1);
-  });
-}
+var cube = new Model('asset_src/test_model.json', function() {
+  cube.model.position.set(0, scene1.controls.userHeight, -1);
+  cube.model.scale.x = cube.model.scale.y = cube.model.scale.z = 0.15;
+  // TODO Move to constructor ? 
+  scene1.scene.add(cube.model);
+});
 
-initMesh();
 
 // TODO Ground scene
 var ground = null;
 function initGround() {
   	var groundMaterial = new THREE.MeshPhongMaterial( { color: 0xffffff } );
   	ground = new THREE.Mesh( new THREE.PlaneBufferGeometry( 20, 20 ), groundMaterial );
-  	ground.position.set(0, Scene.controls.userHeight - 0.5, 0);
+  	ground.position.set(0, scene1.controls.userHeight - 0.5, 0);
   	ground.rotation.x = - Math.PI / 2;
   	ground.receiveShadow = true;
-  	Scene.scene.add( ground );
+  	scene1.scene.add( ground );
 }
 
 initGround();
@@ -284,9 +278,9 @@ initGround();
 // TODO Light class
 function initLights() {
   var spotLight = new THREE.SpotLight( 0xffffff );
-  spotLight.position.set( 0, Scene.controls.userHeight+8, 0 );
+  spotLight.position.set( 0, scene1.controls.userHeight+8, 0 );
   spotLight.castShadow = true;
-  Scene.scene.add( spotLight );
+  scene1.scene.add( spotLight );
 }
 
 initLights();
@@ -315,22 +309,22 @@ function animate(timestamp) {
   lastRender = timestamp;
 
   // Apply rotation to cube mesh
-  model.position.x = Math.cos(theta) * radius;
-  model.position.z = Math.sin(theta) * radius;
+  cube.model.position.x = Math.cos(theta) * radius;
+  cube.model.position.z = Math.sin(theta) * radius;
   theta += delta;
 
-  Scene.controls.update();
+  scene1.controls.update();
   // Render the scene through the manager.
-  manager.render(Scene.scene, Scene.camera, timestamp);
-  Scene.effect.render(Scene.scene, Scene.camera);
+  manager.render(scene1.scene, scene1.camera, timestamp);
+  scene1.effect.render(scene1.scene, scene1.camera);
 
   vrDisplay.requestAnimationFrame(animate);
 }
 
 function onResize(e) {
-  Scene.effect.setSize(window.innerWidth, window.innerHeight);
-  Scene.camera.aspect = window.innerWidth / window.innerHeight;
-  Scene.camera.updateProjectionMatrix();
+  scene1.effect.setSize(window.innerWidth, window.innerHeight);
+  scene1.camera.aspect = window.innerWidth / window.innerHeight;
+  scene1.camera.updateProjectionMatrix();
 }
 
 var vrDisplay;
@@ -352,7 +346,7 @@ function setupStage() {
 function setStageDimensions(stage) {
   // Make the skybox fit the stage.
   var material = skybox.material;
-  Scene.scene.scene.remove(skybox);
+  scene1.scene.remove(skybox);
 
   // Size the skybox according to the size of the actual stage.
   var geometry = new THREE.BoxGeometry(stage.sizeX, boxSize, stage.sizeZ);
@@ -360,13 +354,37 @@ function setStageDimensions(stage) {
 
   // Place it on the floor.
   skybox.position.y = boxSize/2;
-  Scene.scene.add(skybox);
+  scene1.scene.add(skybox);
 
   // Place the cube in the middle of the scene, at user height.
-  model.position.set(0, Scene.controls.userHeight, 0);
+  cube.model.position.set(0, scene1.controls.userHeight, 0);
 }
 
-},{"./scene.js":5,"./webvr-manager.js":7}],4:[function(require,module,exports){
+},{"./model.js":4,"./scene.js":6,"./webvr-manager.js":8}],4:[function(require,module,exports){
+"use strict";
+
+function Model(path, onLoad) {
+	this.path = path;
+	this.onLoad = onLoad;
+	this.model = null;
+
+	this.initMesh();
+}
+
+
+Model.prototype.initMesh = function() {
+	var _this = this;
+	var loader = new THREE.JSONLoader();
+
+	loader.load(this.path , function(geometry, materials) {
+		_this.model = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial( materials ));
+		_this.onLoad();
+	});
+};
+
+module.exports = Model;
+
+},{}],5:[function(require,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -394,7 +412,7 @@ var Modes = {
 
 module.exports = Modes;
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 "use strict";
 
 function Scene() {
@@ -435,7 +453,7 @@ Scene.prototype.setup = function() {
 
 module.exports = Scene;
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 "use strict";
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
@@ -511,7 +529,7 @@ Util.getScreenHeight = function() {
 
 module.exports = Util;
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 "use strict";
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
@@ -793,4 +811,4 @@ WebVRManager.prototype.onFullscreenChange_ = function(e) {
 
 module.exports = WebVRManager;
 
-},{"./button-manager.js":1,"./emitter.js":2,"./modes.js":4,"./util.js":6}]},{},[3]);
+},{"./button-manager.js":1,"./emitter.js":2,"./modes.js":5,"./util.js":7}]},{},[3]);
