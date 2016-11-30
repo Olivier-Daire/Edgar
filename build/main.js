@@ -305,21 +305,24 @@ window.addEventListener('click', onClick);
 var lastRender = 0;
 var theta = 0;
 var radius = 5;
-var isMoving = false;
-var nextPos;
+var nextPos, actualPos;
 
 function animate(timestamp) {
   var delta = Math.PI / 100;
+  // Get the actual position of the model
+  actualPos = cube.model.position.x;
 
   lastRender = timestamp;
 
   // Apply rotation to cube mesh
-  //cube.model.position.x = Math.cos(theta) * radius;
-  //cube.model.position.z = Math.sin(theta) * radius;
-  //theta += delta;
-
-
-  console.log(nextPos);
+  console.log('actual pos :', actualPos);
+  console.log('next pos ,', nextPos);
+  if(!tolerance()) {
+    console.log("test");
+    cube.model.position.x = Math.cos(theta) * radius;
+    cube.model.position.z = Math.sin(theta) * radius;
+    theta += delta;
+  }
 
   scene1.controls.update();
   // Render the scene through the manager.
@@ -327,6 +330,15 @@ function animate(timestamp) {
   scene1.effect.render(scene1.scene, scene1.camera);
 
   vrDisplay.requestAnimationFrame(animate);
+}
+
+function tolerance() {
+  if(((actualPos-nextPos) < 0.1 && (actualPos-nextPos) >= 0.0) || ((actualPos-nextPos) > -0.1 && (actualPos-nextPos) <= 0.0)) {
+    return true;
+  }
+  else {
+    return false;
+  }
 }
 
 function onClick() {
