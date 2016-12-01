@@ -36,7 +36,8 @@ Scene.prototype.setup = function() {
 	this.navigation = new THREE.FirstPersonControls(this.camera);
 	this.navigation.movementSpeed = 500;
 	this.navigation.lookSpeed = 0.1;
-
+	this.navigation.lookVertical = false;
+	
 	this.controls = new THREE.VRControls(this.camera);
 	this.controls.standing = true;
 
