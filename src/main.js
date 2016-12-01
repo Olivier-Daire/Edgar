@@ -108,10 +108,10 @@ window.addEventListener('resize', onResize, true);
 window.addEventListener('vrdisplaypresentchange', onResize, true);
 // TODO Move this 
 window.addEventListener('click', function(e) {
-  if (cube.currentAction === 'idle') {
-    cube.fadeAction('walk');
+  if (cube.currentAction < cube.actions.length - 1) {
+    cube.fadeToAction(cube.currentAction + 1 );
   } else {
-    cube.fadeAction('idle');
+    cube.fadeToAction(0);
   }
 }, true);
 

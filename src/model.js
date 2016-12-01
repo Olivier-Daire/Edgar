@@ -6,10 +6,13 @@ function Model(path, onLoad) {
 	this.model = null;
 
 	this.mixer = null;
-	this.action = {};
-	// TODO Creates these only if animated model
-	this.currentAction = 'idle';
-	this.actions = [ 'idle', 'walk' ];
+	this.currentAction = 0;
+	this.actions = [];
+
+	// TODO see if animation limited to character, if do
+	// 	this.action = {};
+	//this.currentAction = 'idle';
+	//this.actions = [ 'idle', 'walk', 'run', 'hello'];
 
 	this.initMesh();
 }
@@ -27,41 +30,41 @@ Model.prototype.initMesh = function() {
 		_this.model = new THREE.SkinnedMesh(geometry, new THREE.MeshFaceMaterial( materials ));
 
 		if (typeof geometry.animations !== 'undefined') {
-			// TODO Move this to function ?
-			_this.mixer = new THREE.AnimationMixer(_this.model);
-
-			_this.action.idle = _this.mixer.clipAction(geometry.animations[ 1 ]);
-			_this.action.walk = _this.mixer.clipAction(geometry.animations[ 4 ]);
-
-			_this.action.idle.setEffectiveWeight(1);
-			_this.action.walk.setEffectiveWeight(1);
-
-			_this.action.idle.enabled = true;
-			_this.action.walk.enabled = true;
-
-			_this.action.idle.play();
+			_this.initAnimation(geometry);
 		}
-
 
 		_this.onLoad();
 	});
 };
 
+Model.prototype.initAnimation = function(geometry) {
+	var _this = this;
+	this.mixer = new THREE.AnimationMixer(this.model);
+	var i = 0;
 
-Model.prototype.fadeAction = function(name) {
-  var from = this.action[ this.currentAction ].play();
-  var to = this.action[ name ].play();
+	geometry.animations.forEach(function(animation) {
+		_this.actions[i] = _this.mixer.clipAction(animation);
+		_this.actions[i].setEffectiveWeight(1);
+		_this.actions[i++].enabled = true;
+	});
 
-  from.enabled = true;
-  to.enabled = true;
+	this.actions[this.currentAction].play();
+};
 
-  if (to.loop === THREE.LoopOnce) {
-    to.reset();
-  }
+Model.prototype.fadeToAction = function(nbr) {
+	var from = this.actions[ this.currentAction ].play();
+	var to = this.actions[ nbr ].play();
 
-  from.crossFadeTo(to, 0.3);
-  this.currentAction = name;
+	from.enabled = true;
+	to.enabled = true;
 
-}
+	if (to.loop === THREE.LoopOnce) {
+		to.reset();
+	}
+
+	from.crossFadeTo(to, 0.3);
+	this.currentAction = nbr;
+
+};
 
 module.exports = Model;
