@@ -299,7 +299,6 @@ initLights();
 
 window.addEventListener('resize', onResize, true);
 window.addEventListener('vrdisplaypresentchange', onResize, true);
-window.addEventListener('click', onClick);
 window.addEventListener('mousemove', onMove);
 
 // Request animation frame loop function
@@ -315,22 +314,20 @@ function animate(timestamp) {
 
   lastRender = timestamp;
 
-  // Apply rotation to cube mesh
-  //if(!tolerance()) {
-    if(nextPos > 1 && nextPos <= 5) {
-      cube.model.position.x = Math.cos(theta) * radius;
-      cube.model.position.z = Math.sin(theta) * radius;
-      theta += delta;
-    }
-    else if (nextPos < -1 && nextPos >= -5) {
-      cube.model.position.x = Math.cos(theta) * radius;
-      cube.model.position.z = Math.sin(theta) * radius;
-      theta -= delta;
-    }
-    //theta += delta;
-  //}
+  // Object movement
+  if(nextPos > 1 && nextPos <= 5) {
+    cube.model.position.x = Math.cos(theta) * radius;
+    cube.model.position.z = Math.sin(theta) * radius;
+    theta += delta;
+  }
+  else if (nextPos < -1 && nextPos >= -5) {
+    cube.model.position.x = Math.cos(theta) * radius;
+    cube.model.position.z = Math.sin(theta) * radius;
+    theta -= delta;
+  }
 
   scene1.controls.update();
+  scene1.navigation.update(scene1.clock.getDelta());
   // Render the scene through the manager.
   manager.render(scene1.scene, scene1.camera, timestamp);
   scene1.effect.render(scene1.scene, scene1.camera);
@@ -338,21 +335,7 @@ function animate(timestamp) {
   vrDisplay.requestAnimationFrame(animate);
 }
 
-function tolerance() {
-  if(((actualPos-nextPos) < 0.1 && (actualPos-nextPos) >= 0.0) || ((actualPos-nextPos) > -0.1 && (actualPos-nextPos) <= 0.0)) {
-    return true;
-  }
-  else {
-    return false;
-  }
-}
-
 function onMove() {
-  var x = (( event.clientX / window.innerWidth ) * 2 - 1) * radius;
-  nextPos = x;
-}
-
-function onClick() {
   var x = (( event.clientX / window.innerWidth ) * 2 - 1) * radius;
   nextPos = x;
 }
@@ -361,6 +344,7 @@ function onResize(e) {
   scene1.effect.setSize(window.innerWidth, window.innerHeight);
   scene1.camera.aspect = window.innerWidth / window.innerHeight;
   scene1.camera.updateProjectionMatrix();
+  //scene1.navigation.handleResize();
 }
 
 var vrDisplay;
@@ -455,8 +439,10 @@ function Scene() {
 	this.renderer = null;
 	this.scene = null;
 	this.camera = null;
+	this.navigation = null;
 	this.controls = null;
 	this.effect = null;
+	this.clock = null;
 
 	this.setup();
 }
@@ -472,14 +458,21 @@ Scene.prototype.setup = function() {
 	// Append the canvas element created by the renderer to document body element.
 	document.body.appendChild(this.renderer.domElement);
 
+	// Create a three.js clock.
+	this.clock = new THREE.Clock();
+
 	// Create a three.js scene.
 	this.scene = new THREE.Scene();
 
 	// Create a three.js camera.
 	this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
 
+	// Create a three.js first person camera
+	this.navigation = new THREE.FirstPersonControls(this.camera);
+	this.navigation.movementSpeed = 500;
+	this.navigation.lookSpeed = 0.1;
+
 	this.controls = new THREE.VRControls(this.camera);
-	this.controls.standing = true;
 	this.controls.standing = true;
 
 	// Apply VR stereo rendering to renderer.

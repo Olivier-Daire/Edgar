@@ -4,8 +4,10 @@ function Scene() {
 	this.renderer = null;
 	this.scene = null;
 	this.camera = null;
+	this.navigation = null;
 	this.controls = null;
 	this.effect = null;
+	this.clock = null;
 
 	this.setup();
 }
@@ -21,14 +23,21 @@ Scene.prototype.setup = function() {
 	// Append the canvas element created by the renderer to document body element.
 	document.body.appendChild(this.renderer.domElement);
 
+	// Create a three.js clock.
+	this.clock = new THREE.Clock();
+
 	// Create a three.js scene.
 	this.scene = new THREE.Scene();
 
 	// Create a three.js camera.
 	this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
 
+	// Create a three.js first person camera
+	this.navigation = new THREE.FirstPersonControls(this.camera);
+	this.navigation.movementSpeed = 500;
+	this.navigation.lookSpeed = 0.1;
+
 	this.controls = new THREE.VRControls(this.camera);
-	this.controls.standing = true;
 	this.controls.standing = true;
 
 	// Apply VR stereo rendering to renderer.
