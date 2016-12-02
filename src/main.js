@@ -61,9 +61,9 @@ var manager = new WebVRManager(scene1.renderer, scene1.effect, params);
 
 
 // Load 3D model
-var cube = new Model('asset_src/test_model.json', function() {
-  cube.model.position.set(0, scene1.controls.userHeight, Math.sin(-1) * radius);
-  cube.model.scale.x = cube.model.scale.y = cube.model.scale.z = 0.15;
+var cube = new Model('asset_src/animated-character.json', function() {
+  cube.model.position.set(0, scene1.controls.userHeight, -1);
+  cube.model.scale.x = cube.model.scale.y = cube.model.scale.z = 0.5;
   cube.castShadow = true;
   // TODO Move to constructor ?
   scene1.scene.add(cube.model);
@@ -108,6 +108,14 @@ initLights();
 window.addEventListener('resize', onResize, true);
 window.addEventListener('vrdisplaypresentchange', onResize, true);
 window.addEventListener('mousemove', onMove);
+// TODO Move this
+window.addEventListener('click', function(e) {
+  if (cube.currentAction < cube.actions.length - 1) {
+    cube.fadeToAction(cube.currentAction + 1 );
+  } else {
+    cube.fadeToAction(0);
+  }
+}, true);
 
 // Request animation frame loop function
 var lastRender = 0;
@@ -134,7 +142,13 @@ function animate(timestamp) {
     theta -= delta;
   }
 
+  // Apply rotation to cube mesh
+  //cube.model.position.x = Math.cos(theta) * radius;
+  //cube.model.position.z = Math.sin(theta) * radius;
+
   scene1.controls.update();
+  // Update model animations
+  cube.mixer.update(delta);
   scene1.navigation.update(scene1.clock.getDelta());
   // Render the scene through the manager.
   manager.render(scene1.scene, scene1.camera, timestamp);
