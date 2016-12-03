@@ -27,7 +27,7 @@ var scene1 = new Scene();
 // Add a repeating grid as a skybox.
 var boxSize = 15;
 var loader = new THREE.TextureLoader();
-loader.load('img/box.png', onTextureLoaded);
+loader.load('public/img/box.png', onTextureLoaded);
 
 function onTextureLoaded(texture) {
   texture.wrapS = THREE.RepeatWrapping;
@@ -61,7 +61,7 @@ var manager = new WebVRManager(scene1.renderer, scene1.effect, params);
 
 
 // Load 3D model
-var cube = new Model('asset_src/animated-character.json', function() {
+var cube = new Model('public/model/animated-character.json', function() {
   cube.model.position.set(0, scene1.controls.userHeight, -1);
   cube.model.scale.x = cube.model.scale.y = cube.model.scale.z = 0.5;
   cube.castShadow = true;

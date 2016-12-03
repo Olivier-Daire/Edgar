@@ -16,10 +16,9 @@
     "jshint": "latest"
   },
   "scripts": {
-    "build": "browserify src/main.js | uglifyjs > build/main.js",
-    "build-dev": "browserify src/main.js > build/main.js",
-    "watch": "watchify src/main.js -v -d -o ' > build/main.js'",
-    "copy-polyfill": "cp ../webvr-polyfill/build/webvr-polyfill.js node_modules/webvr-polyfill/build/webvr-polyfill.js",
+    "build": "browserify src/main.js | uglifyjs > public/js/main.js",
+    "build-dev": "browserify src/main.js > public/js/main.js",
+    "watch": "watchify src/main.js -v -d -o ' > public/js/main.js'",
     "lint": "jshint src/*.js  --config .jshintrc",
     "lint-dev": "jshint src/*.js --config .jshintrc-dev",
 
