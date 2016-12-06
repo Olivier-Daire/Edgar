@@ -61,13 +61,16 @@ var manager = new WebVRManager(scene1.renderer, scene1.effect, params);
 
 
 // Load 3D model
-var cube = new Model('public/model/animated-character.json', function() {
-  cube.model.position.set(0, scene1.controls.userHeight, -1);
-  cube.model.scale.x = cube.model.scale.y = cube.model.scale.z = 0.5;
-  cube.castShadow = true;
-  // TODO Move to constructor ?
-  scene1.scene.add(cube.model);
-});
+var cube = new Model('public/model/animated-character.json', 
+  function() {
+    cube.model.position.set(0, scene1.controls.userHeight, -1);
+    cube.model.scale.x = cube.model.scale.y = cube.model.scale.z = 0.5;
+    cube.castShadow = true;
+
+    document.getElementById('loader').style.display = 'none';
+    scene1.scene.add(cube.model);
+  }
+);
 
 
 // TODO Ground scene
@@ -126,7 +129,7 @@ var nextPos, actualPos;
 function animate(timestamp) {
   var delta = Math.PI / 500;
   // Get the actual position of the model
-  actualPos = cube.model.position.x;
+  actualPos = cube.model.position.x; // Crash when slow internet
 
   lastRender = timestamp;
 
@@ -148,7 +151,7 @@ function animate(timestamp) {
 
   scene1.controls.update();
   // Update model animations
-  cube.mixer.update(delta);
+  // FIXME if (cube.update.mixer !== null  ) { cube.mixer.update(delta); }
   scene1.navigation.update(scene1.clock.getDelta());
   // Render the scene through the manager.
   manager.render(scene1.scene, scene1.camera, timestamp);
