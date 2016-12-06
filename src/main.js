@@ -23,6 +23,10 @@ window.WebVRConfig = window.WebVRConfig || {};
 window.WebVRManager = WebVRManager;
 
 var scene1 = new Scene();
+var lastRender = 0;
+var theta = 0;
+var radius = 5;
+var nextPos, actualPos;
 
 // Add a repeating grid as a skybox.
 var boxSize = 15;
@@ -61,19 +65,19 @@ var manager = new WebVRManager(scene1.renderer, scene1.effect, params);
 
 
 // Load 3D model
-var cube = new Model('public/model/animated-character.json', 
+var edgar = new Model('public/model/animated-character.json',
   function() {
-    cube.model.position.set(0, scene1.controls.userHeight, -1);
-    cube.model.scale.x = cube.model.scale.y = cube.model.scale.z = 0.5;
-    cube.castShadow = true;
+    edgar.model.position.set(0, scene1.controls.userHeight, -1);
+    edgar.model.scale.x = edgar.model.scale.y = edgar.model.scale.z = 0.5;
+    edgar.castShadow = true;
 
     document.getElementById('loader').style.display = 'none';
-    scene1.scene.add(cube.model);
+    scene1.scene.add(edgar.model);
   }
 );
 
 
-// TODO Ground scene
+// TODO MOVE THIS
 var ground = null;
 function initGround() {
   	var groundMaterial = new THREE.MeshPhongMaterial( { color: 0xffffff } );
@@ -83,18 +87,15 @@ function initGround() {
   	ground.receiveShadow = true;
   	scene1.scene.add( ground );
 }
-
 initGround();
 
-
-// TODO Light class
+// TODO MOVE THIS
 function initLights() {
   var spotLight = new THREE.SpotLight( 0xffffff );
   spotLight.position.set( 0, scene1.controls.userHeight+8, 0 );
   spotLight.castShadow = true;
   scene1.scene.add( spotLight );
 }
-
 initLights();
 
 // // Create 3D objects.
@@ -113,45 +114,45 @@ window.addEventListener('vrdisplaypresentchange', onResize, true);
 window.addEventListener('mousemove', onMove);
 // TODO Move this
 window.addEventListener('click', function(e) {
-  if (cube.currentAction < cube.actions.length - 1) {
-    cube.fadeToAction(cube.currentAction + 1 );
+  if (edgar.currentAction < edgar.actions.length - 1) {
+    edgar.fadeToAction(edgar.currentAction + 1 );
   } else {
-    cube.fadeToAction(0);
+    edgar.fadeToAction(0);
   }
 }, true);
 
-// Request animation frame loop function
-var lastRender = 0;
-var theta = 0;
-var radius = 5;
-var nextPos, actualPos;
-
-function animate(timestamp) {
-  var delta = Math.PI / 500;
+function updateMainCharacter(delta){
   // Get the actual position of the model
-  actualPos = cube.model.position.x; // Crash when slow internet
+  actualPos = edgar.model.position.x; // FIXME @Jérémie still useful?
 
-  lastRender = timestamp;
-
-  // Object movement
+  // TODO Orientate character given angle
   if(nextPos > 1 && nextPos <= 5) {
-    cube.model.position.x = Math.cos(theta) * radius;
-    cube.model.position.z = Math.sin(theta) * radius;
+    edgar.model.position.x = Math.cos(theta) * radius;
+    edgar.model.position.z = Math.sin(theta) * radius;
     theta += delta;
   }
   else if (nextPos < -1 && nextPos >= -5) {
-    cube.model.position.x = Math.cos(theta) * radius;
-    cube.model.position.z = Math.sin(theta) * radius;
+    edgar.model.position.x = Math.cos(theta) * radius;
+    edgar.model.position.z = Math.sin(theta) * radius;
     theta -= delta;
   }
 
-  // Apply rotation to cube mesh
-  //cube.model.position.x = Math.cos(theta) * radius;
-  //cube.model.position.z = Math.sin(theta) * radius;
+  // Update model animations
+  edgar.mixer.update(delta);
+}
+
+// Request animation frame loop function
+
+function animate(timestamp) {
+  var delta = Math.PI / 500;
+
+  lastRender = timestamp;
+
+  if (edgar !== null) {
+    updateMainCharacter(delta);
+  }
 
   scene1.controls.update();
-  // Update model animations
-  // FIXME if (cube.update.mixer !== null  ) { cube.mixer.update(delta); }
   scene1.navigation.update(scene1.clock.getDelta());
   // Render the scene through the manager.
   manager.render(scene1.scene, scene1.camera, timestamp);
@@ -201,6 +202,6 @@ function setStageDimensions(stage) {
   skybox.position.y = boxSize/2;
   scene1.scene.add(skybox);
 
-  // Place the cube in the middle of the scene, at user height.
-  cube.model.position.set(0, scene1.controls.userHeight, 0);
+  // Place edgar in the middle of the scene, at user height.
+  edgar.model.position.set(0, scene1.controls.userHeight, 0);
 }
