@@ -148,7 +148,7 @@ function animate(timestamp) {
 
   lastRender = timestamp;
 
-  if (edgar !== null) {
+  if (edgar.model !== null) {
     updateMainCharacter(delta);
   }
 
