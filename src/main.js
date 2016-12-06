@@ -104,10 +104,10 @@ initLights();
 // var cube = new THREE.Mesh(geometry, material);
 
 // // Position cube mesh to be right in front of you.
-//cube.position.set(0, controls.userHeight, -1);
-
+// cube.position.set(0, scene1.controls.userHeight, -1);
+// cube.castShadow = true
 // // Add cube mesh to your three.js scene
-// scene.add(cube);
+// scene1.scene.add(cube);
 
 window.addEventListener('resize', onResize, true);
 window.addEventListener('vrdisplaypresentchange', onResize, true);

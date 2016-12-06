@@ -27,9 +27,16 @@ Model.prototype.initMesh = function(onLoad) {
 
 		_this.model = new THREE.SkinnedMesh(geometry, new THREE.MeshFaceMaterial( materials ));
 
-		if (geometry && typeof geometry.animations !== 'undefined' && geometry.animations.length > 0 ) {
+		if (typeof geometry.animations !== 'undefined' && geometry.animations.length > 0 ) {
 			_this.initAnimation(geometry);
 		}
+
+		_this.model.traverse(function(child) {
+			 if (child instanceof THREE.Mesh) {
+				child.castShadow = true;
+				child.receiveShadow = true;
+			}
+		});
 
 		onLoad();
 	};
