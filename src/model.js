@@ -2,7 +2,6 @@
 
 function Model(path, onLoad) {
 	this.path = path;
-	this.onLoad = onLoad;
 	this.model = null;
 
 	this.mixer = null;
@@ -14,27 +13,29 @@ function Model(path, onLoad) {
 	//this.currentAction = 'idle';
 	//this.actions = [ 'idle', 'walk', 'run', 'hello'];
 
-	this.initMesh();
+	this.initMesh(onLoad);
 }
 
-
-Model.prototype.initMesh = function() {
+Model.prototype.initMesh = function(onLoad) {
 	var _this = this;
 	var loader = new THREE.JSONLoader();
 
-	loader.load(this.path , function(geometry, materials) {
+	var loaded = function(geometry, materials) {
 		materials.forEach(function(material) {
 			material.skinning = true;
 		});
 
 		_this.model = new THREE.SkinnedMesh(geometry, new THREE.MeshFaceMaterial( materials ));
 
-		if (typeof geometry.animations !== 'undefined') {
+		if (geometry && typeof geometry.animations !== 'undefined' && geometry.animations.length > 0 ) {
 			_this.initAnimation(geometry);
 		}
 
-		_this.onLoad();
-	});
+		onLoad();
+	};
+
+	loader.load(this.path , loaded);
+
 };
 
 Model.prototype.initAnimation = function(geometry) {
