@@ -104,19 +104,19 @@ window.addEventListener('mousemove', onMove);
 // TODO Refactor this shit !
 var tangent = new THREE.Vector3();
 var axis = new THREE.Vector3();
-var up = new THREE.Vector3(0, 0, 1);
+var right = new THREE.Vector3(0, 0, 1);
+var left = new THREE.Vector3(0, 0, -1);
 var speed = 0.0005;
 function updateMainCharacter(delta) { // FIXME delta ?
   if(nextPos > 1 && nextPos <= 5) {
      if (theta <= 1) {
         edgar.fadeToAction('walk');
+        // http://stackoverflow.com/a/11181366
         edgar.model.position.copy( scene1.characterPath.getPointAt(theta) );
-
         tangent = scene1.characterPath.getTangentAt(theta).normalize();
+        axis.crossVectors(right, tangent).normalize();
 
-        axis.crossVectors(up, tangent).normalize();
-
-        var radians = Math.acos(up.dot(tangent));
+        var radians = Math.acos(right.dot(tangent));
 
         edgar.model.quaternion.setFromAxisAngle(axis, radians);
         theta += speed;
@@ -126,13 +126,12 @@ function updateMainCharacter(delta) { // FIXME delta ?
   } else if (nextPos < -1 && nextPos >= -5) {
      if (theta >= 0) {
         edgar.fadeToAction('walk');
+
         edgar.model.position.copy( scene1.characterPath.getPointAt(theta) );
-
         tangent = scene1.characterPath.getTangentAt(theta).normalize();
+        axis.crossVectors(left, tangent).normalize();
 
-        axis.crossVectors(up, tangent).normalize();
-
-        var radians = Math.acos(up.dot(tangent));
+        var radians = Math.acos(left.dot(tangent));
 
         edgar.model.quaternion.setFromAxisAngle(axis, radians);
         theta -= speed;
