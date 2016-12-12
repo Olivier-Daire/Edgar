@@ -1,6 +1,6 @@
 "use strict";
 
-function Scene(radius, debug = false) {
+function Scene(radius, debug) {
 	this.renderer = null;
 	this.scene = null;
 	this.camera = null;
@@ -9,7 +9,7 @@ function Scene(radius, debug = false) {
 	this.characterPath = null;
 	this.radius = radius;
 
-	this.debug = debug;
+	this.debug = typeof debug !== 'undefined' ? debug : false;
 
 	this.setup();
 }
@@ -43,9 +43,9 @@ Scene.prototype.setup = function() {
 
 Scene.prototype.addCharacterPath = function() {
 	var points = [];
-
+	var i = 0;
 	// Fill the points array with all the points necessary to draw a circle
-	for (var i = 0; i <= 360; i++) {
+	for (i = 0; i <= 360; i++) {
 		var angle = Math.PI/180 * i;
 		var x = (this.radius) * Math.cos(angle);
 		var y = this.controls.userHeight;
@@ -61,7 +61,7 @@ Scene.prototype.addCharacterPath = function() {
 		var geometry = new THREE.Geometry();
 		var splinePoints = this.characterPath.getPoints(50); // nbr of point to smoothen curve
 
-		for (var i = 0; i < splinePoints.length; i++) {
+		for (i = 0; i < splinePoints.length; i++) {
 			geometry.vertices.push(splinePoints[i]);
 		}
 
@@ -72,6 +72,6 @@ Scene.prototype.addCharacterPath = function() {
 		this.scene.add(line);
 	}
 
-}
+};
 
 module.exports = Scene;
