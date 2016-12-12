@@ -97,17 +97,6 @@ function initLights() {
 }
 initLights();
 
-// // Create 3D objects.
-// var geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
-// var material = new THREE.MeshNormalMaterial();
-// var cube = new THREE.Mesh(geometry, material);
-
-// // Position cube mesh to be right in front of you.
-// cube.position.set(0, scene1.controls.userHeight, -1);
-// cube.castShadow = true
-// // Add cube mesh to your three.js scene
-// scene1.scene.add(cube);
-
 window.addEventListener('resize', onResize, true);
 window.addEventListener('vrdisplaypresentchange', onResize, true);
 window.addEventListener('mousemove', onMove);
@@ -152,7 +141,6 @@ function animate(timestamp) {
   }
 
   scene1.controls.update();
-  scene1.navigation.update(scene1.clock.getDelta());
   // Render the scene through the manager.
   manager.render(scene1.scene, scene1.camera, timestamp);
   scene1.effect.render(scene1.scene, scene1.camera);
@@ -169,7 +157,6 @@ function onResize(e) {
   scene1.effect.setSize(window.innerWidth, window.innerHeight);
   scene1.camera.aspect = window.innerWidth / window.innerHeight;
   scene1.camera.updateProjectionMatrix();
-  //scene1.navigation.handleResize();
 }
 
 var vrDisplay;
