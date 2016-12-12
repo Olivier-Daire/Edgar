@@ -100,14 +100,6 @@ initLights();
 window.addEventListener('resize', onResize, true);
 window.addEventListener('vrdisplaypresentchange', onResize, true);
 window.addEventListener('mousemove', onMove);
-// TODO Move this
-window.addEventListener('click', function(e) {
-  if (edgar.currentAction < edgar.actions.length - 1) {
-    edgar.fadeToAction(edgar.currentAction + 1 );
-  } else {
-    edgar.fadeToAction(0);
-  }
-}, true);
 
 function updateMainCharacter(delta) {
   // Get the actual position of the model
@@ -118,13 +110,17 @@ function updateMainCharacter(delta) {
     edgar.model.position.x = Math.cos(theta) * radius;
     edgar.model.position.z = Math.sin(theta) * radius;
     theta += delta;
+
+    edgar.fadeToAction('run');
   }
   else if (nextPos < -1 && nextPos >= -5) {
     edgar.model.position.x = Math.cos(theta) * radius;
     edgar.model.position.z = Math.sin(theta) * radius;
     theta -= delta;
+    edgar.fadeToAction('run');
   }
 
+  edgar.fadeToAction('idle');
   // Update model animations
   edgar.mixer.update(delta);
 }

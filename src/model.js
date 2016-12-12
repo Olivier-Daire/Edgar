@@ -5,13 +5,8 @@ function Model(path, onLoad) {
 	this.model = null;
 
 	this.mixer = null;
-	this.currentAction = 0;
-	this.actions = [];
-
-	// TODO see if animation limited to character, if do
-	// 	this.action = {};
-	//this.currentAction = 'idle';
-	//this.actions = [ 'idle', 'walk', 'run', 'hello'];
+	this.actions = {};
+	this.activeAction = null;
 
 	this.initMesh(onLoad);
 }
@@ -49,30 +44,35 @@ Model.prototype.initMesh = function(onLoad) {
 Model.prototype.initAnimation = function(geometry) {
 	var _this = this;
 	this.mixer = new THREE.AnimationMixer(this.model);
-	var i = 0;
 
-	geometry.animations.forEach(function(animation) {
-		_this.actions[i] = _this.mixer.clipAction(animation);
-		_this.actions[i].setEffectiveWeight(1);
-		_this.actions[i++].enabled = true;
+	geometry.animations.forEach(function(animation, index) {
+		// Set first action as default
+		if (index === 0 ) {
+			_this.activeAction = animation.name;
+		}
+		_this.actions[animation.name] = _this.mixer.clipAction(animation);
+		_this.actions[animation.name].setEffectiveWeight(1);
+		_this.actions[animation.name].enabled = true;
 	});
 
-	this.actions[this.currentAction].play();
+	this.actions[this.activeAction].play();
 };
 
-Model.prototype.fadeToAction = function(nbr) {
-	var from = this.actions[ this.currentAction ].play();
-	var to = this.actions[ nbr ].play();
+Model.prototype.fadeToAction = function(name) {
+	if (this.activeAction !== name) {
+		var from = this.actions[ this.activeAction ].play();
+		var to = this.actions[ name ].play();
 
-	from.enabled = true;
-	to.enabled = true;
+		from.enabled = true;
+		to.enabled = true;
 
-	if (to.loop === THREE.LoopOnce) {
-		to.reset();
+		if (to.loop === THREE.LoopOnce) {
+			to.reset();
+		}
+
+		from.crossFadeTo(to, 0.3);
+		this.activeAction = name;
 	}
-
-	from.crossFadeTo(to, 0.3);
-	this.currentAction = nbr;
 
 };
 
