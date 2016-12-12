@@ -37,6 +37,7 @@ Model.prototype.initMesh = function(onLoad) {
 				child.receiveShadow = true;
 			}
 		});
+		_this.model.castShadow = true;
 
 		onLoad();
 	};

@@ -69,7 +69,6 @@ var edgar = new Model('public/model/animated-character.json',
   function() {
     edgar.model.position.set(0, scene1.controls.userHeight, -1);
     edgar.model.scale.x = edgar.model.scale.y = edgar.model.scale.z = 0.5;
-    edgar.castShadow = true;
 
     document.getElementById('loader').style.display = 'none';
     scene1.scene.add(edgar.model);
@@ -121,7 +120,7 @@ window.addEventListener('click', function(e) {
   }
 }, true);
 
-function updateMainCharacter(delta){
+function updateMainCharacter(delta) {
   // Get the actual position of the model
   actualPos = edgar.model.position.x; // FIXME @Jérémie still useful?
 
