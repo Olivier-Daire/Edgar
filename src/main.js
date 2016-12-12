@@ -22,10 +22,10 @@ var Model = require('./model.js');
 window.WebVRConfig = window.WebVRConfig || {};
 window.WebVRManager = WebVRManager;
 
-var scene1 = new Scene();
+var radius = 5;
+var scene1 = new Scene(radius);
 var lastRender = 0;
 var theta = 0;
-var radius = 5;
 var nextPos, actualPos;
 
 // Add a repeating grid as a skybox.
@@ -101,28 +101,49 @@ window.addEventListener('resize', onResize, true);
 window.addEventListener('vrdisplaypresentchange', onResize, true);
 window.addEventListener('mousemove', onMove);
 
-function updateMainCharacter(delta) {
-  // Get the actual position of the model
-  actualPos = edgar.model.position.x; // FIXME @Jérémie still useful?
-
-  // TODO Orientate character given angle
+// TODO Refactor this shit !
+var tangent = new THREE.Vector3();
+var axis = new THREE.Vector3();
+var up = new THREE.Vector3(0, 0, 1);
+var speed = 0.0005;
+function updateMainCharacter(delta) { // FIXME delta ?
   if(nextPos > 1 && nextPos <= 5) {
-    edgar.model.position.x = Math.cos(theta) * radius;
-    edgar.model.position.z = Math.sin(theta) * radius;
-    theta += delta;
+     if (theta <= 1) {
+        edgar.fadeToAction('walk');
+        edgar.model.position.copy( scene1.characterPath.getPointAt(theta) );
 
-    edgar.fadeToAction('run');
-  }
-  else if (nextPos < -1 && nextPos >= -5) {
-    edgar.model.position.x = Math.cos(theta) * radius;
-    edgar.model.position.z = Math.sin(theta) * radius;
-    theta -= delta;
-    edgar.fadeToAction('run');
+        tangent = scene1.characterPath.getTangentAt(theta).normalize();
+
+        axis.crossVectors(up, tangent).normalize();
+
+        var radians = Math.acos(up.dot(tangent));
+
+        edgar.model.quaternion.setFromAxisAngle(axis, radians);
+        theta += speed;
+    } else {
+      theta = 0
+    }
+  } else if (nextPos < -1 && nextPos >= -5) {
+     if (theta >= 0) {
+        edgar.fadeToAction('walk');
+        edgar.model.position.copy( scene1.characterPath.getPointAt(theta) );
+
+        tangent = scene1.characterPath.getTangentAt(theta).normalize();
+
+        axis.crossVectors(up, tangent).normalize();
+
+        var radians = Math.acos(up.dot(tangent));
+
+        edgar.model.quaternion.setFromAxisAngle(axis, radians);
+        theta -= speed;
+    } else {
+      theta = 1;
+    }
   }
 
   edgar.fadeToAction('idle');
   // Update model animations
-  edgar.mixer.update(delta);
+  edgar.mixer.update(delta); // FIXME delta ?
 }
 
 // Request animation frame loop function
@@ -157,6 +178,7 @@ function onResize(e) {
 
 var vrDisplay;
 
+// TODO Move all the functions below in scene.js ?
 // Get the HMD, and if we're dealing with something that specifies
 // stageParameters, rearrange the scene.
 function setupStage() {
