@@ -25,7 +25,6 @@ window.WebVRManager = WebVRManager;
 var radius = 5;
 var scene1 = new Scene(radius);
 var lastRender = 0;
-var theta = 0;
 var nextPos, actualPos;
 
 // Add a repeating grid as a skybox.
@@ -67,11 +66,11 @@ var manager = new WebVRManager(scene1.renderer, scene1.effect, params);
 // Load 3D model
 var edgar = new Model('public/model/animated-character.json',
   function() {
-    edgar.model.position.set(0, scene1.controls.userHeight, -1);
     edgar.model.scale.x = edgar.model.scale.y = edgar.model.scale.z = 0.5;
 
     document.getElementById('loader').style.display = 'none';
     scene1.scene.add(edgar.model);
+    edgar.followPath(scene1.characterPath, 'right');
   }
 );
 
@@ -101,50 +100,24 @@ window.addEventListener('resize', onResize, true);
 window.addEventListener('vrdisplaypresentchange', onResize, true);
 window.addEventListener('mousemove', onMove, true);
 
-// TODO Refactor this shit !
-var tangent = new THREE.Vector3();
-var axis = new THREE.Vector3();
-var right = new THREE.Vector3(0, 0, 1);
-var left = new THREE.Vector3(0, 0, -1);
-var speed = 0.0005;
-function updateMainCharacter(delta) { // FIXME delta ?
-  var radians = null;
-  console.log('actualPos ' + edgar.model.position.x);
+function updateMainCharacter(delta) {
+  //console.log('actualPos ' + edgar.model.position.x);
   if(nextPos > 1 && nextPos <= 5) {
-     if (theta <= 1) {
-        edgar.fadeToAction('walk');
-        // http://stackoverflow.com/a/11181366
-        edgar.model.position.copy( scene1.characterPath.getPointAt(theta) );
-        tangent = scene1.characterPath.getTangentAt(theta).normalize();
-        axis.crossVectors(right, tangent).normalize();
-
-        radians = Math.acos(right.dot(tangent));
-
-        edgar.model.quaternion.setFromAxisAngle(axis, radians);
-        theta += speed;
+     if (edgar.theta <= 1) {
+        edgar.followPath(scene1.characterPath, 'right');
     } else {
-      theta = 0;
+      edgar.theta = 0;
     }
   } else if (nextPos < -1 && nextPos >= -5) {
-     if (theta >= 0) {
-        edgar.fadeToAction('walk');
-
-        edgar.model.position.copy( scene1.characterPath.getPointAt(theta) );
-        tangent = scene1.characterPath.getTangentAt(theta).normalize();
-        axis.crossVectors(left, tangent).normalize();
-
-        radians = Math.acos(left.dot(tangent));
-
-        edgar.model.quaternion.setFromAxisAngle(axis, radians);
-        theta -= speed;
+     if (edgar.theta >= 0) {
+        edgar.followPath(scene1.characterPath, 'left');
     } else {
-      theta = 1;
+      edgar.theta = 1;
     }
   }
-
   edgar.fadeToAction('idle');
   // Update model animations
-  edgar.mixer.update(delta); // FIXME delta ?
+  edgar.mixer.update(delta);
 }
 
 // Request animation frame loop function
