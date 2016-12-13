@@ -99,7 +99,7 @@ initLights();
 
 window.addEventListener('resize', onResize, true);
 window.addEventListener('vrdisplaypresentchange', onResize, true);
-window.addEventListener('mousemove', onMove);
+window.addEventListener('mousemove', onMove, true);
 
 // TODO Refactor this shit !
 var tangent = new THREE.Vector3();
@@ -108,6 +108,8 @@ var right = new THREE.Vector3(0, 0, 1);
 var left = new THREE.Vector3(0, 0, -1);
 var speed = 0.0005;
 function updateMainCharacter(delta) { // FIXME delta ?
+  var radians = null;
+  console.log('actualPos ' + edgar.model.position.x);
   if(nextPos > 1 && nextPos <= 5) {
      if (theta <= 1) {
         edgar.fadeToAction('walk');
@@ -116,12 +118,12 @@ function updateMainCharacter(delta) { // FIXME delta ?
         tangent = scene1.characterPath.getTangentAt(theta).normalize();
         axis.crossVectors(right, tangent).normalize();
 
-        var radians = Math.acos(right.dot(tangent));
+        radians = Math.acos(right.dot(tangent));
 
         edgar.model.quaternion.setFromAxisAngle(axis, radians);
         theta += speed;
     } else {
-      theta = 0
+      theta = 0;
     }
   } else if (nextPos < -1 && nextPos >= -5) {
      if (theta >= 0) {
@@ -131,7 +133,7 @@ function updateMainCharacter(delta) { // FIXME delta ?
         tangent = scene1.characterPath.getTangentAt(theta).normalize();
         axis.crossVectors(left, tangent).normalize();
 
-        var radians = Math.acos(left.dot(tangent));
+        radians = Math.acos(left.dot(tangent));
 
         edgar.model.quaternion.setFromAxisAngle(axis, radians);
         theta -= speed;
@@ -164,8 +166,15 @@ function animate(timestamp) {
   vrDisplay.requestAnimationFrame(animate);
 }
 
-function onMove() {
+function onMove(event) {
   var x = (( event.clientX / window.innerWidth ) * 2 - 1) * radius;
+  var mouse3D = new THREE.Vector3( ( event.clientX / window.innerWidth ) * 2 - 1 * radius,   //x
+                                        -( event.clientY / window.innerHeight ) * 2 + 1 *radius,  //y
+                                        0.5 ); 
+  mouse3D.unproject(scene1.camera);
+  // FIXME Convert mouse position to world position
+  // then compare model pos with mouse pos to decide move or not
+  //console.log(pos);
   nextPos = x;
 }
 
