@@ -22,10 +22,10 @@ var Model = require('./model.js');
 window.WebVRConfig = window.WebVRConfig || {};
 window.WebVRManager = WebVRManager;
 
-var scene1 = new Scene();
+var radius = 5;
+var scene1 = new Scene(radius);
 var lastRender = 0;
 var theta = 0;
-var radius = 5;
 var nextPos, actualPos;
 
 // Add a repeating grid as a skybox.
@@ -97,47 +97,52 @@ function initLights() {
 }
 initLights();
 
-// // Create 3D objects.
-// var geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
-// var material = new THREE.MeshNormalMaterial();
-// var cube = new THREE.Mesh(geometry, material);
-
-// // Position cube mesh to be right in front of you.
-// cube.position.set(0, scene1.controls.userHeight, -1);
-// cube.castShadow = true
-// // Add cube mesh to your three.js scene
-// scene1.scene.add(cube);
-
 window.addEventListener('resize', onResize, true);
 window.addEventListener('vrdisplaypresentchange', onResize, true);
 window.addEventListener('mousemove', onMove);
-// TODO Move this
-window.addEventListener('click', function(e) {
-  if (edgar.currentAction < edgar.actions.length - 1) {
-    edgar.fadeToAction(edgar.currentAction + 1 );
-  } else {
-    edgar.fadeToAction(0);
-  }
-}, true);
 
-function updateMainCharacter(delta) {
-  // Get the actual position of the model
-  actualPos = edgar.model.position.x; // FIXME @Jérémie still useful?
-
-  // TODO Orientate character given angle
+// TODO Refactor this shit !
+var tangent = new THREE.Vector3();
+var axis = new THREE.Vector3();
+var right = new THREE.Vector3(0, 0, 1);
+var left = new THREE.Vector3(0, 0, -1);
+var speed = 0.0005;
+function updateMainCharacter(delta) { // FIXME delta ?
   if(nextPos > 1 && nextPos <= 5) {
-    edgar.model.position.x = Math.cos(theta) * radius;
-    edgar.model.position.z = Math.sin(theta) * radius;
-    theta += delta;
-  }
-  else if (nextPos < -1 && nextPos >= -5) {
-    edgar.model.position.x = Math.cos(theta) * radius;
-    edgar.model.position.z = Math.sin(theta) * radius;
-    theta -= delta;
+     if (theta <= 1) {
+        edgar.fadeToAction('walk');
+        // http://stackoverflow.com/a/11181366
+        edgar.model.position.copy( scene1.characterPath.getPointAt(theta) );
+        tangent = scene1.characterPath.getTangentAt(theta).normalize();
+        axis.crossVectors(right, tangent).normalize();
+
+        var radians = Math.acos(right.dot(tangent));
+
+        edgar.model.quaternion.setFromAxisAngle(axis, radians);
+        theta += speed;
+    } else {
+      theta = 0
+    }
+  } else if (nextPos < -1 && nextPos >= -5) {
+     if (theta >= 0) {
+        edgar.fadeToAction('walk');
+
+        edgar.model.position.copy( scene1.characterPath.getPointAt(theta) );
+        tangent = scene1.characterPath.getTangentAt(theta).normalize();
+        axis.crossVectors(left, tangent).normalize();
+
+        var radians = Math.acos(left.dot(tangent));
+
+        edgar.model.quaternion.setFromAxisAngle(axis, radians);
+        theta -= speed;
+    } else {
+      theta = 1;
+    }
   }
 
+  edgar.fadeToAction('idle');
   // Update model animations
-  edgar.mixer.update(delta);
+  edgar.mixer.update(delta); // FIXME delta ?
 }
 
 // Request animation frame loop function
@@ -152,7 +157,6 @@ function animate(timestamp) {
   }
 
   scene1.controls.update();
-  scene1.navigation.update(scene1.clock.getDelta());
   // Render the scene through the manager.
   manager.render(scene1.scene, scene1.camera, timestamp);
   scene1.effect.render(scene1.scene, scene1.camera);
@@ -169,11 +173,11 @@ function onResize(e) {
   scene1.effect.setSize(window.innerWidth, window.innerHeight);
   scene1.camera.aspect = window.innerWidth / window.innerHeight;
   scene1.camera.updateProjectionMatrix();
-  //scene1.navigation.handleResize();
 }
 
 var vrDisplay;
 
+// TODO Move all the functions below in scene.js ?
 // Get the HMD, and if we're dealing with something that specifies
 // stageParameters, rearrange the scene.
 function setupStage() {

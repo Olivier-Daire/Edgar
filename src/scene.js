@@ -1,13 +1,15 @@
 "use strict";
 
-function Scene() {
+function Scene(radius, debug) {
 	this.renderer = null;
 	this.scene = null;
 	this.camera = null;
-	this.navigation = null;
 	this.controls = null;
 	this.effect = null;
-	this.clock = null;
+	this.characterPath = null;
+	this.radius = radius;
+
+	this.debug = typeof debug !== 'undefined' ? debug : false;
 
 	this.setup();
 }
@@ -23,20 +25,11 @@ Scene.prototype.setup = function() {
 	// Append the canvas element created by the renderer to document body element.
 	document.body.appendChild(this.renderer.domElement);
 
-	// Create a three.js clock.
-	this.clock = new THREE.Clock();
-
 	// Create a three.js scene.
 	this.scene = new THREE.Scene();
 
 	// Create a three.js camera.
 	this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
-
-	// Create a three.js first person camera
-	this.navigation = new THREE.FirstPersonControls(this.camera);
-	this.navigation.movementSpeed = 500;
-	this.navigation.lookSpeed = 0.05;
-	this.navigation.lookVertical = false;
 
 	this.controls = new THREE.VRControls(this.camera);
 	this.controls.standing = true;
@@ -44,6 +37,41 @@ Scene.prototype.setup = function() {
 	// Apply VR stereo rendering to renderer.
 	this.effect = new THREE.VREffect(this.renderer);
 	this.effect.setSize(window.innerWidth, window.innerHeight);
+
+	this.addCharacterPath();
+};
+
+Scene.prototype.addCharacterPath = function() {
+	var points = [];
+	var i = 0;
+	// Fill the points array with all the points necessary to draw a circle
+	for (i = 0; i <= 360; i++) {
+		var angle = Math.PI/180 * i;
+		var x = (this.radius) * Math.cos(angle);
+		var y = this.controls.userHeight;
+		var z= (this.radius) * Math.sin(angle);
+
+		points.push(new THREE.Vector3(x, y, z));
+	}
+
+	// Create curve using theses points
+	this.characterPath = new THREE.SplineCurve3(points );
+
+	if (this.debug) {
+		var geometry = new THREE.Geometry();
+		var splinePoints = this.characterPath.getPoints(50); // nbr of point to smoothen curve
+
+		for (i = 0; i < splinePoints.length; i++) {
+			geometry.vertices.push(splinePoints[i]);
+		}
+
+		var material = new THREE.LineBasicMaterial( { color : 0xff0000 } );
+
+		// Create the final Object3d to add to the scene
+		var line = new THREE.Line( geometry, material );
+		this.scene.add(line);
+	}
+
 };
 
 module.exports = Scene;
