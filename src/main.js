@@ -22,11 +22,9 @@ var Model = require('./model.js');
 window.WebVRConfig = window.WebVRConfig || {};
 window.WebVRManager = WebVRManager;
 
-var scene1 = new Scene();
+var radius = 4;
+var scene1 = new Scene(radius);
 var lastRender = 0;
-var theta = 0;
-var radius = 5;
-var nextPos, actualPos;
 
 // Add a repeating grid as a skybox.
 var boxSize = 15;
@@ -49,7 +47,6 @@ function onTextureLoaded(texture) {
   var skybox = new THREE.Mesh(geometry, material);
   skybox.position.y = boxSize/2;
   scene1.scene.add(skybox);
-
   // For high end VR devices like Vive and Oculus, take into account the stage
   // parameters provided.
   setupStage();
@@ -67,14 +64,13 @@ var manager = new WebVRManager(scene1.renderer, scene1.effect, params);
 // Load 3D model
 var edgar = new Model('public/model/animated-character.json',
   function() {
-    edgar.model.position.set(0, scene1.controls.userHeight, -1);
     edgar.model.scale.x = edgar.model.scale.y = edgar.model.scale.z = 0.5;
 
     document.getElementById('loader').style.display = 'none';
     scene1.scene.add(edgar.model);
+    edgar.followPath(scene1.characterPath, 'right');
   }
 );
-
 
 // TODO MOVE THIS
 var ground = null;
@@ -97,83 +93,50 @@ function initLights() {
 }
 initLights();
 
-// // Create 3D objects.
-// var geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
-// var material = new THREE.MeshNormalMaterial();
-// var cube = new THREE.Mesh(geometry, material);
-
-// // Position cube mesh to be right in front of you.
-// cube.position.set(0, scene1.controls.userHeight, -1);
-// cube.castShadow = true
-// // Add cube mesh to your three.js scene
-// scene1.scene.add(cube);
-
 window.addEventListener('resize', onResize, true);
 window.addEventListener('vrdisplaypresentchange', onResize, true);
-window.addEventListener('mousemove', onMove);
-// TODO Move this
-window.addEventListener('click', function(e) {
-  if (edgar.currentAction < edgar.actions.length - 1) {
-    edgar.fadeToAction(edgar.currentAction + 1 );
-  } else {
-    edgar.fadeToAction(0);
-  }
-}, true);
-
-function updateMainCharacter(delta) {
-  // Get the actual position of the model
-  actualPos = edgar.model.position.x; // FIXME @Jérémie still useful?
-
-  // TODO Orientate character given angle
-  if(nextPos > 1 && nextPos <= 5) {
-    edgar.model.position.x = Math.cos(theta) * radius;
-    edgar.model.position.z = Math.sin(theta) * radius;
-    theta += delta;
-  }
-  else if (nextPos < -1 && nextPos >= -5) {
-    edgar.model.position.x = Math.cos(theta) * radius;
-    edgar.model.position.z = Math.sin(theta) * radius;
-    theta -= delta;
-  }
-
-  // Update model animations
-  edgar.mixer.update(delta);
-}
+window.addEventListener('mousemove', onMove, true);
 
 // Request animation frame loop function
-
 function animate(timestamp) {
   var delta = Math.PI / 500;
 
   lastRender = timestamp;
 
   if (edgar.model !== null) {
-    updateMainCharacter(delta);
+    // Update character position along path
+    edgar.updateCharacter(scene1.characterPath, delta);
   }
 
   scene1.controls.update();
-  scene1.navigation.update(scene1.clock.getDelta());
   // Render the scene through the manager.
   manager.render(scene1.scene, scene1.camera, timestamp);
   scene1.effect.render(scene1.scene, scene1.camera);
-
   vrDisplay.requestAnimationFrame(animate);
 }
 
-function onMove() {
-  var x = (( event.clientX / window.innerWidth ) * 2 - 1) * radius;
-  nextPos = x;
+function onMove(event) {
+  // Convert mouse coordinates to world coordinates
+  var mouse3D = new THREE.Vector3( (( event.clientX / window.innerWidth ) * 2 - 1) *radius,   //x
+                                  -(( event.clientY / window.innerHeight ) * 2 + 1) *radius,  //y
+                                    0.5);
+  mouse3D.unproject(scene1.camera);
+  var dir = mouse3D.sub( scene1.dolly.position ).normalize();
+  var distance = - scene1.dolly.position.z / dir.z;
+  var pos = scene1.camera.position.clone().add( dir.multiplyScalar( distance ) );
+  // Update edgar nextPosition
+  edgar.nextPosition = pos.x;
 }
 
 function onResize(e) {
   scene1.effect.setSize(window.innerWidth, window.innerHeight);
   scene1.camera.aspect = window.innerWidth / window.innerHeight;
   scene1.camera.updateProjectionMatrix();
-  //scene1.navigation.handleResize();
 }
 
 var vrDisplay;
 
+// TODO Move all the functions below in scene.js ?
 // Get the HMD, and if we're dealing with something that specifies
 // stageParameters, rearrange the scene.
 function setupStage() {
