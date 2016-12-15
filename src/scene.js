@@ -3,6 +3,7 @@
 function Scene(radius, debug) {
 	this.renderer = null;
 	this.scene = null;
+	this.dolly = null;
 	this.camera = null;
 	this.controls = null;
 	this.effect = null;
@@ -30,6 +31,13 @@ Scene.prototype.setup = function() {
 
 	// Create a three.js camera.
 	this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
+
+	// VRControls always set camera postion to (0, 0, 0) use group and dolly to move it
+	// http://stackoverflow.com/a/34471170
+	this.dolly = new THREE.Group();
+	this.dolly.position.set( 0, 0, 1 ); // if camera.position.z == 0 can't get screen to world coordinates
+	this.scene.add( this.dolly );
+	this.dolly.add( this.camera );
 
 	this.controls = new THREE.VRControls(this.camera);
 	this.controls.standing = true;

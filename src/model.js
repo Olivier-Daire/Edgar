@@ -10,7 +10,10 @@ function Model(path, onLoad) {
 	this.activeAction = null;
 
 	// TODO All of these are for model movement, move them to specific Edgar class
-	this.speed = 0.0005;
+	this.SPEED = 0.0005;
+	this.SENSITIVITY_TO_TRIGGER_MOVE = 0.2;
+	this.currentPosition = null;
+	this.nextPosition = null;
 	this.theta = 0.75; // No idea why but it's in front of camera
 
 	this.initMesh(onLoad);
@@ -100,10 +103,31 @@ Model.prototype.followPath = function(path, direction){
 	this.model.quaternion.setFromAxisAngle(axis, radians);
 
 	if (direction === 'right') {
-		this.theta += this.speed;
+		this.theta += this.SPEED;
 	} else {
-		this.theta -= this.speed;
+		this.theta -= this.SPEED;
 	}
+};
+
+Model.prototype.updateCharacter = function(characterPath, delta) {
+  this.currentPosition = this.model.position.x;
+  if(this.nextPosition -this.currentPosition >= this.SENSITIVITY_TO_TRIGGER_MOVE) {
+     if (this.theta <= 1) {
+        this.followPath(characterPath, 'right');
+    } else {
+      this.theta = 0;
+    }
+  }
+  if (this.nextPosition - this.currentPosition <= -this.SENSITIVITY_TO_TRIGGER_MOVE) {
+     if (this.theta >= 0) {
+        this.followPath(characterPath, 'left');
+    } else {
+      this.theta = 1;
+    }
+  }
+  this.fadeToAction('idle');
+  // Update model animations
+  this.mixer.update(delta);
 };
 
 module.exports = Model;

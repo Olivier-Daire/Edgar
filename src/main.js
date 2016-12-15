@@ -22,10 +22,9 @@ var Model = require('./model.js');
 window.WebVRConfig = window.WebVRConfig || {};
 window.WebVRManager = WebVRManager;
 
-var radius = 5;
+var radius = 4;
 var scene1 = new Scene(radius);
 var lastRender = 0;
-var nextPos, actualPos;
 
 // Add a repeating grid as a skybox.
 var boxSize = 15;
@@ -48,7 +47,6 @@ function onTextureLoaded(texture) {
   var skybox = new THREE.Mesh(geometry, material);
   skybox.position.y = boxSize/2;
   scene1.scene.add(skybox);
-
   // For high end VR devices like Vive and Oculus, take into account the stage
   // parameters provided.
   setupStage();
@@ -73,7 +71,6 @@ var edgar = new Model('public/model/animated-character.json',
     edgar.followPath(scene1.characterPath, 'right');
   }
 );
-
 
 // TODO MOVE THIS
 var ground = null;
@@ -100,55 +97,35 @@ window.addEventListener('resize', onResize, true);
 window.addEventListener('vrdisplaypresentchange', onResize, true);
 window.addEventListener('mousemove', onMove, true);
 
-function updateMainCharacter(delta) {
-  //console.log('actualPos ' + edgar.model.position.x);
-  if(nextPos > 1 && nextPos <= 5) {
-     if (edgar.theta <= 1) {
-        edgar.followPath(scene1.characterPath, 'right');
-    } else {
-      edgar.theta = 0;
-    }
-  } else if (nextPos < -1 && nextPos >= -5) {
-     if (edgar.theta >= 0) {
-        edgar.followPath(scene1.characterPath, 'left');
-    } else {
-      edgar.theta = 1;
-    }
-  }
-  edgar.fadeToAction('idle');
-  // Update model animations
-  edgar.mixer.update(delta);
-}
-
 // Request animation frame loop function
-
 function animate(timestamp) {
   var delta = Math.PI / 500;
 
   lastRender = timestamp;
 
   if (edgar.model !== null) {
-    updateMainCharacter(delta);
+    // Update character position along path
+    edgar.updateCharacter(scene1.characterPath, delta);
   }
 
   scene1.controls.update();
   // Render the scene through the manager.
   manager.render(scene1.scene, scene1.camera, timestamp);
   scene1.effect.render(scene1.scene, scene1.camera);
-
   vrDisplay.requestAnimationFrame(animate);
 }
 
 function onMove(event) {
-  var x = (( event.clientX / window.innerWidth ) * 2 - 1) * radius;
-  var mouse3D = new THREE.Vector3( ( event.clientX / window.innerWidth ) * 2 - 1 * radius,   //x
-                                        -( event.clientY / window.innerHeight ) * 2 + 1 *radius,  //y
-                                        0.5 ); 
+  // Convert mouse coordinates to world coordinates
+  var mouse3D = new THREE.Vector3( (( event.clientX / window.innerWidth ) * 2 - 1) *radius,   //x
+                                  -(( event.clientY / window.innerHeight ) * 2 + 1) *radius,  //y
+                                    0.5);
   mouse3D.unproject(scene1.camera);
-  // FIXME Convert mouse position to world position
-  // then compare model pos with mouse pos to decide move or not
-  //console.log(pos);
-  nextPos = x;
+  var dir = mouse3D.sub( scene1.dolly.position ).normalize();
+  var distance = - scene1.dolly.position.z / dir.z;
+  var pos = scene1.camera.position.clone().add( dir.multiplyScalar( distance ) );
+  // Update edgar nextPosition
+  edgar.nextPosition = pos.x;
 }
 
 function onResize(e) {
