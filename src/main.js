@@ -1,18 +1,4 @@
 "use strict";
-/*
- * Copyright 2015 Google Inc. All Rights Reserved.
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 
 var WebVRManager = require('./webvr-manager.js');
 var Scene = require('./scene.js');
@@ -22,9 +8,14 @@ var Model = require('./model.js');
 window.WebVRConfig = window.WebVRConfig || {};
 window.WebVRManager = WebVRManager;
 
+window.addEventListener('resize', onResize, true);
+window.addEventListener('vrdisplaypresentchange', onResize, true);
+window.addEventListener('mousemove', onMove, true);
+
 var radius = 4;
 var scene1 = new Scene(radius);
 var lastRender = 0;
+var vrDisplay;
 
 // Add a repeating grid as a skybox.
 var boxSize = 15;
@@ -52,7 +43,6 @@ function onTextureLoaded(texture) {
   setupStage();
 }
 
-
 // Create a VR manager helper to enter and exit VR mode.
 var params = {
   hideButton: false, // Default: false.
@@ -71,31 +61,6 @@ var edgar = new Model('public/model/animated-character.json',
     edgar.followPath(scene1.characterPath, 'right');
   }
 );
-
-// TODO MOVE THIS
-var ground = null;
-function initGround() {
-  	var groundMaterial = new THREE.MeshPhongMaterial( { color: 0xffffff } );
-  	ground = new THREE.Mesh( new THREE.PlaneBufferGeometry( 20, 20 ), groundMaterial );
-  	ground.position.set(0, scene1.controls.userHeight - 0.5, 0);
-  	ground.rotation.x = - Math.PI / 2;
-  	ground.receiveShadow = true;
-  	scene1.scene.add( ground );
-}
-initGround();
-
-// TODO MOVE THIS
-function initLights() {
-  var spotLight = new THREE.SpotLight( 0xffffff );
-  spotLight.position.set( 0, scene1.controls.userHeight+8, 0 );
-  spotLight.castShadow = true;
-  scene1.scene.add( spotLight );
-}
-initLights();
-
-window.addEventListener('resize', onResize, true);
-window.addEventListener('vrdisplaypresentchange', onResize, true);
-window.addEventListener('mousemove', onMove, true);
 
 // Request animation frame loop function
 function animate(timestamp) {
@@ -133,8 +98,6 @@ function onResize(e) {
   scene1.camera.aspect = window.innerWidth / window.innerHeight;
   scene1.camera.updateProjectionMatrix();
 }
-
-var vrDisplay;
 
 // TODO Move all the functions below in scene.js ?
 // Get the HMD, and if we're dealing with something that specifies

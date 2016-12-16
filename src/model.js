@@ -45,7 +45,11 @@ Model.prototype.initMesh = function(onLoad) {
 		onLoad();
 	};
 
-	loader.load(this.path , loaded);
+	var error = function() {
+		console.log('Error loading model');
+	};
+
+	loader.load(this.path , loaded, error);
 
 };
 

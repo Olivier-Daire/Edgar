@@ -46,7 +46,9 @@ Scene.prototype.setup = function() {
 	this.effect = new THREE.VREffect(this.renderer);
 	this.effect.setSize(window.innerWidth, window.innerHeight);
 
+	this.addGround();
 	this.addCharacterPath();
+	this.addLights();
 };
 
 Scene.prototype.addCharacterPath = function() {
@@ -79,7 +81,24 @@ Scene.prototype.addCharacterPath = function() {
 		var line = new THREE.Line( geometry, material );
 		this.scene.add(line);
 	}
+};
 
+Scene.prototype.addGround = function() {
+	var ground = null;
+	var groundMaterial = new THREE.MeshPhongMaterial( { color: 0xffffff } );
+
+	ground = new THREE.Mesh( new THREE.PlaneBufferGeometry( 20, 20 ), groundMaterial );
+	ground.position.set(0, this.controls.userHeight - 0.5, 0);
+	ground.rotation.x = - Math.PI / 2;
+	ground.receiveShadow = true;
+	this.scene.add( ground );
+};
+
+Scene.prototype.addLights = function() {
+	var spotLight = new THREE.SpotLight( 0xffffff );
+	spotLight.position.set( 0, this.controls.userHeight+8, 0 );
+	spotLight.castShadow = true;
+	this.scene.add( spotLight );
 };
 
 module.exports = Scene;
