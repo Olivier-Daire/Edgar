@@ -13,6 +13,8 @@ function Scene(radius, debug) {
 	this.debug = typeof debug !== 'undefined' ? debug : false;
 
 	this.setup();
+
+	return this;
 }
 
 

@@ -2,7 +2,7 @@
 
 var WebVRManager = require('./webvr-manager.js');
 var Scene = require('./scene.js');
-var Model = require('./model.js');
+var Character = require('./character.js');
 
 // TODO Load JSON ???
 window.WebVRConfig = window.WebVRConfig || {};
@@ -50,9 +50,9 @@ var params = {
 };
 var manager = new WebVRManager(scene1.renderer, scene1.effect, params);
 
-
 // Load 3D model
-var edgar = new Model('public/model/animated-character.json',
+var edgar = new Character();
+edgar.load('public/model/animated-character.json',
   function() {
     edgar.model.scale.x = edgar.model.scale.y = edgar.model.scale.z = 0.5;
 
