@@ -1,79 +1,81 @@
 "use strict";
 
-function Model(path, onLoad) {
-	this.path = path;
+var Model = function(){
 	this.model = null;
 
 	this.mixer = null;
 	this.actions = {};
 	this.activeAction = null;
 
-	this.initMesh(onLoad);
-}
+	this.load = function(path, onLoad) {
+		var _this = this;
+		var loader = new THREE.JSONLoader();
 
-Model.prototype.initMesh = function(onLoad) {
-	var _this = this;
-	var loader = new THREE.JSONLoader();
+		var loaded = function(geometry, materials) {
+			materials.forEach(function(material) {
+				material.skinning = true;
+			});
 
-	var loaded = function(geometry, materials) {
-		materials.forEach(function(material) {
-			material.skinning = true;
-		});
+			_this.model = new THREE.SkinnedMesh(geometry, new THREE.MeshFaceMaterial( materials ));
 
-		_this.model = new THREE.SkinnedMesh(geometry, new THREE.MeshFaceMaterial( materials ));
-
-		if (typeof geometry.animations !== 'undefined' && geometry.animations.length > 0 ) {
-			_this.initAnimation(geometry);
-		}
-
-		_this.model.traverse(function(child) {
-			 if (child instanceof THREE.Mesh) {
-				child.castShadow = true;
-				child.receiveShadow = true;
+			if (typeof geometry.animations !== 'undefined' && geometry.animations.length > 0 ) {
+				_this.initAnimation(geometry);
 			}
-		});
-		_this.model.castShadow = true;
 
-		onLoad();
+			_this.model.traverse(function(child) {
+				 if (child instanceof THREE.Mesh) {
+					child.castShadow = true;
+					child.receiveShadow = true;
+				}
+			});
+			_this.model.castShadow = true;
+
+			onLoad();
+		};
+
+		var error = function() {
+			console.log('Error loading model'); // jshint ignore:line
+		};
+
+		loader.load(path , loaded, error);
+
 	};
 
-	loader.load(this.path , loaded);
+	this.initAnimation = function(geometry) {
+		var _this = this;
+		this.mixer = new THREE.AnimationMixer(this.model);
 
-};
+		geometry.animations.forEach(function(animation, index) {
+			// Set first action as default
+			if (index === 0 ) {
+				_this.activeAction = animation.name;
+			}
+			_this.actions[animation.name] = _this.mixer.clipAction(animation);
+			_this.actions[animation.name].setEffectiveWeight(1);
+			_this.actions[animation.name].enabled = true;
+		});
 
-Model.prototype.initAnimation = function(geometry) {
-	var _this = this;
-	this.mixer = new THREE.AnimationMixer(this.model);
+		this.actions[this.activeAction].play();
+	};
 
-	geometry.animations.forEach(function(animation, index) {
-		// Set first action as default
-		if (index === 0 ) {
-			_this.activeAction = animation.name;
+	this.fadeToAction = function(name) {
+		if (this.activeAction !== name) {
+			var from = this.actions[ this.activeAction ].play();
+			var to = this.actions[ name ].play();
+
+			from.enabled = true;
+			to.enabled = true;
+
+			if (to.loop === THREE.LoopOnce) {
+				to.reset();
+			}
+
+			from.crossFadeTo(to, 0.3);
+			this.activeAction = name;
 		}
-		_this.actions[animation.name] = _this.mixer.clipAction(animation);
-		_this.actions[animation.name].setEffectiveWeight(1);
-		_this.actions[animation.name].enabled = true;
-	});
+	};
 
-	this.actions[this.activeAction].play();
-};
-
-Model.prototype.fadeToAction = function(name) {
-	if (this.activeAction !== name) {
-		var from = this.actions[ this.activeAction ].play();
-		var to = this.actions[ name ].play();
-
-		from.enabled = true;
-		to.enabled = true;
-
-		if (to.loop === THREE.LoopOnce) {
-			to.reset();
-		}
-
-		from.crossFadeTo(to, 0.3);
-		this.activeAction = name;
-	}
-
+	return this;
 };
 
 module.exports = Model;

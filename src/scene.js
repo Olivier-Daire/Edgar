@@ -3,6 +3,7 @@
 function Scene(radius, debug) {
 	this.renderer = null;
 	this.scene = null;
+	this.dolly = null;
 	this.camera = null;
 	this.controls = null;
 	this.effect = null;
@@ -12,6 +13,8 @@ function Scene(radius, debug) {
 	this.debug = typeof debug !== 'undefined' ? debug : false;
 
 	this.setup();
+
+	return this;
 }
 
 
@@ -31,6 +34,13 @@ Scene.prototype.setup = function() {
 	// Create a three.js camera.
 	this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
 
+	// VRControls always set camera postion to (0, 0, 0) use group and dolly to move it
+	// http://stackoverflow.com/a/34471170
+	this.dolly = new THREE.Group();
+	this.dolly.position.set( 0, 0, 1 ); // if camera.position.z == 0 can't get screen to world coordinates
+	this.scene.add( this.dolly );
+	this.dolly.add( this.camera );
+
 	this.controls = new THREE.VRControls(this.camera);
 	this.controls.standing = true;
 
@@ -38,7 +48,9 @@ Scene.prototype.setup = function() {
 	this.effect = new THREE.VREffect(this.renderer);
 	this.effect.setSize(window.innerWidth, window.innerHeight);
 
+	this.addGround();
 	this.addCharacterPath();
+	this.addLights();
 };
 
 Scene.prototype.addCharacterPath = function() {
@@ -71,7 +83,24 @@ Scene.prototype.addCharacterPath = function() {
 		var line = new THREE.Line( geometry, material );
 		this.scene.add(line);
 	}
+};
 
+Scene.prototype.addGround = function() {
+	var ground = null;
+	var groundMaterial = new THREE.MeshPhongMaterial( { color: 0xffffff } );
+
+	ground = new THREE.Mesh( new THREE.PlaneBufferGeometry( 20, 20 ), groundMaterial );
+	ground.position.set(0, this.controls.userHeight - 0.5, 0);
+	ground.rotation.x = - Math.PI / 2;
+	ground.receiveShadow = true;
+	this.scene.add( ground );
+};
+
+Scene.prototype.addLights = function() {
+	var spotLight = new THREE.SpotLight( 0xffffff );
+	spotLight.position.set( 0, this.controls.userHeight+8, 0 );
+	spotLight.castShadow = true;
+	this.scene.add( spotLight );
 };
 
 module.exports = Scene;
