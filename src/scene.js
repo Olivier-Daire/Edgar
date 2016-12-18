@@ -113,7 +113,7 @@ Scene.prototype.addTorchLight = function() {
 			color: 0x000000
 		});
 	lightEmitter.add( new THREE.Mesh( lightSphere, matSphere ) );
-	lightEmitter.position.set( 0, this.controls.userHeight+0.5, -this.radius );
+	lightEmitter.position.set( 0, this.controls.userHeight-1, -this.radius-1 );
 	lightEmitter.castShadow = true;
 	//this.scene.add( lightEmitter );
 	this.camera.add(lightEmitter);
