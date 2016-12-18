@@ -105,18 +105,19 @@ Scene.prototype.addLights = function() {
 };
 
 Scene.prototype.addTorchLight = function() {
-	var bulbGeometry = new THREE.SphereGeometry( 0.02, 16, 8 );
-	var bulbLight = new THREE.PointLight( 0xffee88, 1, 100, 2 );
-	var bulbMat = new THREE.MeshStandardMaterial( {
+	var lightSphere = new THREE.SphereGeometry( 0.03, 25, 5 );
+	var lightEmitter = new THREE.PointLight( 0xffee88, 1, 100, 2 );
+	var matSphere = new THREE.MeshStandardMaterial( {
 			emissive: 0xffffee,
 			emissiveIntensity: 1,
 			color: 0x000000
 		});
-		bulbLight.add( new THREE.Mesh( bulbGeometry, bulbMat ) );
-		bulbLight.position.set( 0, 2, -this.radius );
-		bulbLight.castShadow = true;
-		this.scene.add( bulbLight );
-
+	lightEmitter.add( new THREE.Mesh( lightSphere, matSphere ) );
+	lightEmitter.position.set( 0, this.controls.userHeight+0.5, -this.radius );
+	lightEmitter.castShadow = true;
+	//this.scene.add( lightEmitter );
+	this.camera.add(lightEmitter);
+	lightEmitter.target = this.camera;
 };
 
 module.exports = Scene;
