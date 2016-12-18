@@ -51,6 +51,7 @@ Scene.prototype.setup = function() {
 	this.addGround();
 	this.addCharacterPath();
 	this.addLights();
+	this.addTorchLight();
 };
 
 Scene.prototype.addCharacterPath = function() {
@@ -97,10 +98,25 @@ Scene.prototype.addGround = function() {
 };
 
 Scene.prototype.addLights = function() {
-	var spotLight = new THREE.SpotLight( 0xffffff );
+	var spotLight = new THREE.PointLight( 0xffffff, 0.2, 0 );
 	spotLight.position.set( 0, this.controls.userHeight+8, 0 );
-	spotLight.castShadow = true;
+	//spotLight.castShadow = true;
 	this.scene.add( spotLight );
+};
+
+Scene.prototype.addTorchLight = function() {
+	var bulbGeometry = new THREE.SphereGeometry( 0.02, 16, 8 );
+	var bulbLight = new THREE.PointLight( 0xffee88, 1, 100, 2 );
+	var bulbMat = new THREE.MeshStandardMaterial( {
+			emissive: 0xffffee,
+			emissiveIntensity: 1,
+			color: 0x000000
+		});
+		bulbLight.add( new THREE.Mesh( bulbGeometry, bulbMat ) );
+		bulbLight.position.set( 0, 2, -this.radius );
+		bulbLight.castShadow = true;
+		this.scene.add( bulbLight );
+
 };
 
 module.exports = Scene;
