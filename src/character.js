@@ -36,7 +36,7 @@ var Character = function() {
 
 	this.updateCharacter = function(characterPath, delta) {
 		this.currentPosition = this.model.position.x;
-		if(this.nextPosition -this.currentPosition >= this.SENSITIVITY_TO_TRIGGER_MOVE) {
+		if(this.nextPosition - this.currentPosition >= this.SENSITIVITY_TO_TRIGGER_MOVE) {
 			if (this.theta <= 1) {
 				this.followPath(characterPath, 'right');
 			} else {

@@ -10,7 +10,7 @@ window.WebVRManager = WebVRManager;
 
 window.addEventListener('resize', onResize, true);
 window.addEventListener('vrdisplaypresentchange', onResize, true);
-window.addEventListener('mousemove', onMove, true);
+//window.addEventListener('mousemove', onMove, true);
 
 var radius = 4;
 var scene1 = new Scene(radius);
@@ -69,6 +69,19 @@ function animate(timestamp) {
   lastRender = timestamp;
 
   if (edgar.model !== null) {
+
+    // convert center of screen to world coordinates
+    // FIXME results seems to be false when rotating the camera
+    var mouse3D = new THREE.Vector3( ((( window.innerWidth / 2 ) / window.innerWidth ) * 2 - 1) * radius,   //x
+                                  -((( window.innerHeight / 2)  / window.innerHeight) * 2 + 1) * radius,  //y
+                                    0.5);
+    mouse3D.unproject(scene1.camera);
+    var dir = mouse3D.sub( scene1.dolly.position ).normalize();
+    var distance = - scene1.dolly.position.z / dir.z;
+    var pos = scene1.camera.position.clone().add( dir.multiplyScalar( distance ) );
+    // Update edgar nextPosition
+    edgar.nextPosition = pos.x;
+
     // Update character position along path
     edgar.updateCharacter(scene1.characterPath, delta);
   }
@@ -83,7 +96,7 @@ function animate(timestamp) {
 function onMove(event) {
   // Convert mouse coordinates to world coordinates
   var mouse3D = new THREE.Vector3( (( event.clientX / window.innerWidth ) * 2 - 1) *radius,   //x
-                                  -(( event.clientY / window.innerHeight ) * 2 + 1) *radius,  //y
+                                  -(( event.clientY / window.innerHeight ) * 2 + 1) *radius,
                                     0.5);
   mouse3D.unproject(scene1.camera);
   var dir = mouse3D.sub( scene1.dolly.position ).normalize();
