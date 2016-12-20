@@ -33,8 +33,8 @@ var Model = function(){
 			onLoad();
 		};
 
-		var error = function() {
-			console.log('Error loading model'); // jshint ignore:line
+		var error = function(e) {
+			console.error('Error loading model', e); // jshint ignore:line
 		};
 
 		loader.load(path , loaded, error);

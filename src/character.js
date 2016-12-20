@@ -4,8 +4,7 @@ var Model = require('./model.js');
 
 var Character = function() {
 	this.SPEED = 0.0005;
-	this.SENSITIVITY_TO_TRIGGER_MOVE = 0.2;
-	this.currentPosition = null;
+	this.SENSITIVITY_TO_TRIGGER_MOVE = 0.1;
 	this.nextPosition = null;
 	this.theta = 0.75; // No idea why but it's in front of camera
 
@@ -19,37 +18,45 @@ var Character = function() {
 
 		this.fadeToAction('walk');
 		// http://stackoverflow.com/a/11181366
-		this.model.position.copy( path.getPointAt(this.theta) );
-		tangent = path.getTangentAt(this.theta).normalize();
-		axis.crossVectors(currentDirection, tangent).normalize();
-
-		radians = Math.acos(currentDirection.dot(tangent));
-
-		this.model.quaternion.setFromAxisAngle(axis, radians);
-
 		if (direction === 'right') {
-			this.theta += this.SPEED;
-		} else {
-			this.theta -= this.SPEED;
-		}
-	};
-
-	this.updateCharacter = function(characterPath, delta) {
-		this.currentPosition = this.model.position.x;
-		if(this.nextPosition - this.currentPosition >= this.SENSITIVITY_TO_TRIGGER_MOVE) {
 			if (this.theta <= 1) {
-				this.followPath(characterPath, 'right');
+				this.model.position.copy( path.getPointAt(this.theta) );
+				tangent = path.getTangentAt(this.theta).normalize();
+				axis.crossVectors(currentDirection, tangent).normalize();
+
+				radians = Math.acos(currentDirection.dot(tangent));
+
+				this.model.quaternion.setFromAxisAngle(axis, radians);
+				this.theta += this.SPEED;
 			} else {
 				this.theta = 0;
 			}
-		}
-		if (this.nextPosition - this.currentPosition <= -this.SENSITIVITY_TO_TRIGGER_MOVE) {
+		} else { // FIXME Refactor
 			if (this.theta >= 0) {
-				this.followPath(characterPath, 'left');
+				this.model.position.copy( path.getPointAt(this.theta) );
+				tangent = path.getTangentAt(this.theta).normalize();
+				axis.crossVectors(currentDirection, tangent).normalize();
+
+				radians = Math.acos(currentDirection.dot(tangent));
+
+				this.model.quaternion.setFromAxisAngle(axis, radians);
+				this.theta -= this.SPEED;
 			} else {
 				this.theta = 1;
 			}
 		}
+	};
+
+	this.updateCharacter = function(characterPath, delta) {
+		var currentPosition = this.model.position;
+
+		if(this.nextPosition.x - currentPosition.x >= this.SENSITIVITY_TO_TRIGGER_MOVE || this.nextPosition.z - currentPosition.z >= this.SENSITIVITY_TO_TRIGGER_MOVE) {
+				this.followPath(characterPath, 'right');
+		}
+		if (this.nextPosition.x - currentPosition.x <= -this.SENSITIVITY_TO_TRIGGER_MOVE || this.nextPosition.z - currentPosition.z <= -this.SENSITIVITY_TO_TRIGGER_MOVE) {
+				this.followPath(characterPath, 'left');
+		}
+
 		this.fadeToAction('idle');
 		// Update model animations
 		this.mixer.update(delta);
