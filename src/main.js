@@ -62,6 +62,14 @@ edgar.load('public/model/animated-character.json',
   }
 );
 
+// TEST cube to see where the origin is 
+var cube = new THREE.Mesh(new THREE.CubeGeometry(1, 1, 1), new THREE.MeshNormalMaterial());
+cube.position.z = -4;
+cube.position.x = 0;
+cube.position.y = scene1.controls.userHeight;
+scene1.scene.add(cube);
+
+
 // Request animation frame loop function
 function animate(timestamp) {
   var delta = Math.PI / 500;
@@ -92,7 +100,7 @@ function onMove(event) {
   var distance = - scene1.dolly.position.z / dir.z;
   var pos = scene1.camera.position.clone().add( dir.multiplyScalar( distance ) );
   // Update edgar nextPosition
-  edgar.nextPosition = pos.x;
+  edgar.nextPosition = pos;
 }
 
 function onResize(e) {

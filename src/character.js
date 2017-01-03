@@ -3,7 +3,7 @@
 var Model = require('./model.js');
 
 var Character = function() {
-	this.SPEED = 0.0005;
+	this.SPEED = 0.005;
 	this.SENSITIVITY_TO_TRIGGER_MOVE = 0.1;
 	this.nextPosition = null;
 	this.theta = 0.75; // No idea why but it's in front of camera
@@ -51,12 +51,52 @@ var Character = function() {
 		//console.debug('X', this.nextPosition.x - currentPosition.x)
 		//console.debug('Z', this.nextPosition.z - currentPosition.z)
 
-		if(this.nextPosition.x - currentPosition.x >= this.SENSITIVITY_TO_TRIGGER_MOVE || this.nextPosition.z - currentPosition.z >= this.SENSITIVITY_TO_TRIGGER_MOVE) {
+
+		// if (this.nextPosition.x - currentPosition.x >= this.SENSITIVITY_TO_TRIGGER_MOVE) {
+		// 	console.log('this.nextPosition.x - currentPosition.x >= this.SENSITIVITY_TO_TRIGGER_MOVE TRUE')
+		// }
+		// if (this.nextPosition.z - currentPosition.z >= this.SENSITIVITY_TO_TRIGGER_MOVE) {
+		// 	console.log('this.nextPosition.z - currentPosition.z >= this.SENSITIVITY_TO_TRIGGER_MOVE TRUE')
+		// }
+		// if (this.nextPosition.x - currentPosition.x <= -this.SENSITIVITY_TO_TRIGGER_MOVE) {
+		// 	console.log('this.nextPosition.x - currentPosition.x <= -this.SENSITIVITY_TO_TRIGGER_MOVE TRUE')
+		// }
+		// if (this.nextPosition.z - currentPosition.z <= -this.SENSITIVITY_TO_TRIGGER_MOVE) {
+		// 	console.log('this.nextPosition.x - currentPosition.x >= this.SENSITIVITY_TO_TRIGGER_MOVE TRUE')
+		// }
+
+
+		var test = new THREE.Vector3( this.nextPosition.x - currentPosition.x, 1, this.nextPosition.z - currentPosition.z ).normalize();
+		//console.log(test)
+		if (currentPosition.z <= 0) {
+			//console.log('1er')
+			if (this.nextPosition.x - currentPosition.x >= this.SENSITIVITY_TO_TRIGGER_MOVE || this.nextPosition.z - currentPosition.z >= this.SENSITIVITY_TO_TRIGGER_MOVE) {
 				this.followPath(characterPath, 'right');
+			}
+			// else if (this.nextPosition.x - currentPosition.x <= -this.SENSITIVITY_TO_TRIGGER_MOVE || this.nextPosition.z - currentPosition.z <= -this.SENSITIVITY_TO_TRIGGER_MOVE) {
+			// 	this.followPath(characterPath, 'left');
+			// }
+		} else {
+			//console.log('2eme')
+			// if (this.nextPosition.x - currentPosition.x >= this.SENSITIVITY_TO_TRIGGER_MOVE  || this.nextPosition.z - currentPosition.z >= this.SENSITIVITY_TO_TRIGGER_MOVE) {
+			// 	this.followPath(characterPath, 'left');
+			// }
+			if (this.nextPosition.x - currentPosition.x <= -this.SENSITIVITY_TO_TRIGGER_MOVE  || this.nextPosition.z - currentPosition.z <= -this.SENSITIVITY_TO_TRIGGER_MOVE) {
+				this.followPath(characterPath, 'right');
+			}
 		}
-		if (this.nextPosition.x - currentPosition.x <= -this.SENSITIVITY_TO_TRIGGER_MOVE || this.nextPosition.z - currentPosition.z <= -this.SENSITIVITY_TO_TRIGGER_MOVE) {
-				this.followPath(characterPath, 'left');
-		}
+		// FIXME Bug with Z : can't rely on Z axis to choose direction
+		// if(Math.abs(this.nextPosition.x - currentPosition.x) >= this.SENSITIVITY_TO_TRIGGER_MOVE || Math.abs(this.nextPosition.z - currentPosition.z) <= -this.SENSITIVITY_TO_TRIGGER_MOVE) {
+		// 		this.followPath(characterPath, 'right');
+		// 		console.debug('X', this.nextPosition.x - currentPosition.x)
+		// console.debug('Z', this.nextPosition.z - currentPosition.z)
+		// 		console.log('right')
+		// }
+		// // FIXME Something wrong with the condition : need to be inside 0.2 box to move 
+		// else if (Math.abs(currentPosition.x - this.nextPosition.x)  >= this.SENSITIVITY_TO_TRIGGER_MOVE || Math.abs(this.nextPosition.z - currentPosition.z) >= this.SENSITIVITY_TO_TRIGGER_MOVE) {
+		// 		this.followPath(characterPath, 'left');
+		// 		console.log('left')
+		// }
 
 		this.fadeToAction('idle');
 		// Update model animations
