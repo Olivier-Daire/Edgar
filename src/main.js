@@ -10,7 +10,16 @@ window.WebVRManager = WebVRManager;
 
 window.addEventListener('resize', onResize, true);
 window.addEventListener('vrdisplaypresentchange', onResize, true);
-//window.addEventListener('mousemove', onMove, true);
+
+// Capture pointer on click
+// TODO Move this elsewhere and check mobile compatibility
+var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
+if ( havePointerLock ) {
+  window.addEventListener('click', function() {
+    document.body.requestPointerLock =  document.body.requestPointerLock ||  document.body.mozRequestPointerLock ||  document.body.webkitRequestPointerLock;
+    document.body.requestPointerLock();
+  }, false)
+}
 
 var radius = 4;
 var scene1 = new Scene(radius);
@@ -88,19 +97,6 @@ function animate(timestamp) {
   manager.render(scene1.scene, scene1.camera, timestamp);
   scene1.effect.render(scene1.scene, scene1.camera);
   vrDisplay.requestAnimationFrame(animate);
-}
-
-function onMove(event) {
-  // Convert mouse coordinates to world coordinates
-  var mouse3D = new THREE.Vector3( (( event.clientX / window.innerWidth ) * 2 - 1) *radius,   //x
-                                  -(( event.clientY / window.innerHeight ) * 2 + 1) *radius,
-                                    0.5);
-  mouse3D.unproject(scene1.camera);
-  var dir = mouse3D.sub( scene1.dolly.position ).normalize();
-  var distance = - scene1.dolly.position.z / dir.z;
-  var pos = scene1.camera.position.clone().add( dir.multiplyScalar( distance ) );
-  // Update edgar nextPosition
-  edgar.nextPosition = pos;
 }
 
 function onResize(e) {
