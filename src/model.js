@@ -35,10 +35,12 @@ var Model = function(){
 		};
 
 		var error = function(e) {
-			console.error('Error loading model', e); // jshint ignore:line
+			console.error('Error loading model', e.target.status + " : " + e.target.statusText); // jshint ignore:line
 		};
 
-		loader.load(path , loaded, error);
+		var progress = undefined;
+
+		loader.load(path , loaded, progress, error);
 
 	};
 
