@@ -12,13 +12,14 @@ var Model = function(){
 		var loader = new THREE.JSONLoader();
 
 		var loaded = function(geometry, materials) {
-			materials.forEach(function(material) {
-				material.skinning = true;
-			});
 
 			_this.model = new THREE.SkinnedMesh(geometry, new THREE.MeshFaceMaterial( materials ));
 
 			if (typeof geometry.animations !== 'undefined' && geometry.animations.length > 0 ) {
+				materials.forEach(function(material) {
+					material.skinning = true;
+				});
+
 				_this.initAnimation(geometry);
 			}
 
