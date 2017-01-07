@@ -62,7 +62,7 @@ Scene.prototype.addCharacterPath = function() {
 		var angle = Math.PI/180 * i;
 		var x = (this.radius) * Math.cos(angle);
 		var y = this.controls.userHeight;
-		var z= (this.radius) * Math.sin(angle);
+		var z = (this.radius) * Math.sin(angle);
 
 		points.push(new THREE.Vector3(x, y, z));
 	}

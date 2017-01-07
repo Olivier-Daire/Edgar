@@ -10,7 +10,16 @@ window.WebVRManager = WebVRManager;
 
 window.addEventListener('resize', onResize, true);
 window.addEventListener('vrdisplaypresentchange', onResize, true);
-window.addEventListener('mousemove', onMove, true);
+
+// Capture pointer on click
+// TODO Move this elsewhere and check mobile compatibility
+var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
+if ( havePointerLock ) {
+  window.addEventListener('click', function() {
+    document.body.requestPointerLock =  document.body.requestPointerLock ||  document.body.mozRequestPointerLock ||  document.body.webkitRequestPointerLock;
+    document.body.requestPointerLock();
+  }, false);
+}
 
 var radius = 4;
 var scene1 = new Scene(radius);
@@ -58,9 +67,17 @@ edgar.load('public/model/animated-character.json',
 
     document.getElementById('loader').style.display = 'none';
     scene1.scene.add(edgar.model);
-    edgar.followPath(scene1.characterPath, 'right');
+    edgar.followPath(scene1.characterPath);
   }
 );
+
+// TEST cube to see where the origin is 
+var cube = new THREE.Mesh(new THREE.CubeGeometry(1, 1, 1), new THREE.MeshNormalMaterial());
+cube.position.z = -4;
+cube.position.x = 0;
+cube.position.y = scene1.controls.userHeight;
+scene1.scene.add(cube);
+
 
 // Request animation frame loop function
 function animate(timestamp) {
@@ -69,8 +86,10 @@ function animate(timestamp) {
   lastRender = timestamp;
 
   if (edgar.model !== null) {
+    // Update edgar nextPosition
+    edgar.nextPosition = scene1.camera.getWorldDirection().multiplyScalar(radius);
     // Update character position along path
-    edgar.updateCharacter(scene1.characterPath, delta);
+    edgar.updateCharacter(delta);
   }
 
   scene1.controls.update();
@@ -78,19 +97,6 @@ function animate(timestamp) {
   manager.render(scene1.scene, scene1.camera, timestamp);
   scene1.effect.render(scene1.scene, scene1.camera);
   vrDisplay.requestAnimationFrame(animate);
-}
-
-function onMove(event) {
-  // Convert mouse coordinates to world coordinates
-  var mouse3D = new THREE.Vector3( (( event.clientX / window.innerWidth ) * 2 - 1) *radius,   //x
-                                  -(( event.clientY / window.innerHeight ) * 2 + 1) *radius,  //y
-                                    0.5);
-  mouse3D.unproject(scene1.camera);
-  var dir = mouse3D.sub( scene1.dolly.position ).normalize();
-  var distance = - scene1.dolly.position.z / dir.z;
-  var pos = scene1.camera.position.clone().add( dir.multiplyScalar( distance ) );
-  // Update edgar nextPosition
-  edgar.nextPosition = pos.x;
 }
 
 function onResize(e) {

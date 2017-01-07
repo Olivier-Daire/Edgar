@@ -12,13 +12,14 @@ var Model = function(){
 		var loader = new THREE.JSONLoader();
 
 		var loaded = function(geometry, materials) {
-			materials.forEach(function(material) {
-				material.skinning = true;
-			});
 
 			_this.model = new THREE.SkinnedMesh(geometry, new THREE.MeshFaceMaterial( materials ));
 
 			if (typeof geometry.animations !== 'undefined' && geometry.animations.length > 0 ) {
+				materials.forEach(function(material) {
+					material.skinning = true;
+				});
+
 				_this.initAnimation(geometry);
 			}
 
@@ -33,11 +34,13 @@ var Model = function(){
 			onLoad();
 		};
 
-		var error = function() {
-			console.log('Error loading model'); // jshint ignore:line
+		var error = function(e) {
+			console.error('Error loading model', e.target.status + " : " + e.target.statusText); // jshint ignore:line
 		};
 
-		loader.load(path , loaded, error);
+		var progress = undefined; // jshint ignore:line
+
+		loader.load(path , loaded, progress, error);
 
 	};
 
