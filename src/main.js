@@ -7,6 +7,7 @@ var Character = require('./character.js');
 // TODO Load JSON ???
 window.WebVRConfig = window.WebVRConfig || {};
 window.WebVRManager = WebVRManager;
+window.DEBUG = true;
 
 window.addEventListener('resize', onResize, true);
 window.addEventListener('vrdisplaypresentchange', onResize, true);
@@ -71,13 +72,13 @@ edgar.load('public/model/animated-character.json',
   }
 );
 
-// TEST cube to see where the origin is 
-var cube = new THREE.Mesh(new THREE.CubeGeometry(1, 1, 1), new THREE.MeshNormalMaterial());
-cube.position.z = -4;
-cube.position.x = 0;
-cube.position.y = scene1.controls.userHeight;
-scene1.scene.add(cube);
-
+if (window.DEBUG) {
+  // Cube at origin
+  var cube = new THREE.Mesh(new THREE.CubeGeometry(1, 1, 1), new THREE.MeshNormalMaterial());
+  cube.position.z = -radius;  cube.position.x = 0;  cube.position.y = scene1.controls.userHeight;
+  cube.scale.x = cube.scale.y = cube.scale.z = 0.2;
+  scene1.scene.add(cube);
+}
 
 // Request animation frame loop function
 function animate(timestamp) {

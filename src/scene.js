@@ -1,6 +1,6 @@
 "use strict";
 
-function Scene(radius, debug) {
+function Scene(radius) {
 	this.renderer = null;
 	this.scene = null;
 	this.dolly = null;
@@ -9,8 +9,6 @@ function Scene(radius, debug) {
 	this.effect = null;
 	this.characterPath = null;
 	this.radius = radius;
-
-	this.debug = typeof debug !== 'undefined' ? debug : false;
 
 	this.setup();
 
@@ -70,7 +68,7 @@ Scene.prototype.addCharacterPath = function() {
 	// Create curve using theses points
 	this.characterPath = new THREE.SplineCurve3(points );
 
-	if (this.debug) {
+	if (window.DEBUG) {
 		var geometry = new THREE.Geometry();
 		var splinePoints = this.characterPath.getPoints(50); // nbr of point to smoothen curve
 
