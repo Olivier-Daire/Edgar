@@ -38,7 +38,7 @@ var Model = function(){
 			console.error('Error loading model', e.target.status + " : " + e.target.statusText); // jshint ignore:line
 		};
 
-		var progress = undefined;
+		var progress = undefined; // jshint ignore:line
 
 		loader.load(path , loaded, progress, error);
 

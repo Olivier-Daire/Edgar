@@ -18,7 +18,7 @@ if ( havePointerLock ) {
   window.addEventListener('click', function() {
     document.body.requestPointerLock =  document.body.requestPointerLock ||  document.body.mozRequestPointerLock ||  document.body.webkitRequestPointerLock;
     document.body.requestPointerLock();
-  }, false)
+  }, false);
 }
 
 var radius = 4;
@@ -67,7 +67,7 @@ edgar.load('public/model/animated-character.json',
 
     document.getElementById('loader').style.display = 'none';
     scene1.scene.add(edgar.model);
-    edgar.followPath(scene1.characterPath, 'right');
+    edgar.followPath(scene1.characterPath);
   }
 );
 
@@ -89,7 +89,7 @@ function animate(timestamp) {
     // Update edgar nextPosition
     edgar.nextPosition = scene1.camera.getWorldDirection().multiplyScalar(radius);
     // Update character position along path
-    edgar.updateCharacter(scene1.characterPath, delta);
+    edgar.updateCharacter(delta);
   }
 
   scene1.controls.update();
