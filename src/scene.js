@@ -1,6 +1,8 @@
 "use strict";
+var SCENES = require('./scenes.json');
+var Model = require('./model.js');
 
-function Scene(radius) {
+function Scene(number) {
 	this.renderer = null;
 	this.scene = null;
 	this.dolly = null;
@@ -8,15 +10,15 @@ function Scene(radius) {
 	this.controls = null;
 	this.effect = null;
 	this.characterPath = null;
-	this.radius = radius;
+	this.radius = null;
 
-	this.setup();
+	this.setup(number);
 
 	return this;
 }
 
 
-Scene.prototype.setup = function() {
+Scene.prototype.setup = function(number) {
 	// Setup three.js WebGL renderer. Note: Antialiasing is a big performance hit.
 	// Only enable it if you actually need to.
 	this.renderer = new THREE.WebGLRenderer({antialias: true});
@@ -50,10 +52,15 @@ Scene.prototype.setup = function() {
 	this.effect = new THREE.VREffect(this.renderer);
 	this.effect.setSize(window.innerWidth, window.innerHeight);
 
+	this.loadJSON(number);
 	this.addGround();
 	this.addCharacterPath();
 	this.addLights();
 	this.addTorchLight();
+
+	if (window.DEBUG) {
+		this.addOriginCube();
+	}
 };
 
 Scene.prototype.addCharacterPath = function() {
@@ -121,5 +128,60 @@ Scene.prototype.addTorchLight = function() {
 	this.camera.add(lightEmitter);
 	lightEmitter.target = this.camera;
 };
+
+Scene.prototype.loadJSON = function(number) {
+	var sceneData = SCENES[number-1];
+
+	this.radius = sceneData.radius;
+	var _this = this;
+
+	sceneData.models.forEach(function(modelData) {
+		var model = new Model();
+		model.load(modelData.path, function() {
+
+			// Position
+			if (modelData.position) {
+				if (modelData.position.x) {
+					model.mesh.position.x =  modelData.position.x;
+				}
+				if (modelData.position.y) {
+					model.mesh.position.y = modelData.position.x;
+				}  else {
+					// By default set to user height
+					model.mesh.position.y = _this.controls.userHeight;
+				}
+				if (modelData.position.z) {
+					model.mesh.position.z =  modelData.position.z;
+				}
+			}
+
+			// Scale
+			if(modelData.scale) {
+				if(modelData.scale.x) {
+					model.mesh.scale.x = modelData.scale.x;
+				}
+				if(modelData.scale.y) {
+					model.mesh.scale.y = modelData.scale.y;
+				}
+				if(modelData.scale.z) {
+					model.mesh.scale.z = modelData.scale.z;
+				}
+			}
+
+			_this.scene.add(model.mesh);
+		});
+
+	});
+};
+
+Scene.prototype.addOriginCube = function() {
+	var cube = new THREE.Mesh(new THREE.CubeGeometry(1, 1, 1), new THREE.MeshNormalMaterial());
+	cube.position.z = -this.radius;
+	cube.position.x = 0;
+	cube.position.y = this.controls.userHeight;
+	cube.scale.x = cube.scale.y = cube.scale.z = 0.2;
+	this.scene.add(cube);
+};
+
 
 module.exports = Scene;

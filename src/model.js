@@ -1,7 +1,7 @@
 "use strict";
 
 var Model = function(){
-	this.model = null;
+	this.mesh = null;
 
 	this.mixer = null;
 	this.actions = {};
@@ -13,7 +13,7 @@ var Model = function(){
 
 		var loaded = function(geometry, materials) {
 
-			_this.model = new THREE.SkinnedMesh(geometry, new THREE.MeshFaceMaterial( materials ));
+			_this.mesh = new THREE.SkinnedMesh(geometry, new THREE.MeshFaceMaterial( materials ));
 
 			if (typeof geometry.animations !== 'undefined' && geometry.animations.length > 0 ) {
 				materials.forEach(function(material) {
@@ -23,19 +23,19 @@ var Model = function(){
 				_this.initAnimation(geometry);
 			}
 
-			_this.model.traverse(function(child) {
+			_this.mesh.traverse(function(child) {
 				 if (child instanceof THREE.Mesh) {
 					child.castShadow = true;
 					child.receiveShadow = true;
 				}
 			});
-			_this.model.castShadow = true;
+			_this.mesh.castShadow = true;
 
 			onLoad();
 		};
 
 		var error = function(e) {
-			console.error('Error loading model', e.target.status + " : " + e.target.statusText); // jshint ignore:line
+			console.error('Error loading mesh', e.target.status + " : " + e.target.statusText); // jshint ignore:line
 		};
 
 		var progress = undefined; // jshint ignore:line
@@ -46,7 +46,7 @@ var Model = function(){
 
 	this.initAnimation = function(geometry) {
 		var _this = this;
-		this.mixer = new THREE.AnimationMixer(this.model);
+		this.mixer = new THREE.AnimationMixer(this.mesh);
 
 		geometry.animations.forEach(function(animation, index) {
 			// Set first action as default

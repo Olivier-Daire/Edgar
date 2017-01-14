@@ -3,7 +3,6 @@
 var WebVRManager = require('./webvr-manager.js');
 var Scene = require('./scene.js');
 var Character = require('./character.js');
-var Model = require('./model.js');
 
 // TODO Load JSON ???
 window.WebVRConfig = window.WebVRConfig || {};
@@ -23,8 +22,7 @@ if ( havePointerLock ) {
   }, false);
 }
 
-var radius = 4;
-var scene1 = new Scene(radius);
+var scene1 = new Scene(1);
 var lastRender = 0;
 var vrDisplay;
 
@@ -63,40 +61,14 @@ var manager = new WebVRManager(scene1.renderer, scene1.effect, params);
 
 // Load 3D model
 var edgar = new Character();
-var bbox;
 edgar.load('public/model/animated-character.json',
   function() {
-    edgar.model.scale.x = edgar.model.scale.y = edgar.model.scale.z = 0.5;
+    edgar.mesh.scale.x = edgar.mesh.scale.y = edgar.mesh.scale.z = 0.5;
     document.getElementById('loader').style.display = 'none';
-    scene1.scene.add(edgar.model);
-     bbox = new THREE.BoundingBoxHelper( edgar.model );
-     scene1.scene.add(bbox)
+    scene1.scene.add(edgar.mesh);
     edgar.followPath(scene1.characterPath);
   }
 );
-
-// TODO Where should we add the background which is different in each level ? Config file per level ? 
-var mountains = new Model();
-mountains.load('public/model/mountain.json', function() {
-  mountains.model.position.y = scene1.controls.userHeight;
-  scene1.scene.add(mountains.model);
-});
-
-// var chest = new Model();
-// chest.load('public/model/WoodenBox02.json', function() {
-//   //chest.model.position.y = scene1.controls.userHeight;
-//   //chest.model.scale.x = chest.model.y = chest.model.z = 0.05;
-//   chest.position.x = -1;
-//   scene1.scene.add(chest.model);
-// });
-
-if (window.DEBUG) {
-  // Cube at origin
-  var cube = new THREE.Mesh(new THREE.CubeGeometry(1, 1, 1), new THREE.MeshNormalMaterial());
-  cube.position.z = -radius;  cube.position.x = 0;  cube.position.y = scene1.controls.userHeight;
-  cube.scale.x = cube.scale.y = cube.scale.z = 0.2;
-  scene1.scene.add(cube);
-}
 
 // Request animation frame loop function
 function animate(timestamp) {
@@ -104,12 +76,11 @@ function animate(timestamp) {
 
   lastRender = timestamp;
 
-  if (edgar.model !== null) {
+  if (edgar.mesh !== null) {
     // Update edgar nextPosition
-    edgar.nextPosition = scene1.camera.getWorldDirection().multiplyScalar(radius);
+    edgar.nextPosition = scene1.camera.getWorldDirection().multiplyScalar(scene1.radius);
     // Update character position along path
     edgar.updateCharacter(delta);
-    bbox.update()
   }
 
   scene1.controls.update();
@@ -154,5 +125,5 @@ function setStageDimensions(stage) {
   scene1.scene.add(skybox);
 
   // Place edgar in the middle of the scene, at user height.
-  edgar.model.position.set(0, scene1.controls.userHeight, 0);
+  edgar.mesh.position.set(0, scene1.controls.userHeight, 0);
 }
