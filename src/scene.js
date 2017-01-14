@@ -11,6 +11,11 @@ function Scene(number) {
 	this.effect = null;
 	this.characterPath = null;
 	this.radius = null;
+	// FIXME only useful for setupStage in main.js
+	// setupStage should be in this file
+	this.skybox = null;
+	this.skyboxSize = null;
+
 
 	this.setup(number);
 
@@ -129,6 +134,34 @@ Scene.prototype.addTorchLight = function() {
 	lightEmitter.target = this.camera;
 };
 
+
+Scene.prototype.addSkybox= function(path, size) {
+	var loader = new THREE.TextureLoader();
+	loader.load('public/img/box.png', onTextureLoaded);
+
+	var _this = this;
+
+	function onTextureLoaded(texture) {
+		texture.wrapS = THREE.RepeatWrapping;
+		texture.wrapT = THREE.RepeatWrapping;
+		texture.repeat.set(size, size);
+
+		var geometry = new THREE.BoxGeometry(size, size, size);
+		var material = new THREE.MeshBasicMaterial({
+			map: texture,
+			color: 0x01BE00,
+			side: THREE.BackSide
+		});
+
+		// Align the skybox to the floor (which is at y=0).
+		_this.skybox = new THREE.Mesh(geometry, material);
+		_this.skybox.position.y = size/2;
+		_this.scene.add(_this.skybox);
+	}
+
+};
+
+
 Scene.prototype.loadJSON = function(number) {
 	var sceneData = SCENES[number-1];
 
@@ -172,6 +205,10 @@ Scene.prototype.loadJSON = function(number) {
 		});
 
 	});
+
+	if (sceneData.skybox) {
+		this.addSkybox(sceneData.skybox.path, sceneData.skybox.size);
+	}
 };
 
 Scene.prototype.addOriginCube = function() {

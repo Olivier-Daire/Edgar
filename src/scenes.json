@@ -20,6 +20,9 @@
         }
       }
     ],
-    "skybox": ""
+    "skybox": {
+      "path" : "public/img/box.png",
+      "size" : "50"
+    }
   }
 ]

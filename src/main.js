@@ -23,34 +23,9 @@ if ( havePointerLock ) {
 }
 
 var scene1 = new Scene(1);
+setupStage();
 var lastRender = 0;
 var vrDisplay;
-
-// Add a repeating grid as a skybox.
-var boxSize = 15;
-var loader = new THREE.TextureLoader();
-loader.load('public/img/box.png', onTextureLoaded);
-
-function onTextureLoaded(texture) {
-  texture.wrapS = THREE.RepeatWrapping;
-  texture.wrapT = THREE.RepeatWrapping;
-  texture.repeat.set(boxSize, boxSize);
-
-  var geometry = new THREE.BoxGeometry(boxSize, boxSize, boxSize);
-  var material = new THREE.MeshBasicMaterial({
-    map: texture,
-    color: 0x01BE00,
-    side: THREE.BackSide
-  });
-
-  // Align the skybox to the floor (which is at y=0).
-  var skybox = new THREE.Mesh(geometry, material);
-  skybox.position.y = boxSize/2;
-  //scene1.scene.add(skybox);
-  // For high end VR devices like Vive and Oculus, take into account the stage
-  // parameters provided.
-  setupStage();
-}
 
 // Create a VR manager helper to enter and exit VR mode.
 var params = {
@@ -96,7 +71,8 @@ function onResize(e) {
   scene1.camera.updateProjectionMatrix();
 }
 
-// TODO Move all the functions below in scene.js ?
+// FIXME Functions below should be in scene.js
+// but depend on animate function
 // Get the HMD, and if we're dealing with something that specifies
 // stageParameters, rearrange the scene.
 function setupStage() {
@@ -114,14 +90,14 @@ function setupStage() {
 function setStageDimensions(stage) {
   // Make the skybox fit the stage.
   var material = skybox.material;
-  scene1.scene.remove(skybox);
+  scene1.scene.remove(scene1.skybox);
 
   // Size the skybox according to the size of the actual stage.
-  var geometry = new THREE.BoxGeometry(stage.sizeX, boxSize, stage.sizeZ);
+  var geometry = new THREE.BoxGeometry(stage.sizeX, scene1.skyboxSize, stage.sizeZ);
   var skybox = new THREE.Mesh(geometry, material);
 
   // Place it on the floor.
-  skybox.position.y = boxSize/2;
+  skybox.position.y = scene1.skyboxSize/2;
   scene1.scene.add(skybox);
 
   // Place edgar in the middle of the scene, at user height.
