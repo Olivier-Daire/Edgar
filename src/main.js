@@ -3,6 +3,7 @@
 var WebVRManager = require('./webvr-manager.js');
 var Scene = require('./scene.js');
 var Character = require('./character.js');
+var Model = require('./model.js');
 
 // TODO Load JSON ???
 window.WebVRConfig = window.WebVRConfig || {};
@@ -47,7 +48,7 @@ function onTextureLoaded(texture) {
   // Align the skybox to the floor (which is at y=0).
   var skybox = new THREE.Mesh(geometry, material);
   skybox.position.y = boxSize/2;
-  scene1.scene.add(skybox);
+  //scene1.scene.add(skybox);
   // For high end VR devices like Vive and Oculus, take into account the stage
   // parameters provided.
   setupStage();
@@ -62,15 +63,32 @@ var manager = new WebVRManager(scene1.renderer, scene1.effect, params);
 
 // Load 3D model
 var edgar = new Character();
+var bbox;
 edgar.load('public/model/animated-character.json',
   function() {
     edgar.model.scale.x = edgar.model.scale.y = edgar.model.scale.z = 0.5;
-
     document.getElementById('loader').style.display = 'none';
     scene1.scene.add(edgar.model);
+     bbox = new THREE.BoundingBoxHelper( edgar.model );
+     scene1.scene.add(bbox)
     edgar.followPath(scene1.characterPath);
   }
 );
+
+// TODO Where should we add the background which is different in each level ? Config file per level ? 
+var mountains = new Model();
+mountains.load('public/model/mountain.json', function() {
+  mountains.model.position.y = scene1.controls.userHeight;
+  scene1.scene.add(mountains.model);
+});
+
+// var chest = new Model();
+// chest.load('public/model/WoodenBox02.json', function() {
+//   //chest.model.position.y = scene1.controls.userHeight;
+//   //chest.model.scale.x = chest.model.y = chest.model.z = 0.05;
+//   chest.position.x = -1;
+//   scene1.scene.add(chest.model);
+// });
 
 if (window.DEBUG) {
   // Cube at origin
@@ -91,6 +109,7 @@ function animate(timestamp) {
     edgar.nextPosition = scene1.camera.getWorldDirection().multiplyScalar(radius);
     // Update character position along path
     edgar.updateCharacter(delta);
+    bbox.update()
   }
 
   scene1.controls.update();

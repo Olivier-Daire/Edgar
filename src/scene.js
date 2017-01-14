@@ -22,6 +22,10 @@ Scene.prototype.setup = function() {
 	this.renderer = new THREE.WebGLRenderer({antialias: true});
 	this.renderer.shadowMap.enabled = true;
 	this.renderer.setPixelRatio(window.devicePixelRatio);
+	if (window.DEBUG) {
+		// Set clear color to white to see better
+		this.renderer.setClearColor( 0xffffff, 1 );
+	}
 
 	// Append the canvas element created by the renderer to document body element.
 	document.body.appendChild(this.renderer.domElement);
