@@ -29,7 +29,7 @@ var vrDisplay;
 var boxSize = 15;
 
 var loader = new THREE.TextureLoader();
-loader.load('public/img/testSky.jpg', onTextureLoaded);
+loader.load('public/img/nightSky.jpg', onTextureLoaded);
 
 function onTextureLoaded(texture) {
 var geometry = new THREE.SphereGeometry(boxSize, 60, 40);
