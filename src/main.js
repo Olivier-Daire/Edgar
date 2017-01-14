@@ -26,32 +26,30 @@ var radius = 4;
 var scene1 = new Scene(radius);
 var lastRender = 0;
 var vrDisplay;
-
-// Add a repeating grid as a skybox.
 var boxSize = 15;
+
 var loader = new THREE.TextureLoader();
-loader.load('public/img/box.png', onTextureLoaded);
+loader.load('public/img/testSky.jpg', onTextureLoaded);
 
 function onTextureLoaded(texture) {
-  texture.wrapS = THREE.RepeatWrapping;
-  texture.wrapT = THREE.RepeatWrapping;
-  texture.repeat.set(boxSize, boxSize);
+var geometry = new THREE.SphereGeometry(boxSize, 60, 40);
+var uniforms = {
+  texture: { type: 't', value: texture }
+};
 
-  var geometry = new THREE.BoxGeometry(boxSize, boxSize, boxSize);
-  var material = new THREE.MeshBasicMaterial({
-    map: texture,
-    color: 0x01BE00,
-    side: THREE.BackSide
-  });
+var material = new THREE.ShaderMaterial( {
+  uniforms:       uniforms,
+  vertexShader:   document.getElementById('skyVertexShader').textContent,
+  fragmentShader: document.getElementById('skyFragmentShader').textContent
+});
 
-  // Align the skybox to the floor (which is at y=0).
-  var skybox = new THREE.Mesh(geometry, material);
-  skybox.position.y = boxSize/2;
-  scene1.scene.add(skybox);
-  // For high end VR devices like Vive and Oculus, take into account the stage
-  // parameters provided.
-  setupStage();
+var skybox = new THREE.Mesh(geometry, material);
+
+skybox.scale.set(-1, 1, 1);
+scene1.scene.add(skybox);
+setupStage();
 }
+
 
 // Create a VR manager helper to enter and exit VR mode.
 var params = {
