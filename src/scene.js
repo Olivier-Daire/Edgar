@@ -25,7 +25,7 @@ function Scene(number, animate) {
 
 Scene.prototype.setup = function(number) {
 	// Setup three.js WebGL renderer. Note: Antialiasing is a big performance hit.
-	// Only enable it if you actually need to.
+	// Only enable it if you actually need to. --> disable on mobile
 	this.renderer = new THREE.WebGLRenderer({antialias: true});
 	this.renderer.shadowMap.enabled = true;
 	this.renderer.setPixelRatio(window.devicePixelRatio);

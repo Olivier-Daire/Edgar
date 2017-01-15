@@ -3,7 +3,6 @@
 var WebVRManager = require('./webvr-manager.js');
 var Scene = require('./scene.js');
 
-
 // TODO Load JSON ???
 window.WebVRConfig = window.WebVRConfig || {};
 window.WebVRManager = WebVRManager;
@@ -23,6 +22,12 @@ if ( havePointerLock ) {
   }, false);
 }
 
+if (window.DEBUG) {
+  var stats = new Stats();
+  stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+  document.body.appendChild( stats.dom );
+}
+
 var scene1 = new Scene(1, animate);
 var lastRender = 0;
 
@@ -35,6 +40,10 @@ var manager = new WebVRManager(scene1.renderer, scene1.effect, params);
 
 // Request animation frame loop function
 function animate(timestamp) {
+  if(window.DEBUG) {
+    stats.begin();
+  }
+
   var delta = Math.PI / 500;
 
   lastRender = timestamp;
@@ -51,6 +60,10 @@ function animate(timestamp) {
   manager.render(scene1.scene, scene1.camera, timestamp);
   scene1.effect.render(scene1.scene, scene1.camera);
   window.vrDisplay.requestAnimationFrame(animate);
+
+  if(window.DEBUG) {
+    stats.end();
+  }
 }
 
 function onResize(e) {
