@@ -15,6 +15,14 @@ var Model = function(){
 
 			_this.mesh = new THREE.SkinnedMesh(geometry, new THREE.MeshFaceMaterial( materials ));
 
+			// fix transpancy model bug
+		    for( var i = 0; i < materials.length; i ++ ) {
+		        var material = materials[ i ];
+		        material.alphaTest = 0.5;
+		        material.side = THREE.DoubleSide;
+		        material.transparent = false;
+		    }
+
 			if (typeof geometry.animations !== 'undefined' && geometry.animations.length > 0 ) {
 				materials.forEach(function(material) {
 					material.skinning = true;
