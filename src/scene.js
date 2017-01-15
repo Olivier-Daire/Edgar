@@ -2,7 +2,7 @@
 var SCENES = require('./scenes.json');
 var Model = require('./model.js');
 
-function Scene(number) {
+function Scene(number, animate) {
 	this.renderer = null;
 	this.scene = null;
 	this.dolly = null;
@@ -11,11 +11,9 @@ function Scene(number) {
 	this.effect = null;
 	this.characterPath = null;
 	this.radius = null;
-	// FIXME only useful for setupStage in main.js
-	// setupStage should be in this file
 	this.skybox = null;
 	this.skyboxSize = null;
-
+	this.animateFunction = animate;
 
 	this.setup(number);
 
@@ -111,6 +109,15 @@ Scene.prototype.addGround = function() {
 	this.scene.add( ground );
 };
 
+Scene.prototype.addOriginCube = function() {
+	var cube = new THREE.Mesh(new THREE.CubeGeometry(1, 1, 1), new THREE.MeshNormalMaterial());
+	cube.position.z = -this.radius;
+	cube.position.x = 0;
+	cube.position.y = this.controls.userHeight;
+	cube.scale.x = cube.scale.y = cube.scale.z = 0.2;
+	this.scene.add(cube);
+};
+
 Scene.prototype.addLights = function() {
 	var spotLight = new THREE.PointLight( 0xffffff, 0.2, 0 );
 	spotLight.position.set( 0, this.controls.userHeight+8, 0 );
@@ -137,7 +144,7 @@ Scene.prototype.addTorchLight = function() {
 
 Scene.prototype.addSkybox= function(path, size) {
 	var loader = new THREE.TextureLoader();
-	loader.load('public/img/box.png', onTextureLoaded);
+	loader.load(path, onTextureLoaded);
 
 	var _this = this;
 
@@ -157,10 +164,10 @@ Scene.prototype.addSkybox= function(path, size) {
 		_this.skybox = new THREE.Mesh(geometry, material);
 		_this.skybox.position.y = size/2;
 		_this.scene.add(_this.skybox);
+		_this.setupStage();
 	}
 
 };
-
 
 Scene.prototype.loadJSON = function(number) {
 	var sceneData = SCENES[number-1];
@@ -211,14 +218,34 @@ Scene.prototype.loadJSON = function(number) {
 	}
 };
 
-Scene.prototype.addOriginCube = function() {
-	var cube = new THREE.Mesh(new THREE.CubeGeometry(1, 1, 1), new THREE.MeshNormalMaterial());
-	cube.position.z = -this.radius;
-	cube.position.x = 0;
-	cube.position.y = this.controls.userHeight;
-	cube.scale.x = cube.scale.y = cube.scale.z = 0.2;
-	this.scene.add(cube);
+// Get the HMD, and if we're dealing with something that specifies
+// stageParameters, rearrange the scene.
+Scene.prototype.setupStage = function() {
+	var _this = this;
+	navigator.getVRDisplays().then(function(displays) {
+		if (displays.length > 0) {
+			window.vrDisplay = displays[0];
+			if (window.vrDisplay.stageParameters) {
+				_this.setStageDimensions(window.vrDisplay.stageParameters);
+			}
+			window.vrDisplay.requestAnimationFrame(_this.animateFunction);
+		}
+	});
 };
 
+Scene.prototype.setStageDimensions = function(stage) {
+  // Make the skybox fit the stage.
+  var material = this.skybox.material;
+  this.scene.remove(this.scene.skybox);
+
+  // Size the skybox according to the size of the actual stage.
+  var geometry = new THREE.BoxGeometry(stage.sizeX, this.skyboxSize, stage.sizeZ);
+  this.skybox = new THREE.Mesh(geometry, material);
+
+  // Place it on the floor.
+  this.skybox.position.y = this.skyboxSize/2;
+  this.scene.add(this.skybox);
+
+};
 
 module.exports = Scene;

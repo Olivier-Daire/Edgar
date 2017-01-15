@@ -7,6 +7,7 @@ var Character = require('./character.js');
 // TODO Load JSON ???
 window.WebVRConfig = window.WebVRConfig || {};
 window.WebVRManager = WebVRManager;
+window.vrDisplay = null;
 window.DEBUG = true;
 
 window.addEventListener('resize', onResize, true);
@@ -22,10 +23,8 @@ if ( havePointerLock ) {
   }, false);
 }
 
-var scene1 = new Scene(1);
-setupStage();
+var scene1 = new Scene(1, animate);
 var lastRender = 0;
-var vrDisplay;
 
 // Create a VR manager helper to enter and exit VR mode.
 var params = {
@@ -62,7 +61,7 @@ function animate(timestamp) {
   // Render the scene through the manager.
   manager.render(scene1.scene, scene1.camera, timestamp);
   scene1.effect.render(scene1.scene, scene1.camera);
-  vrDisplay.requestAnimationFrame(animate);
+  window.vrDisplay.requestAnimationFrame(animate);
 }
 
 function onResize(e) {
@@ -71,35 +70,3 @@ function onResize(e) {
   scene1.camera.updateProjectionMatrix();
 }
 
-// FIXME Functions below should be in scene.js
-// but depend on animate function
-// Get the HMD, and if we're dealing with something that specifies
-// stageParameters, rearrange the scene.
-function setupStage() {
-  navigator.getVRDisplays().then(function(displays) {
-    if (displays.length > 0) {
-      vrDisplay = displays[0];
-      if (vrDisplay.stageParameters) {
-        setStageDimensions(vrDisplay.stageParameters);
-      }
-      vrDisplay.requestAnimationFrame(animate);
-    }
-  });
-}
-
-function setStageDimensions(stage) {
-  // Make the skybox fit the stage.
-  var material = skybox.material;
-  scene1.scene.remove(scene1.skybox);
-
-  // Size the skybox according to the size of the actual stage.
-  var geometry = new THREE.BoxGeometry(stage.sizeX, scene1.skyboxSize, stage.sizeZ);
-  var skybox = new THREE.Mesh(geometry, material);
-
-  // Place it on the floor.
-  skybox.position.y = scene1.skyboxSize/2;
-  scene1.scene.add(skybox);
-
-  // Place edgar in the middle of the scene, at user height.
-  edgar.mesh.position.set(0, scene1.controls.userHeight, 0);
-}
