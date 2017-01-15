@@ -2,6 +2,7 @@
 var SCENES = require('./scenes.json');
 var Model = require('./model.js');
 var Character = require('./character.js');
+var Util = require('./util.js');
 
 function Scene(number, animate) {
 	this.renderer = null;
@@ -26,7 +27,7 @@ function Scene(number, animate) {
 Scene.prototype.setup = function(number) {
 	// Setup three.js WebGL renderer. Note: Antialiasing is a big performance hit.
 	// Only enable it if you actually need to. --> disable on mobile
-	this.renderer = new THREE.WebGLRenderer({antialias: true});
+	this.renderer = new THREE.WebGLRenderer();
 	this.renderer.shadowMap.enabled = true;
 	this.renderer.setPixelRatio(window.devicePixelRatio);
 	if (window.DEBUG) {
@@ -153,8 +154,10 @@ Scene.prototype.addTorchLight = function() {
 		});
 	lightEmitter.add( new THREE.Mesh( lightSphere, matSphere ) );
 	lightEmitter.position.set( 0, this.controls.userHeight-1, -this.radius-1 );
-	lightEmitter.castShadow = true;
-	//this.scene.add( lightEmitter );
+	// FIXME gigantic performance hit on mobile
+	if(!Util.isMobile()) {
+		lightEmitter.castShadow = true;
+	}
 	this.camera.add(lightEmitter);
 	lightEmitter.target = this.camera;
 };
