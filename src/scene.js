@@ -62,10 +62,11 @@ Scene.prototype.setup = function(number) {
 	this.addGround();
 	this.addCharacterPath();
 	this.addCharacter();
-	this.addLights();
-	this.addTorchLight();
+	//this.addLights();
+	//this.addTorchLight();
 
 	if (window.DEBUG) {
+		this.addLightsHemisphere();
 		this.addOriginCube();
 	}
 };
@@ -107,7 +108,7 @@ Scene.prototype.addCharacter = function() {
 	this.character = new Character();
 	this.character.load('public/model/edgar_anim.json',
 		function() {
-			_this.character.mesh.scale.x = _this.character.mesh.scale.y = _this.character.mesh.scale.z = 0.1;
+			_this.character.mesh.scale.x = _this.character.mesh.scale.y = _this.character.mesh.scale.z = 0.2;
 			// FIXME Dirty
 			document.getElementById('loader').style.display = 'none';
 			_this.scene.add(_this.character.mesh);
@@ -135,6 +136,29 @@ Scene.prototype.addOriginCube = function() {
 	cube.position.y = this.controls.userHeight;
 	cube.scale.x = cube.scale.y = cube.scale.z = 0.2;
 	this.scene.add(cube);
+};
+
+Scene.prototype.addLightsHemisphere = function() {
+	var hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.6 );
+	hemiLight.color.setHSL( 0.6, 1, 0.6 );
+	hemiLight.groundColor.setHSL( 0.095, 1, 0.75 );
+	hemiLight.position.set( 0, 500, 0 );
+	this.scene.add( hemiLight );
+	var dirLight = new THREE.DirectionalLight( 0xffffff, 1 );
+	dirLight.color.setHSL( 0.1, 1, 0.95 );
+	dirLight.position.set( -1, 1.75, 1 );
+	dirLight.position.multiplyScalar( 50 );
+	this.scene.add( dirLight );
+	dirLight.castShadow = true;
+	dirLight.shadow.mapSize.width = 2048;
+	dirLight.shadow.mapSize.height = 2048;
+	var d = 50;
+	dirLight.shadow.camera.left = -d;
+	dirLight.shadow.camera.right = d;
+	dirLight.shadow.camera.top = d;
+	dirLight.shadow.camera.bottom = -d;
+	dirLight.shadow.camera.far = 3500;
+	dirLight.shadow.bias = -0.0001;
 };
 
 Scene.prototype.addLights = function() {
