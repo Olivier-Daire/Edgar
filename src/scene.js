@@ -62,11 +62,10 @@ Scene.prototype.setup = function(number) {
 	this.addGround();
 	this.addCharacterPath();
 	this.addCharacter();
-	//this.addLights();
-	//this.addTorchLight();
+	this.addLights();
+	this.addTorchLight();
 
 	if (window.DEBUG) {
-		this.addLightsHemisphere();
 		this.addOriginCube();
 	}
 };
@@ -106,9 +105,9 @@ Scene.prototype.addCharacterPath = function() {
 Scene.prototype.addCharacter = function() {
 	var _this = this;
 	this.character = new Character();
-	this.character.load('public/model/edgar_anim.json',
+	this.character.load('public/model/animated-character.json',
 		function() {
-			_this.character.mesh.scale.x = _this.character.mesh.scale.y = _this.character.mesh.scale.z = 0.2;
+			_this.character.mesh.scale.x = _this.character.mesh.scale.y = _this.character.mesh.scale.z = 0.5;
 			// FIXME Dirty
 			document.getElementById('loader').style.display = 'none';
 			_this.scene.add(_this.character.mesh);
