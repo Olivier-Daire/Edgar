@@ -170,20 +170,20 @@ Scene.prototype.addSkybox= function(path, size) {
 	var _this = this;
 
 	function onTextureLoaded(texture) {
-		texture.wrapS = THREE.RepeatWrapping;
-		texture.wrapT = THREE.RepeatWrapping;
-		texture.repeat.set(size, size);
+		var geometry = new THREE.SphereGeometry(size, 60, 40);
+		var uniforms = {
+			texture: { type: 't', value: texture }
+		};
 
-		var geometry = new THREE.BoxGeometry(size, size, size);
-		var material = new THREE.MeshBasicMaterial({
-			map: texture,
-			color: 0x01BE00,
-			side: THREE.BackSide
+		var material = new THREE.ShaderMaterial( {
+			uniforms       : uniforms,
+			vertexShader   : document.getElementById('skyVertexShader').textContent,
+			fragmentShader : document.getElementById('skyFragmentShader').textContent
 		});
 
-		// Align the skybox to the floor (which is at y=0).
 		_this.skybox = new THREE.Mesh(geometry, material);
-		_this.skybox.position.y = size/2;
+
+		_this.skybox.scale.set(-1, 1, 1);
 		_this.scene.add(_this.skybox);
 		_this.setupStage();
 	}

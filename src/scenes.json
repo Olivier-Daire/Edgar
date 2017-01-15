@@ -21,7 +21,7 @@
       }
     ],
     "skybox": {
-      "path" : "public/img/box.png",
+      "path" : "public/img/nightSky.jpg",
       "size" : "50"
     }
   }
