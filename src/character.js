@@ -59,17 +59,17 @@ var Character = function() {
 		var tangent = new THREE.Vector3();
 		var axis = new THREE.Vector3();
 
-		this.model.position.copy( this.path.getPointAt(this.theta) );
+		this.mesh.position.copy( this.path.getPointAt(this.theta) );
 		tangent = this.path.getTangentAt(this.theta).normalize();
 		axis.crossVectors(directionVector, tangent).normalize();
 
 		radians = Math.acos(directionVector.dot(tangent));
 
-		this.model.quaternion.setFromAxisAngle(axis, radians);
+		this.mesh.quaternion.setFromAxisAngle(axis, radians);
 	};
 
 	this.updateCharacter = function(delta) {
-		var currentPosition = this.model.position;
+		var currentPosition = this.mesh.position;
 
 		/**
 			The idea is to get two vectors :

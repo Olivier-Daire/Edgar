@@ -1,0 +1,28 @@
+[
+  {
+    "number": "1",
+    "radius" : "4",
+    "models": [
+      {
+        "path": "public/model/mountain.json"
+      },
+      {
+        "path": "public/model/WoodenBox02.json",
+        "position": {
+          "x" : "2",
+          "y" : 0,
+          "z" : "-2"
+         },
+        "scale": {
+          "x" : 0,
+          "y" : 0,
+          "z" : 0
+        }
+      }
+    ],
+    "skybox": {
+      "path" : "public/img/nightSky.jpg",
+      "size" : "50"
+    }
+  }
+]

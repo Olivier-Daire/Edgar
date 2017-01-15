@@ -90,6 +90,7 @@
     "globals"       : {
         "THREE": false,
         "Promise": false,
-        "VRDisplay": false
+        "VRDisplay": false,
+        "Stats": false
     }
 }
