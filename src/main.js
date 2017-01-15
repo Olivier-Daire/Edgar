@@ -27,7 +27,7 @@ var scene1 = new Scene(radius);
 var lastRender = 0;
 var vrDisplay;
 var boxSize = 15;
-
+var skybox;
 var loader = new THREE.TextureLoader();
 loader.load('public/img/nightSky.jpg', onTextureLoaded);
 
@@ -43,7 +43,7 @@ var material = new THREE.ShaderMaterial( {
   fragmentShader: document.getElementById('skyFragmentShader').textContent
 });
 
-var skybox = new THREE.Mesh(geometry, material);
+skybox = new THREE.Mesh(geometry, material);
 
 skybox.scale.set(-1, 1, 1);
 scene1.scene.add(skybox);
@@ -126,12 +126,15 @@ function setStageDimensions(stage) {
 
   // Size the skybox according to the size of the actual stage.
   var geometry = new THREE.BoxGeometry(stage.sizeX, boxSize, stage.sizeZ);
-  var skybox = new THREE.Mesh(geometry, material);
+  skybox = new THREE.Mesh(geometry, material);
 
   // Place it on the floor.
   skybox.position.y = boxSize/2;
   scene1.scene.add(skybox);
 
+if (edgar.model !== null) {
+
   // Place edgar in the middle of the scene, at user height.
   edgar.model.position.set(0, scene1.controls.userHeight, 0);
+}
 }
