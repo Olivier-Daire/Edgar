@@ -2,7 +2,7 @@
 
 var WebVRManager = require('./webvr-manager.js');
 var Scene = require('./scene.js');
-var Character = require('./character.js');
+
 
 // TODO Load JSON ???
 window.WebVRConfig = window.WebVRConfig || {};
@@ -33,28 +33,17 @@ var params = {
 };
 var manager = new WebVRManager(scene1.renderer, scene1.effect, params);
 
-// Load 3D model
-var edgar = new Character();
-edgar.load('public/model/animated-character.json',
-  function() {
-    edgar.mesh.scale.x = edgar.mesh.scale.y = edgar.mesh.scale.z = 0.5;
-    document.getElementById('loader').style.display = 'none';
-    scene1.scene.add(edgar.mesh);
-    edgar.followPath(scene1.characterPath);
-  }
-);
-
 // Request animation frame loop function
 function animate(timestamp) {
   var delta = Math.PI / 500;
 
   lastRender = timestamp;
 
-  if (edgar.mesh !== null) {
-    // Update edgar nextPosition
-    edgar.nextPosition = scene1.camera.getWorldDirection().multiplyScalar(scene1.radius);
+  if (scene1.character.mesh !== null) {
+    // Update character nextPosition
+    scene1.character.nextPosition = scene1.camera.getWorldDirection().multiplyScalar(scene1.radius);
     // Update character position along path
-    edgar.updateCharacter(delta);
+    scene1.character.updateCharacter(delta);
   }
 
   scene1.controls.update();

@@ -1,6 +1,7 @@
 "use strict";
 var SCENES = require('./scenes.json');
 var Model = require('./model.js');
+var Character = require('./character.js');
 
 function Scene(number, animate) {
 	this.renderer = null;
@@ -10,6 +11,7 @@ function Scene(number, animate) {
 	this.controls = null;
 	this.effect = null;
 	this.characterPath = null;
+	this.character = null;
 	this.radius = null;
 	this.skybox = null;
 	this.skyboxSize = null;
@@ -58,6 +60,7 @@ Scene.prototype.setup = function(number) {
 	this.loadJSON(number);
 	this.addGround();
 	this.addCharacterPath();
+	this.addCharacter();
 	this.addLights();
 	this.addTorchLight();
 
@@ -96,6 +99,21 @@ Scene.prototype.addCharacterPath = function() {
 		var line = new THREE.Line( geometry, material );
 		this.scene.add(line);
 	}
+};
+
+Scene.prototype.addCharacter = function() {
+	var _this = this;
+	this.character = new Character();
+	this.character.load('public/model/animated-character.json',
+		function() {
+			_this.character.mesh.scale.x = _this.character.mesh.scale.y = _this.character.mesh.scale.z = 0.5;
+			// FIXME Dirty
+			document.getElementById('loader').style.display = 'none';
+			_this.scene.add(_this.character.mesh);
+
+			_this.character.followPath(_this.characterPath);
+		}
+	);
 };
 
 Scene.prototype.addGround = function() {
