@@ -87,4 +87,24 @@ WebVRConfig = {
   -->
 <script src="public/js/main.js"></script>
 
+<script type="x-shader/x-vertex" id="skyVertexShader">
+  varying vec2 vUV;
+
+  void main() {
+    vUV = uv;
+    vec4 pos = vec4(position, 1.0);
+    gl_Position = projectionMatrix * modelViewMatrix * pos;
+  }
+</script>
+
+<script type="x-shader/x-fragment" id="skyFragmentShader">
+  uniform sampler2D texture;
+  varying vec2 vUV;
+
+  void main() {
+    vec4 skyTexture = texture2D(texture, vUV);
+    gl_FragColor = vec4(skyTexture.xyz, skyTexture.w);
+  }
+</script>
+
 </html>

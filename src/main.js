@@ -71,4 +71,3 @@ function onResize(e) {
   scene1.camera.aspect = window.innerWidth / window.innerHeight;
   scene1.camera.updateProjectionMatrix();
 }
-
