@@ -168,6 +168,7 @@ Scene.prototype.addLights = function() {
 };
 
 Scene.prototype.addTorchLight = function() {
+	/*
 	var lightSphere = new THREE.SphereGeometry( 0.03, 25, 5 );
 	var lightEmitter = new THREE.PointLight( 0xffee88, 1, 100, 2 );
 	var matSphere = new THREE.MeshStandardMaterial( {
@@ -182,7 +183,47 @@ Scene.prototype.addTorchLight = function() {
 		lightEmitter.castShadow = true;
 	}
 	this.camera.add(lightEmitter);
-	lightEmitter.target = this.camera;
+	lightEmitter.target = this.camera;*/
+
+		// geometry
+	var geometry = new THREE.SphereGeometry( 0.03, 25, 5 );
+
+	// material
+	var material = new THREE.MeshBasicMaterial( {
+		color: 0xffffff,
+		wireframe: true
+	} );
+
+	// parent
+	var parent = new THREE.Object3D();
+	this.scene.add( parent );
+
+	// pivots
+	var pivot1 = new THREE.Object3D();
+	var pivot2 = new THREE.Object3D();
+	var pivot3 = new THREE.Object3D();
+	pivot1.rotation.z = 0;
+	pivot2.rotation.z = Math.PI / 10;
+	pivot3.rotation.z = Math.PI / 15;
+	parent.add( pivot1 );
+	parent.add( pivot2 );
+	parent.add( pivot3 );
+
+	// mesh
+	var mesh1 = new THREE.Mesh( geometry, material );
+	var mesh2 = new THREE.Mesh( geometry, material );
+	var mesh3 = new THREE.Mesh( geometry, material );
+	mesh1.position.y = 0.5;
+	mesh2.position.y = -0.5;
+	mesh3.position.y = 0.05;
+	pivot1.add( mesh1 );
+	pivot2.add( mesh2 );
+	pivot3.add( mesh3 );
+
+	parent.position.set( 0, this.controls.userHeight-1, -this.radius-1 );
+
+	this.camera.add(parent);
+	parent.target = this.camera;
 };
 
 
