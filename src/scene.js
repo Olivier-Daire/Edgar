@@ -7,7 +7,6 @@ var Util = require('./util.js');
 function Scene(number, animate) {
 	this.renderer = null;
 	this.scene = null;
-	this.dolly = null;
 	this.camera = null;
 	this.controls = null;
 	this.effect = null;
@@ -48,13 +47,7 @@ Scene.prototype.setup = function(number) {
 
 	// Create a three.js camera.
 	this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
-
-	// VRControls always set camera postion to (0, 0, 0) use group and dolly to move it
-	// http://stackoverflow.com/a/34471170
-	this.dolly = new THREE.Group();
-	this.dolly.position.set( 0, 0, 1 ); // if camera.position.z == 0 can't get screen to world coordinates
-	this.scene.add( this.dolly );
-	this.dolly.add( this.camera );
+	this.scene.add( this.camera );
 
 	this.controls = new THREE.VRControls(this.camera);
 	this.controls.standing = true;
@@ -82,7 +75,7 @@ Scene.prototype.addCharacterPath = function() {
 	for (i = 0; i <= 360; i++) {
 		var angle = Math.PI/180 * i;
 		var x = (this.radius) * Math.cos(angle);
-		var y = this.controls.userHeight;
+		var y = this.controls.userHeight - 0.5;
 		var z = (this.radius) * Math.sin(angle);
 
 		points.push(new THREE.Vector3(x, y, z));
@@ -137,7 +130,7 @@ Scene.prototype.addOriginCube = function() {
 	var cube = new THREE.Mesh(new THREE.CubeGeometry(1, 1, 1), new THREE.MeshNormalMaterial());
 	cube.position.z = -this.radius;
 	cube.position.x = 0;
-	cube.position.y = this.controls.userHeight;
+	cube.position.y = this.controls.userHeight - 0.5;
 	cube.scale.x = cube.scale.y = cube.scale.z = 0.2;
 	this.scene.add(cube);
 };
