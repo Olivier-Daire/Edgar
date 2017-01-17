@@ -63,7 +63,7 @@ Scene.prototype.setup = function(number) {
 	this.addCharacterPath();
 	this.addCharacter();
 	this.addLights();
-	this.addTorchLight();
+	this.addFirefly();
 
 	if (window.DEBUG) {
 		this.addOriginCube();
@@ -167,52 +167,37 @@ Scene.prototype.addLights = function() {
 	this.scene.add( spotLight );
 };
 
-Scene.prototype.addTorchLight = function() {
+Scene.prototype.addFirefly = function() {
 
-	var lightSphere = new THREE.SphereGeometry( 0.03, 25, 5 );
-	var lightEmitter = new THREE.PointLight( 0xff00, 1, 100, 2 );
-	var matSphere = new THREE.MeshBasicMaterial( {
-		color: 0xff00
-	});
-
-	var parent = new THREE.Object3D();
-
-	var mesh1 = new THREE.Mesh( lightSphere, matSphere);
-
-	lightEmitter.add(mesh1);
-
-	lightEmitter.position.y = 0.5;
-
-	parent.add(lightEmitter);
-
+	// Create 1 pointLight for Three Sprites
+	// MAYBE change latter if we fix performance tests
+	var lightEmitter = new THREE.PointLight( 0xffee88, 1, 100, 2 );
 
 	// FIXME gigantic performance hit on mobile
 	if(!Util.isMobile()) {
 		lightEmitter.castShadow = true;
 	}
 
+	// Parent group
+	var parent = new THREE.Object3D();
 
+	parent.add(lightEmitter);
 
-	var floorMaterial = new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture('public/img/particle.png'), transparent: true } );
+	var particleMaterial = new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture('public/img/particle.png'), transparent: true } );
 
-	var floorGeometry1 = new THREE.PlaneGeometry(0.5, 0.5, 100, 100);
-	var floorGeometry2 = new THREE.PlaneGeometry(0.3, 0.3, 100, 100);
-	var floorGeometry3 = new THREE.PlaneGeometry(0.15, 0.15, 100, 100);
+	var particleGeometry = new THREE.PlaneGeometry(0.5, 0.5, 100, 100);
 
-	var floor1 = new THREE.Mesh(floorGeometry1, floorMaterial);
-	var floor2 = new THREE.Mesh(floorGeometry2, floorMaterial);
-	var floor3 = new THREE.Mesh(floorGeometry3, floorMaterial);
+	var particle1 = new THREE.Mesh(particleGeometry, particleMaterial);
+	var particle2 = new THREE.Mesh(particleGeometry, particleMaterial);
+	var particle3 = new THREE.Mesh(particleGeometry, particleMaterial);
 
-	floor1.position.set( 0, this.controls.userHeight, -this.radius );
-	floor2.position.set( -1, this.controls.userHeight+0.3, -this.radius );
-	floor3.position.set( 1, this.controls.userHeight-0.3, -this.radius );
+	particle1.position.set( 0, this.controls.userHeight, -this.radius );
+	particle2.position.set( -1, this.controls.userHeight+0.3, -this.radius );
+	particle3.position.set( 1, this.controls.userHeight-0.3, -this.radius );
 
-	//this.scene.add(floor1);
-	//this.scene.add(floor2);
-	//this.scene.add(floor3);
-	parent.add(floor1);
-	parent.add(floor2);
-	parent.add(floor3);
+	parent.add(particle1);
+	parent.add(particle2);
+	parent.add(particle3);
 
 	parent.position.set( 0, this.controls.userHeight-1, -this.radius-1 );
 	this.scene.add( parent );
