@@ -42,12 +42,12 @@ Scene.prototype.setup = function(number) {
 	this.scene = new THREE.Scene();
 
 	// Create a three.js camera.
-	this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
+	this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 20000);
 
 	// VRControls always set camera postion to (0, 0, 0) use group and dolly to move it
 	// http://stackoverflow.com/a/34471170
 	this.dolly = new THREE.Group();
-	this.dolly.position.set( 0, 0, 1 ); // if camera.position.z == 0 can't get screen to world coordinates
+	this.dolly.position.set( 0, 2, 1 ); // if camera.position.z == 0 can't get screen to world coordinates
 	this.scene.add( this.dolly );
 	this.dolly.add( this.camera );
 
@@ -106,9 +106,11 @@ Scene.prototype.addCharacterPath = function() {
 Scene.prototype.addCharacter = function() {
 	var _this = this;
 	this.character = new Character();
-	this.character.load('public/model/edgar_anim.json',
+	//this.character.load('public/model/animated-character.json',
+	this.character.load('public/model/walk2.json',
 		function() {
-			_this.character.mesh.scale.x = _this.character.mesh.scale.y = _this.character.mesh.scale.z = 0.2;
+			_this.character.mesh.scale.x = _this.character.mesh.scale.y = _this.character.mesh.scale.z = 8;
+			//_this.character.mesh.scale.x = _this.character.mesh.scale.y = _this.character.mesh.scale.z = 0.5;
 			// FIXME Dirty
 			document.getElementById('loader').style.display = 'none';
 			_this.scene.add(_this.character.mesh);
