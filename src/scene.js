@@ -18,6 +18,11 @@ function Scene(number, animate) {
 	this.skyboxSize = null;
 	this.animateFunction = animate;
 
+	// FOR TEST ONLY
+	this.part1 = null;
+	this.part2 = null;
+	this.part3 = null;
+
 	this.setup(number);
 
 	return this;
@@ -183,21 +188,21 @@ Scene.prototype.addFirefly = function() {
 
 	parent.add(lightEmitter);
 
-	var particleMaterial = new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture('public/img/particle.png'), transparent: true } );
+	var particleMaterial = new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture('public/img/particle.png'), transparent: true} );
 
-	var particleGeometry = new THREE.PlaneGeometry(0.5, 0.5, 100, 100);
+	var particleGeometry = new THREE.PlaneGeometry(0.3, 0.3, 10, 10);
 
-	var particle1 = new THREE.Mesh(particleGeometry, particleMaterial);
-	var particle2 = new THREE.Mesh(particleGeometry, particleMaterial);
-	var particle3 = new THREE.Mesh(particleGeometry, particleMaterial);
+	this.part1 = new THREE.Mesh(particleGeometry, particleMaterial);
+	this.part2 = new THREE.Mesh(particleGeometry, particleMaterial);
+	this.part3 = new THREE.Mesh(particleGeometry, particleMaterial);
 
-	particle1.position.set( 0, this.controls.userHeight, -this.radius );
-	particle2.position.set( -1, this.controls.userHeight+0.3, -this.radius );
-	particle3.position.set( 1, this.controls.userHeight-0.3, -this.radius );
+	//particle1.position.set( 0, this.controls.userHeight, -this.radius );
+	//particle2.position.set( -1, this.controls.userHeight+0.3, -this.radius );
+	//particle3.position.set( 1, this.controls.userHeight-0.3, -this.radius );
 
-	parent.add(particle1);
-	parent.add(particle2);
-	parent.add(particle3);
+	parent.add(this.part1);
+	parent.add(this.part2);
+	parent.add(this.part3);
 
 	parent.position.set( 0, this.controls.userHeight-1, -this.radius-1 );
 	this.scene.add( parent );

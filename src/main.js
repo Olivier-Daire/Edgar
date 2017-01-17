@@ -54,6 +54,21 @@ function animate(timestamp) {
     // Update character position along path
     scene1.character.updateCharacter(delta);
   }
+  var time = Date.now() * 0.003;
+
+
+  scene1.part1.position.x = Math.sin( time * 0.7 ) / 3;
+  scene1.part1.position.y = Math.cos( time * 0.5 ) / 4;
+  scene1.part1.position.z = Math.cos( time * 0.3 ) / 3;
+
+  scene1.part2.position.x = Math.sin( time * 0.3 ) / 3;
+  scene1.part2.position.y = Math.cos( time * 0.5 ) / 4;
+  scene1.part2.position.z = Math.cos( time * 0.7 ) / 3;
+
+  scene1.part3.position.x = Math.sin( time * 0.3 ) / 3;
+  scene1.part3.position.y = Math.cos( time * 0.7 ) / 4;
+  scene1.part3.position.z = Math.cos( time * 0.5 ) / 3;
+
 
   scene1.controls.update();
   // Render the scene through the manager.
