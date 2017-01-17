@@ -185,16 +185,41 @@ Scene.prototype.addTorchLight = function() {
 
 	parent.add(lightEmitter);
 
-	parent.position.set( 0, this.controls.userHeight-1, -this.radius-1 );
-	this.scene.add( parent );
 
 	// FIXME gigantic performance hit on mobile
 	if(!Util.isMobile()) {
 		lightEmitter.castShadow = true;
 	}
 
+
+
+	var floorMaterial = new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture('public/img/particle.png'), transparent: true } );
+
+	var floorGeometry1 = new THREE.PlaneGeometry(0.5, 0.5, 100, 100);
+	var floorGeometry2 = new THREE.PlaneGeometry(0.3, 0.3, 100, 100);
+	var floorGeometry3 = new THREE.PlaneGeometry(0.15, 0.15, 100, 100);
+
+	var floor1 = new THREE.Mesh(floorGeometry1, floorMaterial);
+	var floor2 = new THREE.Mesh(floorGeometry2, floorMaterial);
+	var floor3 = new THREE.Mesh(floorGeometry3, floorMaterial);
+
+	floor1.position.set( 0, this.controls.userHeight, -this.radius );
+	floor2.position.set( -1, this.controls.userHeight+0.3, -this.radius );
+	floor3.position.set( 1, this.controls.userHeight-0.3, -this.radius );
+
+	//this.scene.add(floor1);
+	//this.scene.add(floor2);
+	//this.scene.add(floor3);
+	parent.add(floor1);
+	parent.add(floor2);
+	parent.add(floor3);
+
+	parent.position.set( 0, this.controls.userHeight-1, -this.radius-1 );
+	this.scene.add( parent );
+
 	this.camera.add(parent);
 	parent.target = this.camera;
+
 };
 
 
