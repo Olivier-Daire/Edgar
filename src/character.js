@@ -91,8 +91,7 @@ var Character = function() {
 		// Check that the mouse movement is enough to move character
 		var diff = currentPosition.y - this.nextPosition.y;
 
-		if(normCurrentToNextPosVec >= (this.SENSITIVITY_TO_TRIGGER_MOVE*2)&&(diff <= -.2 || diff >= 3.4) ||
-			 (normCurrentToNextPosVec >= this.SENSITIVITY_TO_TRIGGER_MOVE)&&(diff > -.2 && diff < 3.4)){
+		if(normCurrentToNextPosVec >= (this.SENSITIVITY_TO_TRIGGER_MOVE * 2) && (diff <= -0.2 || diff >= 3.4) || (normCurrentToNextPosVec >= this.SENSITIVITY_TO_TRIGGER_MOVE) && (diff > -0.2 && diff < 3.4)){
 
 			// Compare both norm is fictive position norm is greater than the other one,
 			// it means that we are going in the opposite direction, hence change direction
