@@ -64,6 +64,7 @@ var Model = function(){
 			_this.actions[animation.name] = _this.mixer.clipAction(animation);
 			_this.actions[animation.name].setEffectiveWeight(1);
 			_this.actions[animation.name].enabled = true;
+			_this.actions[animation.name].timeScale = 4;
 		});
 
 		this.actions[this.activeAction].play();
