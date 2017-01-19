@@ -30,8 +30,12 @@ function Scene(number, animate) {
 
 Scene.prototype.setup = function(number) {
 	// Setup three.js WebGL renderer. Note: Antialiasing is a big performance hit.
-	// Only enable it if you actually need to. --> disable on mobile
-	this.renderer = new THREE.WebGLRenderer();
+	// Only enable it if you actually need to.
+	var rendererParams = {};
+	if(!Util.isMobile()) {
+		rendererParams = {antialias : true};
+	}
+	this.renderer = new THREE.WebGLRenderer(rendererParams);
 	this.renderer.shadowMap.enabled = true;
 	this.renderer.setPixelRatio(window.devicePixelRatio);
 	if (window.DEBUG) {
@@ -45,9 +49,15 @@ Scene.prototype.setup = function(number) {
 	// Create a three.js scene.
 	this.scene = new THREE.Scene();
 
+	// VRControls always set camera postion to (0, 0, 0) use group and dolly to move it
+	// http://stackoverflow.com/a/34471170
+	this.dolly = new THREE.Group();
 	// Create a three.js camera.
 	this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
-	this.scene.add( this.camera );
+	//this.scene.add( this.camera );
+	this.dolly.position.set( 0, 1.5, 0 ); // if camera.position.z == 0 can't get screen to world coordinates
+	this.scene.add( this.dolly );
+	this.dolly.add( this.camera );
 
 	this.controls = new THREE.VRControls(this.camera);
 	this.controls.standing = true;
@@ -119,7 +129,7 @@ Scene.prototype.addGround = function() {
 	var ground = null;
 	var groundMaterial = new THREE.MeshPhongMaterial( { color: 0xffffff } );
 
-	ground = new THREE.Mesh( new THREE.PlaneBufferGeometry( 20, 20 ), groundMaterial );
+	ground = new THREE.Mesh( new THREE.PlaneBufferGeometry( 5*this.radius, 5*this.radius ), groundMaterial );
 	ground.position.set(0, this.controls.userHeight - 0.5, 0);
 	ground.rotation.x = - Math.PI / 2;
 	ground.receiveShadow = true;
@@ -249,7 +259,7 @@ Scene.prototype.loadJSON = function(number) {
 					model.mesh.position.x =  modelData.position.x;
 				}
 				if (modelData.position.y) {
-					model.mesh.position.y = modelData.position.x;
+					model.mesh.position.y = modelData.position.y;
 				}  else {
 					// By default set to user height
 					model.mesh.position.y = _this.controls.userHeight;
