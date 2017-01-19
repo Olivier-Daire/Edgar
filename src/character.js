@@ -5,9 +5,13 @@ var Model = require('./model.js');
 var Character = function() {
 	this.SPEED = 0.001;
 	this.SENSITIVITY_TO_TRIGGER_MOVE = 0.4;
+	this.ACCELERATION = 0.00001;
+	this.DECELERATIONMOMENT = 1.5 // The lower this value is, the sooner the charater stops.
+	this.currentMovement = this.ACCELERATION;
 	this.nextPosition = null;
 	this.theta = 0.75; // No idea why but it's in front of camera
 	this.direction = 'right';
+	this.oldDirection = 'right';
 	this.path = null;
 
 	this.followPath = function(path){
@@ -17,25 +21,41 @@ var Character = function() {
 		var right = new THREE.Vector3(0, 0, 1);
 		var left = new THREE.Vector3(0, 0, -1);
 		var directionVector = this.direction === 'right' ? right : left;
+		if(this.oldDirection != this.direction){
+			this.oldDirection = this.direction;
+			this.currentMovement = this.ACCELERATION;
+		}
 
 		this.fadeToAction('walk');
 		// http://stackoverflow.com/a/11181366
 		if (this.direction === 'right') {
 			if (this.theta <= 1) {
 				this.computeAngleAndDirection(directionVector);
-				this.theta += this.SPEED;
+				this.theta += this.currentMovement;
 			} else {
 				this.theta = 0;
 			}
 		} else {
 			if (this.theta >= 0) {
 				this.computeAngleAndDirection(directionVector);
-				this.theta -= this.SPEED;
+				this.theta -= this.currentMovement;
 			} else {
 				this.theta = 1;
 			}
 		}
 	};
+
+	this.makeAcceleration = function(vectorLength, diff){
+
+		if(diff <= -0.2 || diff >= 3.4) var sensitivity = this.SENSITIVITY_TO_TRIGGER_MOVE*1.2;
+		else var sensitivity = this.SENSITIVITY_TO_TRIGGER_MOVE;
+
+		var accelerationValue = (vectorLength - (sensitivity / 1.5)) / (sensitivity*this.DECELERATIONMOMENT);
+		if(accelerationValue < 0.000001) accelerationValue = 0;
+		else if(accelerationValue > 1) accelerationValue = 1;
+
+		this.currentMovement = this.SPEED * accelerationValue;
+	}
 
 	// TODO almost same as function above, refator
 	this.computeFictiveDirection = function() {
@@ -93,6 +113,7 @@ var Character = function() {
 
 		if(normCurrentToNextPosVec >= (this.SENSITIVITY_TO_TRIGGER_MOVE * 2) && (diff <= -0.2 || diff >= 3.4) || (normCurrentToNextPosVec >= this.SENSITIVITY_TO_TRIGGER_MOVE) && (diff > -0.2 && diff < 3.4)){
 
+			this.makeAcceleration(normCurrentToNextPosVec);
 			// Compare both norm is fictive position norm is greater than the other one,
 			// it means that we are going in the opposite direction, hence change direction
 			if (normFictiveToNextPosVec > normCurrentToNextPosVec) {
@@ -103,6 +124,7 @@ var Character = function() {
 					}
 				}
 
+			this.makeAcceleration(normFictiveToNextPosVec, diff);
 			this.followPath();
 		}
 
