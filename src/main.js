@@ -54,8 +54,8 @@ function animate(timestamp) {
     // Update character position along path
     scene1.character.updateCharacter(delta);
   }
-  var time = Date.now() * 0.003;
 
+  var time = Date.now() * 0.003;
 
   scene1.part1.position.x = Math.sin( time * 0.7 ) / 3;
   scene1.part1.position.y = Math.cos( time * 0.5 ) / 4;

@@ -189,20 +189,15 @@ Scene.prototype.addFirefly = function() {
 	this.part2 = new THREE.Mesh(particleGeometry, particleMaterial);
 	this.part3 = new THREE.Mesh(particleGeometry, particleMaterial);
 
-	//particle1.position.set( 0, this.controls.userHeight, -this.radius );
-	//particle2.position.set( -1, this.controls.userHeight+0.3, -this.radius );
-	//particle3.position.set( 1, this.controls.userHeight-0.3, -this.radius );
-
 	parent.add(this.part1);
 	parent.add(this.part2);
 	parent.add(this.part3);
 
-	parent.position.set( 0, this.controls.userHeight-1, -this.radius-1 );
-	this.scene.add( parent );
+	parent.position.set( 0, this.controls.userHeight-1, -this.radius+1 );
+	this.scene.add(parent);
 
 	this.camera.add(parent);
 	parent.target = this.camera;
-
 };
 
 
