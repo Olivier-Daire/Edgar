@@ -171,7 +171,7 @@ Scene.prototype.addFirefly = function() {
 
 	// Create 1 pointLight for Three Sprites
 	// MAYBE change latter if we fix performance tests
-	var lightEmitter = new THREE.PointLight( 0xffee88, 1, 100, 2 );
+	var lightEmitter = new THREE.PointLight( 0xffebbf, 1, 100, 2 );
 
 	// FIXME gigantic performance hit on mobile
 	if(!Util.isMobile()) {
