@@ -70,7 +70,6 @@ Scene.prototype.setup = function(number) {
 	this.addGround();
 	this.addCharacterPath();
 	this.addCharacter();
-	this.addLights();
 	this.addFirefly();
 
 	if (window.DEBUG) {
@@ -166,13 +165,6 @@ Scene.prototype.addLightsHemisphere = function() {
 	dirLight.shadow.camera.bottom = -d;
 	dirLight.shadow.camera.far = 3500;
 	dirLight.shadow.bias = -0.0001;
-};
-
-Scene.prototype.addLights = function() {
-	var spotLight = new THREE.PointLight( 0xffffff, 0.2, 0 );
-	spotLight.position.set( 0, this.controls.userHeight+8, 0 );
-	//spotLight.castShadow = true;
-	this.scene.add( spotLight );
 };
 
 Scene.prototype.addFirefly = function() {
