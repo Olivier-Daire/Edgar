@@ -2,10 +2,6 @@
 
 var Scene = require('./scene.js');
 
-window.addEventListener('load', onLoad);
-window.addEventListener('resize', onResize, true);
-window.addEventListener('vrdisplaypresentchange', onResize, true);
-
 window.vrDisplay = null;
 window.DEBUG = false;
 // EnterVRButton for rendering enter/exit UI.
@@ -15,8 +11,7 @@ var scene;
 var stats;
 
 function onLoad() {
-
-  // TODO Move this elsewhere and check mobile compatibility
+  document.getElementById('loader').style.display = 'none';
 
   if (window.DEBUG) {
     stats = new Stats();
@@ -25,6 +20,10 @@ function onLoad() {
   }
 
     scene = new Scene(1, animate);
+
+    window.addEventListener('resize', onResize, true);
+    window.addEventListener('vrdisplaypresentchange', onResize, true);
+
 
     // Initialize the WebVR UI.
     var uiOptions = {
@@ -89,3 +88,6 @@ function onResize(e) {
   scene.camera.aspect = window.innerWidth / window.innerHeight;
   scene.camera.updateProjectionMatrix();
 }
+
+
+window.addEventListener('load', onLoad);

@@ -102,8 +102,6 @@ Scene.prototype.addCharacter = function() {
 	this.character.load('public/model/animated-character.json',
 		function() {
 			_this.character.mesh.scale.x = _this.character.mesh.scale.y = _this.character.mesh.scale.z = 0.5;
-			// FIXME Dirty
-			//document.getElementById('loader').style.display = 'none';
 			_this.scene.add(_this.character.mesh);
 
 			_this.character.followPath(_this.characterPath);
