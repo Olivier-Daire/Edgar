@@ -46,6 +46,7 @@ Scene.prototype.setup = function(number) {
 
 	this.controls = new THREE.VRControls(this.camera);
 	this.controls.standing = true;
+	this.camera.position.y = this.controls.userHeight;
 
 	// Apply VR stereo rendering to renderer.
 	this.effect = new THREE.VREffect(this.renderer);
@@ -102,7 +103,7 @@ Scene.prototype.addCharacter = function() {
 		function() {
 			_this.character.mesh.scale.x = _this.character.mesh.scale.y = _this.character.mesh.scale.z = 0.5;
 			// FIXME Dirty
-			document.getElementById('loader').style.display = 'none';
+			//document.getElementById('loader').style.display = 'none';
 			_this.scene.add(_this.character.mesh);
 
 			_this.character.followPath(_this.characterPath);
