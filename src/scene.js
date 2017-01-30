@@ -27,7 +27,7 @@ Scene.prototype.setup = function(number) {
 	// Setup three.js WebGL renderer. Note: Antialiasing is a big performance hit.
 	// Only enable it if you actually need to. --> disable on mobile
 	this.renderer = new THREE.WebGLRenderer();
-	this.renderer.shadowMap.enabled = true;
+	this.renderer.shadowMap.enabled = true; // TODO Check if still necessary
 	this.renderer.setPixelRatio(window.devicePixelRatio);
 	if (window.DEBUG) {
 		// Set clear color to white to see better
@@ -46,6 +46,7 @@ Scene.prototype.setup = function(number) {
 
 	this.controls = new THREE.VRControls(this.camera);
 	this.controls.standing = true;
+	this.camera.position.y = this.controls.userHeight;
 
 	// Apply VR stereo rendering to renderer.
 	this.effect = new THREE.VREffect(this.renderer);
@@ -101,11 +102,10 @@ Scene.prototype.addCharacter = function() {
 	this.character.load('public/model/animated-character.json',
 		function() {
 			_this.character.mesh.scale.x = _this.character.mesh.scale.y = _this.character.mesh.scale.z = 0.5;
-			// FIXME Dirty
-			document.getElementById('loader').style.display = 'none';
 			_this.scene.add(_this.character.mesh);
 
 			_this.character.followPath(_this.characterPath);
+			_this.setupStage();
 		}
 	);
 };
@@ -201,7 +201,6 @@ Scene.prototype.addSkybox= function(path, size) {
 
 		_this.skybox.scale.set(-1, 1, 1);
 		_this.scene.add(_this.skybox);
-		_this.setupStage();
 	}
 
 };

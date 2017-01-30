@@ -13,7 +13,7 @@ var Model = function(){
 
 		var loaded = function(geometry, materials) {
 
-			_this.mesh = new THREE.SkinnedMesh(geometry, new THREE.MeshFaceMaterial( materials ));
+			_this.mesh = new THREE.SkinnedMesh(geometry, new THREE.MultiMaterial( materials ));
 
 			// fix transpancy model bug
 		    for( var i = 0; i < materials.length; i ++ ) {

@@ -91,6 +91,7 @@
         "THREE": false,
         "Promise": false,
         "VRDisplay": false,
-        "Stats": false
+        "Stats": false,
+        "webvrui": false
     }
 }
