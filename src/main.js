@@ -1,42 +1,59 @@
 "use strict";
 
-var WebVRManager = require('./webvr-manager.js');
 var Scene = require('./scene.js');
 
-// TODO Load JSON ???
-window.WebVRConfig = window.WebVRConfig || {};
-window.WebVRManager = WebVRManager;
-window.vrDisplay = null;
-window.DEBUG = true;
-
+window.addEventListener('load', onLoad);
 window.addEventListener('resize', onResize, true);
 window.addEventListener('vrdisplaypresentchange', onResize, true);
 
-// Capture pointer on click
-// TODO Move this elsewhere and check mobile compatibility
-var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
-if ( havePointerLock ) {
-  window.addEventListener('click', function() {
-    document.body.requestPointerLock =  document.body.requestPointerLock ||  document.body.mozRequestPointerLock ||  document.body.webkitRequestPointerLock;
-    document.body.requestPointerLock();
-  }, false);
+window.vrDisplay = null;
+window.DEBUG = true;
+// EnterVRButton for rendering enter/exit UI.
+var vrButton;
+var lastRenderTime = 0;
+var scene;
+var stats;
+
+function onLoad() {
+
+  // TODO Move this elsewhere and check mobile compatibility
+
+  if (window.DEBUG) {
+    stats = new Stats();
+    stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+    document.body.appendChild( stats.dom );
+  }
+
+    scene = new Scene(1, animate);
+
+    // Initialize the WebVR UI.
+    var uiOptions = {
+      color: 'black',
+      background: 'white',
+      corners: 'square'
+    };
+    vrButton = new webvrui.EnterVRButton(scene.renderer.domElement, uiOptions);
+    vrButton.on('exit', function() {
+      scene.camera.quaternion.set(0, 0, 0, 1);
+      scene.camera.position.set(0, scene.controls.userHeight, 0);
+    });
+    vrButton.on('hide', function() {
+      document.getElementById('ui').style.display = 'none';
+    });
+    vrButton.on('show', function() {
+      document.getElementById('ui').style.display = 'inherit';
+    });
+    document.getElementById('vr-button').appendChild(vrButton.domElement);
+    document.getElementById('magic-window').addEventListener('click', function() {
+      // Capture pointer
+      var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
+      if ( havePointerLock ) {
+          document.body.requestPointerLock =  document.body.requestPointerLock ||  document.body.mozRequestPointerLock ||  document.body.webkitRequestPointerLock;
+          document.body.requestPointerLock();
+      }
+      vrButton.requestEnterFullscreen();
+    });
 }
-
-if (window.DEBUG) {
-  var stats = new Stats();
-  stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
-  document.body.appendChild( stats.dom );
-}
-
-var scene1 = new Scene(1, animate);
-var lastRender = 0;
-
-// Create a VR manager helper to enter and exit VR mode.
-var params = {
-  hideButton: false, // Default: false.
-  isUndistorted: false // Default: false.
-};
-var manager = new WebVRManager(scene1.renderer, scene1.effect, params);
 
 // Request animation frame loop function
 function animate(timestamp) {
@@ -44,21 +61,23 @@ function animate(timestamp) {
     stats.begin();
   }
 
-  var delta = Math.PI / 500;
+  var delta = Math.min(timestamp - lastRenderTime, 500);
 
-  lastRender = timestamp;
-
-  if (scene1.character.mesh !== null) {
+  lastRenderTime = timestamp;
+  if (scene.character.mesh !== null) {
     // Update character nextPosition
-    scene1.character.nextPosition = scene1.camera.getWorldDirection().multiplyScalar(scene1.radius);
+    scene.character.nextPosition = scene.camera.getWorldDirection().multiplyScalar(scene.radius);
     // Update character position along path
-    scene1.character.updateCharacter(delta);
+    scene.character.updateCharacter(delta);
   }
 
-  scene1.controls.update();
+   // Only update controls if we're presenting.
+  if (vrButton.isPresenting()) {
+    scene.controls.update();
+  }
+  
   // Render the scene through the manager.
-  manager.render(scene1.scene, scene1.camera, timestamp);
-  scene1.effect.render(scene1.scene, scene1.camera);
+  scene.effect.render(scene.scene, scene.camera);
   window.vrDisplay.requestAnimationFrame(animate);
 
   if(window.DEBUG) {
@@ -67,7 +86,7 @@ function animate(timestamp) {
 }
 
 function onResize(e) {
-  scene1.effect.setSize(window.innerWidth, window.innerHeight);
-  scene1.camera.aspect = window.innerWidth / window.innerHeight;
-  scene1.camera.updateProjectionMatrix();
+  scene.effect.setSize(window.innerWidth, window.innerHeight);
+  scene.camera.aspect = window.innerWidth / window.innerHeight;
+  scene.camera.updateProjectionMatrix();
 }

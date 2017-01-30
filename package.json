@@ -2,11 +2,12 @@
   "name": "Edgar",
   "version": "0.0.1",
   "description": "A web-based VR experience using Cardboard.",
-  "main": "build/webvr-manager.js",
+  "main": "index.html",
   "dependencies": {
-    "es6-promise": "^4.0.5",
-    "three": "^0.81.2",
-    "webvr-polyfill": "^0.9.3"
+    "es6-promise": "latest",
+    "three": "latest",
+    "webvr-polyfill": "latest",
+    "webvr-ui": "latest"
   },
   "devDependencies": {
     "browserify": "latest",

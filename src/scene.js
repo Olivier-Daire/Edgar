@@ -27,7 +27,7 @@ Scene.prototype.setup = function(number) {
 	// Setup three.js WebGL renderer. Note: Antialiasing is a big performance hit.
 	// Only enable it if you actually need to. --> disable on mobile
 	this.renderer = new THREE.WebGLRenderer();
-	this.renderer.shadowMap.enabled = true;
+	this.renderer.shadowMap.enabled = true; // TODO Check if still necessary
 	this.renderer.setPixelRatio(window.devicePixelRatio);
 	if (window.DEBUG) {
 		// Set clear color to white to see better
@@ -201,7 +201,7 @@ Scene.prototype.addSkybox= function(path, size) {
 
 		_this.skybox.scale.set(-1, 1, 1);
 		_this.scene.add(_this.skybox);
-		_this.setupStage();
+					_this.setupStage();
 	}
 
 };
