@@ -3,7 +3,7 @@
 var Scene = require('./scene.js');
 
 window.vrDisplay = null;
-window.DEBUG = false;
+window.DEBUG = true;
 // EnterVRButton for rendering enter/exit UI.
 var vrButton;
 var lastRenderTime = 0;
@@ -19,39 +19,45 @@ function onLoad() {
     document.body.appendChild( stats.dom );
   }
 
-    scene = new Scene(1, animate);
+  scene = new Scene(1, animate);
 
-    window.addEventListener('resize', onResize, true);
-    window.addEventListener('vrdisplaypresentchange', onResize, true);
+  window.addEventListener('resize', onResize, true);
+  window.addEventListener('vrdisplaypresentchange', onResize, true);
 
+  // Initialize the WebVR UI.
+  var uiOptions = {
+    color: 'black',
+    background: 'white',
+    corners: 'square'
+  };
 
-    // Initialize the WebVR UI.
-    var uiOptions = {
-      color: 'black',
-      background: 'white',
-      corners: 'square'
-    };
-    vrButton = new webvrui.EnterVRButton(scene.renderer.domElement, uiOptions);
-    vrButton.on('exit', function() {
-      scene.camera.quaternion.set(0, 0, 0, 1);
-      scene.camera.position.set(0, scene.controls.userHeight, 0);
-    });
-    vrButton.on('hide', function() {
-      document.getElementById('ui').style.display = 'none';
-    });
-    vrButton.on('show', function() {
-      document.getElementById('ui').style.display = 'inherit';
-    });
-    document.getElementById('vr-button').appendChild(vrButton.domElement);
-    document.getElementById('magic-window').addEventListener('click', function() {
-      // Capture pointer
-      var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
-      if ( havePointerLock ) {
-          document.body.requestPointerLock =  document.body.requestPointerLock ||  document.body.mozRequestPointerLock ||  document.body.webkitRequestPointerLock;
-          document.body.requestPointerLock();
-      }
-      vrButton.requestEnterFullscreen();
-    });
+  vrButton = new webvrui.EnterVRButton(scene.renderer.domElement, uiOptions);
+
+  vrButton.on('exit', function() {
+    scene.camera.quaternion.set(0, 0, 0, 1);
+    scene.camera.position.set(0, scene.controls.userHeight, 0);
+  });
+
+  vrButton.on('hide', function() {
+    document.getElementById('ui').style.display = 'none';
+  });
+
+  vrButton.on('show', function() {
+    document.getElementById('ui').style.display = 'inherit';
+  });
+
+  document.getElementById('vr-button').appendChild(vrButton.domElement);
+
+  document.getElementById('magic-window').addEventListener('click', function() {
+    // Capture pointer
+    var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
+    if ( havePointerLock ) {
+        document.body.requestPointerLock =  document.body.requestPointerLock ||  document.body.mozRequestPointerLock ||  document.body.webkitRequestPointerLock;
+        document.body.requestPointerLock();
+    }
+    vrButton.requestEnterFullscreen();
+  });
+
 }
 
 // Request animation frame loop function
