@@ -4,10 +4,12 @@ var Model = require('./model.js');
 
 var Character = function() {
 	this.SPEED = 0.001;
-	this.SENSITIVITY_TO_TRIGGER_MOVE = 0.4;
-	this.ACCELERATION = 0.00001;
-	this.DECELERATIONMOMENT = 1.5 // The lower this value is, the sooner the charater stops.
-	this.currentMovement = this.ACCELERATION;
+	this.SENSITIVITY_TO_TRIGGER_MOVE = 0.3;
+	this.ACCELERATIONVALUE = 0.01;
+	this.DECELERATIONVALUE = 0.25; // The lower this value is, the more time the character takes to stop. Recommended value : .25
+	this.DECELERATIONMOMENT = 0.3; // The higher this value is, the later the character stops. Recommended value : .3
+	this.acceleration = 0;
+	this.currentMovement = this.SPEED;
 	this.nextPosition = null;
 	this.theta = 0.75; // No idea why but it's in front of camera
 	this.direction = 'right';
@@ -21,9 +23,9 @@ var Character = function() {
 		var right = new THREE.Vector3(0, 0, 1);
 		var left = new THREE.Vector3(0, 0, -1);
 		var directionVector = this.direction === 'right' ? right : left;
-		if(this.oldDirection != this.direction){
+		if(this.oldDirection !== this.direction){
 			this.oldDirection = this.direction;
-			this.currentMovement = this.ACCELERATION;
+			this.currentMovement = this.SPEED;
 		}
 
 		this.fadeToAction('walk');
@@ -45,17 +47,23 @@ var Character = function() {
 		}
 	};
 
-	this.makeAcceleration = function(vectorLength, diff){
+	this.makeAcceleration = function(vectorLength, ratio){
+		var accelerationValue = ((vectorLength + this.DECELERATIONMOMENT)- (ratio / 10));
 
-		if(diff <= -0.2 || diff >= 3.4) var sensitivity = this.SENSITIVITY_TO_TRIGGER_MOVE*1.2;
-		else var sensitivity = this.SENSITIVITY_TO_TRIGGER_MOVE;
+		if(accelerationValue > 1){	// The character needs to accelerate or to keep his speed
+			if(this.acceleration < 1){
+				this.acceleration += this.ACCELERATIONVALUE;
+			}
+			else{
+				this.acceleration = 1;
+			}
+		}
+		else{ // The character needs to decelerate
+			this.acceleration = ((1 * accelerationValue) - this.DECELERATIONVALUE); // The deceleration will depend of the length of the character - camera vector
+		}
 
-		var accelerationValue = (vectorLength - (sensitivity / 1.5)) / (sensitivity*this.DECELERATIONMOMENT);
-		if(accelerationValue < 0.000001) accelerationValue = 0;
-		else if(accelerationValue > 1) accelerationValue = 1;
-
-		this.currentMovement = this.SPEED * accelerationValue;
-	}
+		this.currentMovement = this.SPEED * this.acceleration;
+	};
 
 	// TODO almost same as function above, refator
 	this.computeFictiveDirection = function() {
@@ -108,14 +116,12 @@ var Character = function() {
 		var normCurrentToNextPosVec = Math.sqrt(currentToNextPosVec.x * currentToNextPosVec.x + currentToNextPosVec.z * currentToNextPosVec.z);
 		var normFictiveToNextPosVec = Math.sqrt(fictiveToNextPosVec.x * fictiveToNextPosVec.x + fictiveToNextPosVec.z * fictiveToNextPosVec.z);
 
-		// Check that the mouse movement is enough to move character
-		var diff = currentPosition.y - this.nextPosition.y;
+		// Create ratio depending of the postion of the camera in the vertical axis
+		var ratio = (Math.pow(this.nextPosition.y, 2)/5.1)+1	;
+		if(normCurrentToNextPosVec >= (this.SENSITIVITY_TO_TRIGGER_MOVE * ratio)){
 
-		if(normCurrentToNextPosVec >= (this.SENSITIVITY_TO_TRIGGER_MOVE * 2) && (diff <= -0.2 || diff >= 3.4) || (normCurrentToNextPosVec >= this.SENSITIVITY_TO_TRIGGER_MOVE) && (diff > -0.2 && diff < 3.4)){
-
-			this.makeAcceleration(normCurrentToNextPosVec);
 			// Compare both norm is fictive position norm is greater than the other one,
-			// it means that we are going in the opposite direction, hence change direction
+				// it means that we are going in the opposite direction, hence change direction
 			if (normFictiveToNextPosVec > normCurrentToNextPosVec) {
 					if (this.direction === 'right') {
 						this.direction = 'left';
@@ -124,8 +130,9 @@ var Character = function() {
 					}
 				}
 
-			this.makeAcceleration(normFictiveToNextPosVec, diff);
+			this.makeAcceleration(normCurrentToNextPosVec, ratio);
 			this.followPath();
+
 		}
 
 		this.fadeToAction('idle');
