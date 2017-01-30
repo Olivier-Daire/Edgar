@@ -106,6 +106,7 @@ Scene.prototype.addCharacter = function() {
 			_this.scene.add(_this.character.mesh);
 
 			_this.character.followPath(_this.characterPath);
+			_this.setupStage();
 		}
 	);
 };
@@ -201,7 +202,6 @@ Scene.prototype.addSkybox= function(path, size) {
 
 		_this.skybox.scale.set(-1, 1, 1);
 		_this.scene.add(_this.skybox);
-					_this.setupStage();
 	}
 
 };

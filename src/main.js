@@ -7,7 +7,7 @@ window.addEventListener('resize', onResize, true);
 window.addEventListener('vrdisplaypresentchange', onResize, true);
 
 window.vrDisplay = null;
-window.DEBUG = true;
+window.DEBUG = false;
 // EnterVRButton for rendering enter/exit UI.
 var vrButton;
 var lastRenderTime = 0;
@@ -62,8 +62,8 @@ function animate(timestamp) {
   }
 
   var delta = Math.min(timestamp - lastRenderTime, 500);
-
   lastRenderTime = timestamp;
+
   if (scene.character.mesh !== null) {
     // Update character nextPosition
     scene.character.nextPosition = scene.camera.getWorldDirection().multiplyScalar(scene.radius);
@@ -75,8 +75,7 @@ function animate(timestamp) {
   if (vrButton.isPresenting()) {
     scene.controls.update();
   }
-  
-  // Render the scene through the manager.
+
   scene.effect.render(scene.scene, scene.camera);
   window.vrDisplay.requestAnimationFrame(animate);
 
