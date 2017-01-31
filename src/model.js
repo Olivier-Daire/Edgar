@@ -12,8 +12,11 @@ var Model = function(){
 		var loader = new THREE.JSONLoader();
 
 		var loaded = function(geometry, materials) {
-
-			_this.mesh = new THREE.SkinnedMesh(geometry, new THREE.MultiMaterial( materials ));
+			if (typeof geometry.bones !== 'undefined' && geometry.bones.length > 0) {
+				_this.mesh = new THREE.SkinnedMesh(geometry, new THREE.MultiMaterial( materials ));
+			} else {
+				_this.mesh = new THREE.Mesh(geometry, new THREE.MultiMaterial( materials ));
+			}
 
 			// fix transpancy model bug
 		    for( var i = 0; i < materials.length; i ++ ) {
