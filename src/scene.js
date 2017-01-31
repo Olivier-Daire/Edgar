@@ -17,11 +17,7 @@ function Scene(number, animate) {
 	this.skybox = null;
 	this.skyboxSize = null;
 	this.animateFunction = animate;
-
-	// FOR TEST ONLY
-	this.part1 = null;
-	this.part2 = null;
-	this.part3 = null;
+	this.firefly = null;
 
 	this.setup(number);
 
@@ -169,38 +165,14 @@ Scene.prototype.addLightsHemisphere = function() {
 };
 
 Scene.prototype.addFirefly = function() {
+	this.firefly = new Firefly();
+	this.firefly.load();
 
-	// Create 1 pointLight for Three Sprites
-	// MAYBE change latter if we fix performance tests
-	var lightEmitter = new THREE.PointLight( 0xffebbf, 1, 100, 2 );
+	this.firefly.parent.position.set( 0, this.controls.userHeight-1, -this.radius+1 );
+	this.scene.add(this.firefly.parent);
 
-	// FIXME gigantic performance hit on mobile
-	if(!Util.isMobile()) {
-		lightEmitter.castShadow = true;
-	}
-
-	// Parent group
-	var parent = new THREE.Object3D();
-
-	parent.add(lightEmitter);
-
-	var particleMaterial = new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture('public/img/particle.png'), transparent: true} );
-
-	var particleGeometry = new THREE.PlaneGeometry(0.3, 0.3, 10, 10);
-
-	this.part1 = new THREE.Mesh(particleGeometry, particleMaterial);
-	this.part2 = new THREE.Mesh(particleGeometry, particleMaterial);
-	this.part3 = new THREE.Mesh(particleGeometry, particleMaterial);
-
-	parent.add(this.part1);
-	parent.add(this.part2);
-	parent.add(this.part3);
-
-	parent.position.set( 0, this.controls.userHeight-1, -this.radius+1 );
-	this.scene.add(parent);
-
-	this.camera.add(parent);
-	parent.target = this.camera;
+	this.camera.add(this.firefly.parent);
+	this.firefly.parent.target = this.camera;
 };
 
 
