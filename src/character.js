@@ -18,7 +18,6 @@ var Character = function() {
 		var left = new THREE.Vector3(0, 0, -1);
 		var directionVector = this.direction === 'right' ? right : left;
 
-		this.fadeToAction('walk');
 		// http://stackoverflow.com/a/11181366
 		if (this.direction === 'right') {
 			if (this.theta <= 1) {
@@ -92,7 +91,7 @@ var Character = function() {
 		var diff = currentPosition.y - this.nextPosition.y;
 
 		if(normCurrentToNextPosVec >= (this.SENSITIVITY_TO_TRIGGER_MOVE * 2) && (diff <= -0.2 || diff >= 3.4) || (normCurrentToNextPosVec >= this.SENSITIVITY_TO_TRIGGER_MOVE) && (diff > -0.2 && diff < 3.4)){
-
+			this.fadeToAction('walk');
 			// Compare both norm is fictive position norm is greater than the other one,
 			// it means that we are going in the opposite direction, hence change direction
 			if (normFictiveToNextPosVec > normCurrentToNextPosVec) {
@@ -104,9 +103,10 @@ var Character = function() {
 				}
 
 			this.followPath();
+		} else {
+			this.fadeToAction('idle');
 		}
 
-		this.fadeToAction('idle');
 		// Update model animations
 		this.mixer.update(delta);
 	};
