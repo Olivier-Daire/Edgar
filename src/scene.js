@@ -2,6 +2,7 @@
 var SCENES = require('./scenes.json');
 var Model = require('./model.js');
 var Character = require('./character.js');
+var Firefly = require('./firefly.js');
 var Util = require('./util.js');
 
 function Scene(number, animate) {
