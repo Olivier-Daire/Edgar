@@ -19,12 +19,12 @@ var Model = function(){
 			}
 
 			// fix transpancy model bug
-		    for( var i = 0; i < materials.length; i ++ ) {
-		        var material = materials[ i ];
-		        material.alphaTest = 0.5;
-		        material.side = THREE.DoubleSide;
-		        material.transparent = false;
-		    }
+			for( var i = 0; i < materials.length; i ++ ) {
+				var material = materials[ i ];
+				material.alphaTest = 0.5;
+				material.side = THREE.DoubleSide;
+				material.transparent = false;
+			}
 
 			if (typeof geometry.animations !== 'undefined' && geometry.animations.length > 0 ) {
 				materials.forEach(function(material) {

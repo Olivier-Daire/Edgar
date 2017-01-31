@@ -6,9 +6,9 @@ window.vrDisplay = null;
 window.DEBUG = true;
 // EnterVRButton for rendering enter/exit UI.
 var vrButton;
-var lastRenderTime = 0;
 var scene;
 var stats;
+var clock = new THREE.Clock();
 
 function onLoad() {
   document.getElementById('loader').style.display = 'none';
@@ -61,13 +61,11 @@ function onLoad() {
 }
 
 // Request animation frame loop function
-function animate(timestamp) {
+function animate() {
   if(window.DEBUG) {
     stats.begin();
   }
-
-  var delta = Math.min(timestamp - lastRenderTime, 500);
-  lastRenderTime = timestamp;
+  var delta = clock.getDelta();
 
   if (scene.character.mesh !== null) {
     // Update character nextPosition
