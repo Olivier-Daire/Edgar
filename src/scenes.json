@@ -33,6 +33,9 @@
     "skybox": {
       "path" : "public/img/sky1.jpg",
       "size" : "50"
+    },
+    "ground": {
+      "path": "public/img/wood.jpg"
     }
   }
 ]

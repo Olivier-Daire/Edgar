@@ -126,20 +126,22 @@ Scene.prototype.addCharacter = function() {
 	);
 };
 
-Scene.prototype.addGround = function() {
-	var ground = null;
+Scene.prototype.addGround = function(path) {
 	var _this = this;
-    var loader = new THREE.TextureLoader();
+
+	var loader = new THREE.TextureLoader();
 	loader.load(
-		"public/img/wood.jpg",
+		path,
 		function(texture) {
 			texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
 			texture.repeat.set( 10, 10 );
+
 			var groundMaterial = new THREE.MeshPhongMaterial( {map: texture});
-			ground = new THREE.Mesh( new THREE.PlaneBufferGeometry( 5*_this.radius, 5*_this.radius ), groundMaterial );
+			var ground = new THREE.Mesh( new THREE.PlaneBufferGeometry( 5*_this.radius, 5*_this.radius ), groundMaterial );
 			ground.position.set(0, _this.controls.userHeight - 0.5, 0);
 			ground.rotation.x = - Math.PI / 2;
 			ground.receiveShadow = true;
+
 			_this.scene.add( ground );
 		}
 	);
@@ -261,6 +263,9 @@ Scene.prototype.loadJSON = function(number) {
 
 	if (sceneData.skybox) {
 		this.addSkybox(sceneData.skybox.path, sceneData.skybox.size);
+	}
+	if (sceneData.ground) {
+		this.addGround(sceneData.ground.path);
 	}
 };
 
