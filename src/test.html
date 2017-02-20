@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="audio.js"></script>
+  </head>
+  <body>
+
+    <!--
+
+			Only Loads an MP3 file right now, so won't work in browsers that lack the mp3 codec.
+
+
+			Click the canvas to pause / play music.
+-->
+<div class="information">
+  <div class="item">
+    Sound Radius:
+    <input type="number" id="sound-radius" value="50" />
+  </div>
+  <div class="item">
+    Cube Speed:
+    <input type="number" id="cube-speed" value="0.5" step="0.25" />
+  </div>
+  <div class="item">
+    Can play '.mp3':
+    <span id="can-play"> Checking </span>
+  </div>
+  <div class="item">
+    Playing:
+    <span id="is-playing"> yes </span> <br />
+    (click canvas to toggle)
+  </div>
+</div>
+
+  </body>
+</html>
