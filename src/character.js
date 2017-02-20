@@ -28,7 +28,6 @@ var Character = function() {
 			this.currentMovement = this.SPEED;
 		}
 
-		this.fadeToAction('walk');
 		// http://stackoverflow.com/a/11181366
 		if (this.direction === 'right') {
 			if (this.theta <= 1) {
@@ -120,8 +119,9 @@ var Character = function() {
 		var ratio = (Math.pow(this.nextPosition.y, 2)/5.1)+1	;
 		if(normCurrentToNextPosVec >= (this.SENSITIVITY_TO_TRIGGER_MOVE * ratio)){
 
+			this.fadeToAction('walk');
 			// Compare both norm is fictive position norm is greater than the other one,
-				// it means that we are going in the opposite direction, hence change direction
+			// it means that we are going in the opposite direction, hence change direction
 			if (normFictiveToNextPosVec > normCurrentToNextPosVec) {
 					if (this.direction === 'right') {
 						this.direction = 'left';
@@ -133,9 +133,10 @@ var Character = function() {
 			this.makeAcceleration(normCurrentToNextPosVec, ratio);
 			this.followPath();
 
+		} else {
+			this.fadeToAction('idle');
 		}
 
-		this.fadeToAction('idle');
 		// Update model animations
 		this.mixer.update(delta);
 	};

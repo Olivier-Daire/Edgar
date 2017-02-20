@@ -2,6 +2,7 @@
 var SCENES = require('./scenes.json');
 var Model = require('./model.js');
 var Character = require('./character.js');
+var Firefly = require('./firefly.js');
 var Util = require('./util.js');
 
 function Scene(number, animate) {
@@ -16,6 +17,7 @@ function Scene(number, animate) {
 	this.skybox = null;
 	this.skyboxSize = null;
 	this.animateFunction = animate;
+	this.firefly = null;
 
 	this.setup(number);
 
@@ -25,9 +27,14 @@ function Scene(number, animate) {
 
 Scene.prototype.setup = function(number) {
 	// Setup three.js WebGL renderer. Note: Antialiasing is a big performance hit.
-	// Only enable it if you actually need to. --> disable on mobile
-	this.renderer = new THREE.WebGLRenderer();
+	// Only enable it if you actually need to.
+	var rendererParams = {};
+	if(!Util.isMobile()) {
+		rendererParams = {antialias : true};
+	}
+	this.renderer = new THREE.WebGLRenderer(rendererParams);
 	this.renderer.shadowMap.enabled = true;
+
 	this.renderer.setPixelRatio(window.devicePixelRatio);
 	if (window.DEBUG) {
 		// Set clear color to white to see better
@@ -40,12 +47,19 @@ Scene.prototype.setup = function(number) {
 	// Create a three.js scene.
 	this.scene = new THREE.Scene();
 
+	// VRControls always set camera postion to (0, 0, 0) use group and dolly to move it
+	// http://stackoverflow.com/a/34471170
+	this.dolly = new THREE.Group();
 	// Create a three.js camera.
 	this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
-	this.scene.add( this.camera );
+	//this.scene.add( this.camera );
+	this.dolly.position.set( 0, 1.5, 0 ); // if camera.position.z == 0 can't get screen to world coordinates
+	this.scene.add( this.dolly );
+	this.dolly.add( this.camera );
 
 	this.controls = new THREE.VRControls(this.camera);
 	this.controls.standing = true;
+	this.camera.position.y = this.controls.userHeight;
 
 	// Apply VR stereo rendering to renderer.
 	this.effect = new THREE.VREffect(this.renderer);
@@ -55,8 +69,7 @@ Scene.prototype.setup = function(number) {
 	this.addGround();
 	this.addCharacterPath();
 	this.addCharacter();
-	this.addLights();
-	this.addTorchLight();
+	this.addFirefly();
 
 	if (window.DEBUG) {
 		this.addOriginCube();
@@ -98,14 +111,13 @@ Scene.prototype.addCharacterPath = function() {
 Scene.prototype.addCharacter = function() {
 	var _this = this;
 	this.character = new Character();
-	this.character.load('public/model/animated-character.json',
+	this.character.load('public/model/edgaranim.json',
 		function() {
-			_this.character.mesh.scale.x = _this.character.mesh.scale.y = _this.character.mesh.scale.z = 0.5;
-			// FIXME Dirty
-			document.getElementById('loader').style.display = 'none';
+			_this.character.mesh.scale.x = _this.character.mesh.scale.y = _this.character.mesh.scale.z = 8;
 			_this.scene.add(_this.character.mesh);
 
 			_this.character.followPath(_this.characterPath);
+			_this.setupStage();
 		}
 	);
 };
@@ -114,7 +126,7 @@ Scene.prototype.addGround = function() {
 	var ground = null;
 	var groundMaterial = new THREE.MeshPhongMaterial( { color: 0xffffff } );
 
-	ground = new THREE.Mesh( new THREE.PlaneBufferGeometry( 20, 20 ), groundMaterial );
+	ground = new THREE.Mesh( new THREE.PlaneBufferGeometry( 5*this.radius, 5*this.radius ), groundMaterial );
 	ground.position.set(0, this.controls.userHeight - 0.5, 0);
 	ground.rotation.x = - Math.PI / 2;
 	ground.receiveShadow = true;
@@ -153,29 +165,15 @@ Scene.prototype.addLightsHemisphere = function() {
 	dirLight.shadow.bias = -0.0001;
 };
 
-Scene.prototype.addLights = function() {
-	var spotLight = new THREE.PointLight( 0xffffff, 0.2, 0 );
-	spotLight.position.set( 0, this.controls.userHeight+8, 0 );
-	//spotLight.castShadow = true;
-	this.scene.add( spotLight );
-};
+Scene.prototype.addFirefly = function() {
+	this.firefly = new Firefly();
+	this.firefly.load();
 
-Scene.prototype.addTorchLight = function() {
-	var lightSphere = new THREE.SphereGeometry( 0.03, 25, 5 );
-	var lightEmitter = new THREE.PointLight( 0xffee88, 1, 100, 2 );
-	var matSphere = new THREE.MeshStandardMaterial( {
-			emissive: 0xffffee,
-			emissiveIntensity: 1,
-			color: 0x000000
-		});
-	lightEmitter.add( new THREE.Mesh( lightSphere, matSphere ) );
-	lightEmitter.position.set( 0, this.controls.userHeight-1, -this.radius-1 );
-	// FIXME gigantic performance hit on mobile
-	if(!Util.isMobile()) {
-		lightEmitter.castShadow = true;
-	}
-	this.camera.add(lightEmitter);
-	lightEmitter.target = this.camera;
+	this.firefly.parent.position.set( 0, this.controls.userHeight-1, -this.radius+1 );
+	this.scene.add(this.firefly.parent);
+
+	this.camera.add(this.firefly.parent);
+	this.firefly.parent.target = this.camera;
 };
 
 
@@ -201,7 +199,6 @@ Scene.prototype.addSkybox= function(path, size) {
 
 		_this.skybox.scale.set(-1, 1, 1);
 		_this.scene.add(_this.skybox);
-		_this.setupStage();
 	}
 
 };
@@ -222,7 +219,7 @@ Scene.prototype.loadJSON = function(number) {
 					model.mesh.position.x =  modelData.position.x;
 				}
 				if (modelData.position.y) {
-					model.mesh.position.y = modelData.position.x;
+					model.mesh.position.y = modelData.position.y;
 				}  else {
 					// By default set to user height
 					model.mesh.position.y = _this.controls.userHeight;
