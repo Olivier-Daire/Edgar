@@ -65,6 +65,9 @@ Scene.prototype.setup = function(number) {
 	this.effect = new THREE.VREffect(this.renderer);
 	this.effect.setSize(window.innerWidth, window.innerHeight);
 
+	var light = new THREE.AmbientLight( 0x404040 ); // soft white light
+	this.scene.add( light );
+
 	this.loadJSON(number);
 	this.addGround();
 	this.addCharacterPath();
@@ -114,6 +117,7 @@ Scene.prototype.addCharacter = function() {
 	this.character.load('public/model/edgaranim.json',
 		function() {
 			_this.character.mesh.scale.x = _this.character.mesh.scale.y = _this.character.mesh.scale.z = 8;
+			_this.character.mesh.geometry.computeVertexNormals();
 			_this.scene.add(_this.character.mesh);
 
 			_this.character.followPath(_this.characterPath);
@@ -124,13 +128,21 @@ Scene.prototype.addCharacter = function() {
 
 Scene.prototype.addGround = function() {
 	var ground = null;
-	var groundMaterial = new THREE.MeshPhongMaterial( { color: 0xffffff } );
-
-	ground = new THREE.Mesh( new THREE.PlaneBufferGeometry( 5*this.radius, 5*this.radius ), groundMaterial );
-	ground.position.set(0, this.controls.userHeight - 0.5, 0);
-	ground.rotation.x = - Math.PI / 2;
-	ground.receiveShadow = true;
-	this.scene.add( ground );
+	var _this = this;
+    var loader = new THREE.TextureLoader();
+	loader.load(
+		"public/img/wood.jpg",
+		function(texture) {
+			texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+			texture.repeat.set( 10, 10 );
+			var groundMaterial = new THREE.MeshPhongMaterial( {map: texture});
+			ground = new THREE.Mesh( new THREE.PlaneBufferGeometry( 5*_this.radius, 5*_this.radius ), groundMaterial );
+			ground.position.set(0, _this.controls.userHeight - 0.5, 0);
+			ground.rotation.x = - Math.PI / 2;
+			ground.receiveShadow = true;
+			_this.scene.add( ground );
+		}
+	);
 };
 
 Scene.prototype.addOriginCube = function() {
