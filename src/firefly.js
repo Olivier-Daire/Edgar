@@ -11,6 +11,7 @@ var Firefly = function() {
   this.part3 = null;
 
   this.load = function() {
+    var _this = this;
     this.parent = new THREE.Object3D();
     this.lightEmitter = new THREE.PointLight( 0xffebbf, 1, 100, 2 );
 
@@ -20,17 +21,23 @@ var Firefly = function() {
   	}
 
     this.parent.add(this.lightEmitter);
+    var loader = new THREE.TextureLoader();
+    loader.load(
+      'public/img/particle.png',
+      function(texture) {
+        var particleMaterial = new THREE.MeshBasicMaterial( { map: texture, transparent: true} );
+        var particleGeometry = new THREE.PlaneGeometry(0.3, 0.3, 10, 10);
 
-    var particleMaterial = new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture('public/img/particle.png'), transparent: true} );
-  	var particleGeometry = new THREE.PlaneGeometry(0.3, 0.3, 10, 10);
+        _this.part1 = new THREE.Mesh(particleGeometry, particleMaterial);
+        _this.part2 = new THREE.Mesh(particleGeometry, particleMaterial);
+        _this.part3 = new THREE.Mesh(particleGeometry, particleMaterial);
 
-    this.part1 = new THREE.Mesh(particleGeometry, particleMaterial);
-    this.part2 = new THREE.Mesh(particleGeometry, particleMaterial);
-    this.part3 = new THREE.Mesh(particleGeometry, particleMaterial);
+        _this.parent.add(_this.part1);
+        _this.parent.add(_this.part2);
+        _this.parent.add(_this.part3);
+      }
+    );
 
-    this.parent.add(this.part1);
-    this.parent.add(this.part2);
-    this.parent.add(this.part3);
   };
 
   this.updatePosition = function(time) {
