@@ -10,7 +10,10 @@ var Firefly = function() {
   this.part2 = null;
   this.part3 = null;
 
+  this.status = null;
+
   this.load = function() {
+    this.status = 0;
     this.parent = new THREE.Object3D();
     this.lightEmitter = new THREE.PointLight( 0xffebbf, 1, 100, 2 );
 
@@ -45,6 +48,15 @@ var Firefly = function() {
     this.part3.position.x = Math.sin( time * 0.3 ) / 3;
     this.part3.position.y = Math.cos( time * 0.7 ) / 4;
     this.part3.position.z = Math.cos( time * 0.5 ) / 3;
+  };
+
+  this.updateStatus = function() {
+    if(this.status === 0) {
+      this.status = 1;
+    }
+    else if(this.status === 1) {
+      this.status = 0;
+    }
   };
 };
 
