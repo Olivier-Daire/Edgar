@@ -98,7 +98,7 @@ var Firefly = function() {
       }
     }
     else if(this.status === 1) {
-      if(this.lightEmitter.intensity < 1.5) {
+      if(this.lightEmitter.intensity < 1.3) {
         this.lightEmitter.intensity += 0.01;
       }
     }
