@@ -49,19 +49,12 @@ var Firefly = function() {
   };
 
   this.updatePosition = function(time) {
-    if(this.status === 0) {
-      if(this.gravityCoeff > 3.0) {
-        // If we stay a long time on status 1, we have to reduce the gravity when switching status
-        if(this.gravityCoeff > 15.0) {
-          this.gravityCoeff = 15.0;
-        }
-        this.gravityCoeff -= 0.1;
-      }
-    }
-    else if(this.status === 1) {
-      this.gravityCoeff += 0.1;
-    }
-    this.part1.position.x = Math.sin(  time * 0.7 ) / this.gravityCoeff;
+    // Update particles gravity when switching firefly status
+    this.updateGravity();
+    this.updateLightIntensity();
+
+    // TODO : Update particles scale
+    this.part1.position.x = Math.sin( time * 0.7 ) / this.gravityCoeff;
     this.part1.position.y = Math.cos( time * 0.5 ) / this.gravityCoeff+1;
     this.part1.position.z = Math.cos( time * 0.3 ) / this.gravityCoeff;
 
@@ -77,11 +70,37 @@ var Firefly = function() {
   this.updateStatus = function() {
     if(this.status === 0) {
       this.status = 1;
-      this.lightEmitter.intensity = 1.5;
     }
     else if(this.status === 1) {
       this.status = 0;
-      this.lightEmitter.intensity = 0.7;
+    }
+  };
+
+  this.updateGravity = function() {
+    if(this.status === 0) {
+      if(this.gravityCoeff > 3.0) {
+        // If we stay a long time on status 1, we have to reduce the gravity when switching status
+        if(this.gravityCoeff > 15.0) {
+          this.gravityCoeff = 15.0;
+        }
+        this.gravityCoeff -= 0.1;
+      }
+    }
+    else if(this.status === 1) {
+      this.gravityCoeff += 0.1;
+    }
+  };
+
+  this.updateLightIntensity = function() {
+    if(this.status === 0) {
+      if(this.lightEmitter.intensity > 0.7) {
+        this.lightEmitter.intensity -= 0.01;
+      }
+    }
+    else if(this.status === 1) {
+      if(this.lightEmitter.intensity < 1.5) {
+        this.lightEmitter.intensity += 0.01;
+      }
     }
   };
 };
