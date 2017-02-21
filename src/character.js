@@ -4,10 +4,16 @@ var Model = require('./model.js');
 
 var Character = function() {
 	this.SPEED = 0.001;
-	this.SENSITIVITY_TO_TRIGGER_MOVE = 0.4;
+	this.SENSITIVITY_TO_TRIGGER_MOVE = 0.3;
+	this.ACCELERATIONVALUE = 0.01;
+	this.DECELERATIONVALUE = 0.25; // The lower this value is, the more time the character takes to stop. Recommended value : .25
+	this.DECELERATIONMOMENT = 0.3; // The higher this value is, the later the character stops. Recommended value : .3
+	this.acceleration = 0;
+	this.currentMovement = this.SPEED;
 	this.nextPosition = null;
 	this.theta = 0.75; // No idea why but it's in front of camera
 	this.direction = 'right';
+	this.oldDirection = 'right';
 	this.path = null;
 
 	this.followPath = function(path){
@@ -17,23 +23,45 @@ var Character = function() {
 		var right = new THREE.Vector3(0, 0, 1);
 		var left = new THREE.Vector3(0, 0, -1);
 		var directionVector = this.direction === 'right' ? right : left;
+		if(this.oldDirection !== this.direction){
+			this.oldDirection = this.direction;
+			this.currentMovement = this.SPEED;
+		}
 
 		// http://stackoverflow.com/a/11181366
 		if (this.direction === 'right') {
 			if (this.theta <= 1) {
 				this.computeAngleAndDirection(directionVector);
-				this.theta += this.SPEED;
+				this.theta += this.currentMovement;
 			} else {
 				this.theta = 0;
 			}
 		} else {
 			if (this.theta >= 0) {
 				this.computeAngleAndDirection(directionVector);
-				this.theta -= this.SPEED;
+				this.theta -= this.currentMovement;
 			} else {
 				this.theta = 1;
 			}
 		}
+	};
+
+	this.makeAcceleration = function(vectorLength, ratio){
+		var accelerationValue = ((vectorLength + this.DECELERATIONMOMENT)- (ratio / 10));
+
+		if(accelerationValue > 1){	// The character needs to accelerate or to keep his speed
+			if(this.acceleration < 1){
+				this.acceleration += this.ACCELERATIONVALUE;
+			}
+			else{
+				this.acceleration = 1;
+			}
+		}
+		else{ // The character needs to decelerate
+			this.acceleration = ((1 * accelerationValue) - this.DECELERATIONVALUE); // The deceleration will depend of the length of the character - camera vector
+		}
+
+		this.currentMovement = this.SPEED * this.acceleration;
 	};
 
 	// TODO almost same as function above, refator
@@ -87,10 +115,10 @@ var Character = function() {
 		var normCurrentToNextPosVec = Math.sqrt(currentToNextPosVec.x * currentToNextPosVec.x + currentToNextPosVec.z * currentToNextPosVec.z);
 		var normFictiveToNextPosVec = Math.sqrt(fictiveToNextPosVec.x * fictiveToNextPosVec.x + fictiveToNextPosVec.z * fictiveToNextPosVec.z);
 
-		// Check that the mouse movement is enough to move character
-		var diff = currentPosition.y - this.nextPosition.y;
+		// Create ratio depending of the postion of the camera in the vertical axis
+		var ratio = (Math.pow(this.nextPosition.y, 2)/5.1)+1	;
+		if(normCurrentToNextPosVec >= (this.SENSITIVITY_TO_TRIGGER_MOVE * ratio)){
 
-		if(normCurrentToNextPosVec >= (this.SENSITIVITY_TO_TRIGGER_MOVE * 2) && (diff <= -0.2 || diff >= 3.4) || (normCurrentToNextPosVec >= this.SENSITIVITY_TO_TRIGGER_MOVE) && (diff > -0.2 && diff < 3.4)){
 			this.fadeToAction('walk');
 			// Compare both norm is fictive position norm is greater than the other one,
 			// it means that we are going in the opposite direction, hence change direction
@@ -102,7 +130,9 @@ var Character = function() {
 					}
 				}
 
+			this.makeAcceleration(normCurrentToNextPosVec, ratio);
 			this.followPath();
+
 		} else {
 			this.fadeToAction('idle');
 		}

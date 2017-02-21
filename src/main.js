@@ -10,6 +10,19 @@ var scene;
 var stats;
 var clock = new THREE.Clock();
 
+
+document.onkeydown = checkKey;
+
+function checkKey(e) {
+
+    e = e || window.event;
+
+    if (e.keyCode === 69) { // 69 keycode for 'e'
+        scene.firefly.updateStatus();
+        console.log(scene.firefly.status);
+    }
+}
+
 function onLoad() {
   document.getElementById('loader').style.display = 'none';
 
