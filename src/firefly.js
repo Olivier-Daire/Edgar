@@ -49,21 +49,21 @@ var Firefly = function() {
   };
 
   this.updatePosition = function(time) {
-    // Update particles gravity when switching firefly status
+    // Update particles gravity & intensity when switching firefly status
     this.updateGravity();
     this.updateLightIntensity();
 
     // TODO : Update particles scale
     this.part1.position.x = Math.sin( time * 0.7 ) / this.gravityCoeff;
-    this.part1.position.y = Math.cos( time * 0.5 ) / this.gravityCoeff+1;
+    this.part1.position.y = Math.cos( time * 0.5 ) / this.gravityCoeff;
     this.part1.position.z = Math.cos( time * 0.3 ) / this.gravityCoeff;
 
     this.part2.position.x = Math.sin( time * 0.3 ) / this.gravityCoeff;
-    this.part2.position.y = Math.cos( time * 0.5 ) / this.gravityCoeff+1;
+    this.part2.position.y = Math.cos( time * 0.5 ) / this.gravityCoeff;
     this.part2.position.z = Math.cos( time * 0.7 ) / this.gravityCoeff;
 
     this.part3.position.x = Math.sin( time * 0.3 ) / this.gravityCoeff;
-    this.part3.position.y = Math.cos( time * 0.7 ) / this.gravityCoeff+1;
+    this.part3.position.y = Math.cos( time * 0.7 ) / this.gravityCoeff;
     this.part3.position.z = Math.cos( time * 0.5 ) / this.gravityCoeff;
   };
 
