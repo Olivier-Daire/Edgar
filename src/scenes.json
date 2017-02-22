@@ -4,29 +4,16 @@
     "radius" : "6",
     "models": [
       {
-        "path": "public/model/WoodenBox02.json",
+        "path": "public/model/house5.json",
         "position": {
           "x" : "2",
-          "y" : 0,
-          "z" : "-2"
-         },
-        "scale": {
-          "x" : 0,
-          "y" : 0,
-          "z" : 0
-        }
-      },
-      {
-        "path": "public/model/house4.json",
-        "position": {
-          "x" : "0",
-          "y" : 0,
+          "y" : 1.2,
           "z" : "0"
          },
         "scale": {
-          "x" : 0,
-          "y" : 0,
-          "z" : 0
+          "x" : 1.5,
+          "y" : 1.5,
+          "z" : 1.25
         }
       }
     ],
