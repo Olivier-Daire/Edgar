@@ -13,6 +13,7 @@ function Scene(number, animate) {
 	this.effect = null;
 	this.characterPath = null;
 	this.character = null;
+	this.collideObjects = [];
 	this.radius = null;
 	this.skybox = null;
 	this.skyboxSize = null;
@@ -115,6 +116,15 @@ Scene.prototype.addCharacter = function() {
 		function() {
 			_this.character.mesh.scale.x = _this.character.mesh.scale.y = _this.character.mesh.scale.z = 8;
 			_this.scene.add(_this.character.mesh);
+			_this.character.mesh.geometry.computeBoundingBox();
+
+			if (window.DEBUG) {
+				_this.character.bbhelper = new THREE.BoxHelper(_this.character.mesh, 0xffffff);
+				_this.scene.add(_this.character.bbhelper);
+			}
+
+			var box3 = new THREE.Box3();
+			_this.character.bbox = box3.setFromObject( _this.character.mesh );
 
 			_this.character.followPath(_this.characterPath);
 			_this.setupStage();
@@ -166,14 +176,18 @@ Scene.prototype.addLightsHemisphere = function() {
 };
 
 Scene.prototype.addFirefly = function() {
+	var _this = this;
 	this.firefly = new Firefly();
-	this.firefly.load();
+	this.firefly.load(function() {
+		_this.firefly.parent.position.set( 0, _this.controls.userHeight-1, -_this.radius+1 );
+		_this.scene.add(_this.firefly.bbhelper);
+		_this.scene.add(_this.firefly.parent);
 
-	this.firefly.parent.position.set( 0, this.controls.userHeight-1, -this.radius+1 );
-	this.scene.add(this.firefly.parent);
+		_this.camera.add(_this.firefly.parent);
+		_this.firefly.parent.target = _this.camera;
+	});
 
-	this.camera.add(this.firefly.parent);
-	this.firefly.parent.target = this.camera;
+
 };
 
 
@@ -240,6 +254,19 @@ Scene.prototype.loadJSON = function(number) {
 				if(modelData.scale.z) {
 					model.mesh.scale.z = modelData.scale.z;
 				}
+			}
+
+			if (modelData.collisions) {
+				//model.mesh.geometry.computeBoundingBox();
+				var box3 = new THREE.Box3();
+				model.bbox = box3.setFromObject( model.mesh );
+
+				if (window.DEBUG) {
+					var bboxHelper = new THREE.BoxHelper(model.mesh, 0xffffff);
+					_this.scene.add(bboxHelper);
+				}
+
+				_this.collideObjects.push(model);
 			}
 
 			_this.scene.add(model.mesh);

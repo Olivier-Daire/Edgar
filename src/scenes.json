@@ -14,20 +14,22 @@
           "x" : "0.75",
           "y" : "1",
           "z" : "0.75"
-        }
+        },
+        "collisions": false
       },
       {
         "path": "public/model/WoodenBox02.json",
         "position": {
           "x" : "2",
           "y" : 0,
-          "z" : "-2"
+          "z" : "-5.5"
          },
         "scale": {
           "x" : 0,
           "y" : 0,
           "z" : 0
-        }
+        },
+        "collisions": true
       }
     ],
     "skybox": {

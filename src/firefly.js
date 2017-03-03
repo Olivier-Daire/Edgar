@@ -8,13 +8,15 @@ var Firefly = function() {
   this.particleMaterial = null;
   this.gravityCoeff = null;
 
+  this.bbhelper = null;
+
   this.part1 = null;
   this.part2 = null;
   this.part3 = null;
 
   this.status = null;
 
-  this.load = function() {
+  this.load = function(onLoad) {
     this.status = 0;
     this.gravityCoeff = 3.0;
     var _this = this;
@@ -43,6 +45,9 @@ var Firefly = function() {
         _this.parent.add(_this.part1);
         _this.parent.add(_this.part2);
         _this.parent.add(_this.part3);
+        _this.bbhelper = new THREE.BoxHelper(_this.parent, 0xffffff);
+        _this.bbhelper.geometry.computeBoundingBox();
+        onLoad();
       }
     );
 
@@ -102,6 +107,9 @@ var Firefly = function() {
         this.lightEmitter.intensity += 0.01;
       }
     }
+
+    //console.log(this.bbhelper.geometry.boundingBox.min);
+    this.bbhelper.update(this.parent);
   };
 };
 

@@ -6,6 +6,7 @@ var Model = function(){
 	this.mixer = null;
 	this.actions = {};
 	this.activeAction = null;
+	this.bbox = null;
 
 	this.load = function(path, onLoad) {
 		var _this = this;

@@ -84,7 +84,7 @@ function animate() {
     // Update character nextPosition
     scene.character.nextPosition = scene.camera.getWorldDirection().multiplyScalar(scene.radius);
     // Update character position along path
-    scene.character.updateCharacter(0.4 * delta);
+    scene.character.updateCharacter(0.4 * delta, scene);
   }
 
   var time = Date.now() * 0.003;
