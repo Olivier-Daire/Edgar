@@ -9,6 +9,7 @@ var Firefly = function() {
   this.gravityCoeff = null;
 
   this.bbhelper = null;
+  this.bbox = null;
 
   this.part1 = null;
   this.part2 = null;
@@ -45,18 +46,25 @@ var Firefly = function() {
         _this.parent.add(_this.part1);
         _this.parent.add(_this.part2);
         _this.parent.add(_this.part3);
-        _this.bbhelper = new THREE.BoxHelper(_this.parent, 0xffffff);
-        _this.bbhelper.geometry.computeBoundingBox();
+
+        if (window.DEBUG) {
+          _this.bbhelper = new THREE.BoxHelper(_this.parent, 0xffffff);
+          _this.bbhelper.geometry.computeBoundingBox();
+        }
+        var box3 = new THREE.Box3();
+        _this.bbox = box3.setFromObject( _this.parent );
+
         onLoad();
       }
     );
 
   };
 
-  this.updatePosition = function(time) {
+  this.updatePosition = function(time, scene) {
     // Update particles gravity & intensity when switching firefly status
     this.updateGravity();
     this.updateLightIntensity();
+    this.interact(scene.collideObjects, scene.character.theta); // Passer theta du perso ?
 
     // TODO : Update particles scale
     this.part1.position.x = Math.sin( time * 0.7 ) / this.gravityCoeff;
@@ -70,6 +78,7 @@ var Firefly = function() {
     this.part3.position.x = Math.sin( time * 0.3 ) / this.gravityCoeff;
     this.part3.position.y = Math.cos( time * 0.7 ) / this.gravityCoeff;
     this.part3.position.z = Math.cos( time * 0.5 ) / this.gravityCoeff;
+
   };
 
   this.updateStatus = function() {
@@ -107,10 +116,38 @@ var Firefly = function() {
         this.lightEmitter.intensity += 0.01;
       }
     }
+  };
 
-    //console.log(this.bbhelper.geometry.boundingBox.min);
-    this.bbhelper.update(this.parent);
+  // FIXME trouble when object is far from the circle (gap between x and z firefly position and x and z object position)
+  this.interact = function(objects, characterTheta) {
+    var collide = false;
+    if (window.DEBUG && this.bbhelper){
+      this.bbhelper.update(this.parent);
+    }
+    if(this.bbox) {
+      this.bbox.setFromObject(this.parent); // re-calculate AABB
+
+      // Size of interaction box depending on angle on the circle
+      if ( (characterTheta > 0.625 && characterTheta < 0.875) || (characterTheta > 0.125 && characterTheta < 0.375) ) {
+        var boxSize = new THREE.Vector3(1, 1, 20);
+      } else {
+        var boxSize = new THREE.Vector3(20, 1, 1);
+      }
+
+      this.bbox.setFromCenterAndSize(this.bbox.getCenter(), boxSize);
+
+      for (var i = 0; i < objects.length; i++) {
+        collide = this.bbox.intersectsBox(objects[i].bbox);
+        if (collide) {
+          setInterval(function() {
+            var event = new Event('interact');
+            window.dispatchEvent(event);
+          }, 3000);
+        }
+      }
+    }
   };
 };
 
 module.exports = Firefly;
+

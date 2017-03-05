@@ -22,7 +22,35 @@
         "position": {
           "x" : "2",
           "y" : 0,
-          "z" : "-5.5"
+          "z" : "-7.5"
+         },
+        "scale": {
+          "x" : 0,
+          "y" : 0,
+          "z" : 0
+        },
+        "collisions": true
+      },
+      {
+        "path": "public/model/WoodenBox02.json",
+        "position": {
+          "x" : "7",
+          "y" : 0,
+          "z" : "0"
+         },
+        "scale": {
+          "x" : 0,
+          "y" : 0,
+          "z" : 0
+        },
+        "collisions": true
+      },
+      {
+        "path": "public/model/WoodenBox02.json",
+        "position": {
+          "x" : "2",
+          "y" : 0,
+          "z" : "5.5"
          },
         "scale": {
           "x" : 0,

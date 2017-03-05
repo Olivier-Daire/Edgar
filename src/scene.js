@@ -190,7 +190,6 @@ Scene.prototype.addFirefly = function() {
 
 };
 
-
 Scene.prototype.addSkybox= function(path, size) {
 	var loader = new THREE.TextureLoader();
 	loader.load(path, onTextureLoaded);
@@ -257,7 +256,7 @@ Scene.prototype.loadJSON = function(number) {
 			}
 
 			if (modelData.collisions) {
-				//model.mesh.geometry.computeBoundingBox();
+				model.mesh.geometry.computeBoundingBox();
 				var box3 = new THREE.Box3();
 				model.bbox = box3.setFromObject( model.mesh );
 

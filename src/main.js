@@ -36,6 +36,7 @@ function onLoad() {
 
   window.addEventListener('resize', onResize, true);
   window.addEventListener('vrdisplaypresentchange', onResize, true);
+  window.addEventListener('interact', function() {console.log('eee')}, false)
 
   // Initialize the WebVR UI.
   var uiOptions = {
@@ -88,7 +89,7 @@ function animate() {
   }
 
   var time = Date.now() * 0.003;
-  scene.firefly.updatePosition(time);
+  scene.firefly.updatePosition(time, scene);
 
   scene.controls.update();
 
