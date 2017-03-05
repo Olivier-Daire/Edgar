@@ -131,7 +131,6 @@ var Character = function() {
 
 		// Create ratio depending of the postion of the camera in the vertical axis
 		var ratio = (Math.pow(this.nextPosition.y, 2)/5.1)+1;
-		// Clone character --> position = fictive and test collisions
 
 		if(normCurrentToNextPosVec >= (this.SENSITIVITY_TO_TRIGGER_MOVE * ratio) && (this.collisionDirection !== this.direction) ) {
 			this.collide(scene.collideObjects);
@@ -157,8 +156,11 @@ var Character = function() {
 
 		if(this.bbox) {
 			this.bbox.setFromObject(this.mesh); // re-calculate AABB
-			for (var i = sceneCollideObjects.length - 1; i >= 0; i--) {
+			for (var i = 0; i < sceneCollideObjects.length ; i++) {
 				collide = this.bbox.intersectsBox(sceneCollideObjects[i].bbox);
+				if (collide) {
+					break;
+				}
 			}
 		}
 		if (collide) {
