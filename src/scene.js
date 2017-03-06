@@ -1,5 +1,5 @@
 "use strict";
-var SCENES = require('./scenes.json');
+var SCENES = require('../public/scenes.json');
 var Model = require('./model.js');
 var Character = require('./character.js');
 var Firefly = require('./firefly.js');
@@ -14,6 +14,7 @@ function Scene(number, animate) {
 	this.characterPath = null;
 	this.character = null;
 	this.collideObjects = [];
+	this.interactableObjects = [];
 	this.radius = null;
 	this.skybox = null;
 	this.skyboxSize = null;
@@ -265,9 +266,12 @@ Scene.prototype.loadJSON = function(number) {
 					_this.scene.add(bboxHelper);
 				}
 
-				// Object3d.id
-				var collideObject = { "id": model.mesh.id, "object": model };
-				_this.collideObjects.push(collideObject);
+				_this.collideObjects.push(model);
+			}
+
+			if (modelData.interaction) {
+				var interactableObject = { "id": model.mesh.id, "object": model };
+				_this.interactableObjects.push(interactableObject);
 			}
 
 			_this.scene.add(model.mesh);
