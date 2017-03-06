@@ -15,6 +15,9 @@ var Character = function() {
 	this.direction = 'right';
 	this.oldDirection = 'right';
 	this.path = null;
+	this.bbox = null;
+	this.bbhelper = null;
+	this.collisionDirection = null;
 
 	this.followPath = function(path){
 		if (path && typeof path !== undefined) {
@@ -64,7 +67,7 @@ var Character = function() {
 		this.currentMovement = this.SPEED * this.acceleration;
 	};
 
-	// TODO almost same as function above, refator
+	// TODO almost same as function above, refactor
 	this.computeFictiveDirection = function() {
 		if (this.direction === 'right') {
 			if (this.theta + this.SPEED <= 1) {
@@ -95,7 +98,7 @@ var Character = function() {
 		this.mesh.quaternion.setFromAxisAngle(axis, radians);
 	};
 
-	this.updateCharacter = function(delta) {
+	this.updateCharacter = function(delta, scene) {
 		var currentPosition = this.mesh.position;
 
 		/**
@@ -115,12 +118,7 @@ var Character = function() {
 		var normCurrentToNextPosVec = Math.sqrt(currentToNextPosVec.x * currentToNextPosVec.x + currentToNextPosVec.z * currentToNextPosVec.z);
 		var normFictiveToNextPosVec = Math.sqrt(fictiveToNextPosVec.x * fictiveToNextPosVec.x + fictiveToNextPosVec.z * fictiveToNextPosVec.z);
 
-		// Create ratio depending of the postion of the camera in the vertical axis
-		var ratio = (Math.pow(this.nextPosition.y, 2)/5.1)+1	;
-		if(normCurrentToNextPosVec >= (this.SENSITIVITY_TO_TRIGGER_MOVE * ratio)){
-
-			this.fadeToAction('walk');
-			// Compare both norm is fictive position norm is greater than the other one,
+		// Compare both norm is fictive position norm is greater than the other one,
 			// it means that we are going in the opposite direction, hence change direction
 			if (normFictiveToNextPosVec > normCurrentToNextPosVec) {
 					if (this.direction === 'right') {
@@ -130,6 +128,13 @@ var Character = function() {
 					}
 				}
 
+
+		// Create ratio depending of the postion of the camera in the vertical axis
+		var ratio = (Math.pow(this.nextPosition.y, 2)/5.1)+1;
+
+		if(normCurrentToNextPosVec >= (this.SENSITIVITY_TO_TRIGGER_MOVE * ratio) && (this.collisionDirection !== this.direction) ) {
+			this.collide(scene.collideObjects);
+			this.fadeToAction('walk');
 			this.makeAcceleration(normCurrentToNextPosVec, ratio);
 			this.followPath();
 
@@ -138,7 +143,37 @@ var Character = function() {
 		}
 
 		// Update model animations
+		if (window.DEBUG && this.bbhelper){
+			this.bbhelper.update(this.mesh);
+		}
+
 		this.mixer.update(delta);
+	};
+
+	this.collide = function(sceneCollideObjects) {
+		var collide = false;
+		this.collisionDirection = null;
+
+		if(this.bbox) {
+			this.bbox.setFromObject(this.mesh); // re-calculate AABB
+			for (var i = 0; i < sceneCollideObjects.length ; i++) {
+				collide = this.bbox.intersectsBox(sceneCollideObjects[i].bbox);
+				if (collide) {
+					break;
+				}
+			}
+		}
+		if (collide) {
+			this.collisionDirection = this.direction;
+
+			// Replace model just a few pixels behind (right before it collides so we can go on the other side)
+			if (this.direction === 'right') {
+				this.theta -= this.currentMovement * 2.5;
+			} else {
+				this.theta += this.currentMovement * 2.5;
+			}
+		}
+		return collide;
 	};
 
 	return this;
