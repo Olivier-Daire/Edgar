@@ -36,7 +36,7 @@ function onLoad() {
 
   window.addEventListener('resize', onResize, true);
   window.addEventListener('vrdisplaypresentchange', onResize, true);
-  window.addEventListener('interact', function() {console.log('eee')}, false)
+  window.addEventListener('interact', function() {console.log('eee');}, false);
 
   // Initialize the WebVR UI.
   var uiOptions = {

@@ -10,6 +10,7 @@ var Firefly = function() {
 
   this.bbhelper = null;
   this.bbox = null;
+  this.interactionFired = false;
 
   this.part1 = null;
   this.part2 = null;
@@ -121,6 +122,7 @@ var Firefly = function() {
   // FIXME trouble when object is far from the circle (gap between x and z firefly position and x and z object position)
   this.interact = function(objects, characterTheta) {
     var collide = false;
+
     if (window.DEBUG && this.bbhelper){
       this.bbhelper.update(this.parent);
     }
@@ -128,23 +130,29 @@ var Firefly = function() {
       this.bbox.setFromObject(this.parent); // re-calculate AABB
 
       // Size of interaction box depending on angle on the circle
+      var boxSize;
       if ( (characterTheta > 0.625 && characterTheta < 0.875) || (characterTheta > 0.125 && characterTheta < 0.375) ) {
-        var boxSize = new THREE.Vector3(1, 1, 20);
+        boxSize = new THREE.Vector3(1, 1, 20);
       } else {
-        var boxSize = new THREE.Vector3(20, 1, 1);
+        boxSize = new THREE.Vector3(20, 1, 1);
       }
 
       this.bbox.setFromCenterAndSize(this.bbox.getCenter(), boxSize);
 
       for (var i = 0; i < objects.length; i++) {
         collide = this.bbox.intersectsBox(objects[i].bbox);
+
         if (collide) {
-          setInterval(function() {
+          if (!this.interactionFired) {
             var event = new Event('interact');
             window.dispatchEvent(event);
-          }, 3000);
+            this.interactionFired = true;
+          }
+          break;
         }
+
       }
+      if (!collide) {this.interactionFired = false;}
     }
   };
 };
