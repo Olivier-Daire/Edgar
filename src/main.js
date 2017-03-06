@@ -19,7 +19,6 @@ function checkKey(e) {
 
     if (e.keyCode === 69) { // 69 keycode for 'e'
         scene.firefly.updateStatus();
-        console.log(scene.firefly.status);
     }
 }
 
@@ -45,7 +44,7 @@ function onLoad() {
           scene.scene.getObjectById(e.detail.id).position.x = 6;
           break;
       default:
-          console.log("Implement switch case for " + e.detail.interaction);
+          console.log("Implement switch case for " + e.detail.interaction);  // jshint ignore:line
     }
   }, false);
 
