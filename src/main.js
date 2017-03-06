@@ -36,7 +36,18 @@ function onLoad() {
 
   window.addEventListener('resize', onResize, true);
   window.addEventListener('vrdisplaypresentchange', onResize, true);
-  window.addEventListener('interact', function() {console.log('eee');}, false);
+  window.addEventListener('interact', function(e) {
+    // e.detail.id contains object id
+    // e.detail.interaction contains interaction type e.g "move"
+    // TODO Add all cases
+    switch(e.detail.interaction) {
+      case 'move':
+          scene.scene.getObjectById(e.detail.id).position.x = 6;
+          break;
+      default:
+          console.log("Implement switch case for " + e.detail.interaction);
+    }
+  }, false);
 
   // Initialize the WebVR UI.
   var uiOptions = {

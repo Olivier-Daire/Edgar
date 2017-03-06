@@ -140,11 +140,11 @@ var Firefly = function() {
       this.bbox.setFromCenterAndSize(this.bbox.getCenter(), boxSize);
 
       for (var i = 0; i < objects.length; i++) {
-        collide = this.bbox.intersectsBox(objects[i].bbox);
+        collide = this.bbox.intersectsBox(objects[i].object.bbox);
 
         if (collide) {
           if (!this.interactionFired) {
-            var event = new Event('interact');
+            var event = new CustomEvent('interact', {'detail': {'id': objects[i].id, 'interaction': 'move'}});
             window.dispatchEvent(event);
             this.interactionFired = true;
           }

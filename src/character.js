@@ -157,7 +157,7 @@ var Character = function() {
 		if(this.bbox) {
 			this.bbox.setFromObject(this.mesh); // re-calculate AABB
 			for (var i = 0; i < sceneCollideObjects.length ; i++) {
-				collide = this.bbox.intersectsBox(sceneCollideObjects[i].bbox);
+				collide = this.bbox.intersectsBox(sceneCollideObjects[i].object.bbox);
 				if (collide) {
 					break;
 				}

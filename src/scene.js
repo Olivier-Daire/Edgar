@@ -265,7 +265,9 @@ Scene.prototype.loadJSON = function(number) {
 					_this.scene.add(bboxHelper);
 				}
 
-				_this.collideObjects.push(model);
+				// Object3d.id
+				var collideObject = { "id": model.mesh.id, "object": model };
+				_this.collideObjects.push(collideObject);
 			}
 
 			_this.scene.add(model.mesh);
