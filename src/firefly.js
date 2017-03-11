@@ -7,6 +7,7 @@ var Firefly = function() {
   this.lightEmitter = null;
   this.particleMaterial = null;
   this.gravityCoeff = null;
+  this.loaded = false;
 
   this.part1 = null;
   this.part2 = null;
@@ -43,6 +44,8 @@ var Firefly = function() {
         _this.parent.add(_this.part1);
         _this.parent.add(_this.part2);
         _this.parent.add(_this.part3);
+
+        _this.loaded = true;
       }
     );
 

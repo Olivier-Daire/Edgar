@@ -122,7 +122,7 @@ function animate() {
   }
 
   var time = Date.now() * 0.003;
-  scene.firefly.updatePosition(time);
+  if(scene.firefly.loaded){ scene.firefly.updatePosition(time); }
 
   scene.controls.update();
 
