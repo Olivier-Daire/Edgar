@@ -1,6 +1,7 @@
 "use strict";
 
 var Scene = require('./scene.js');
+var Util = require('./util.js');
 
 window.vrDisplay = null;
 window.DEBUG = true;
@@ -9,7 +10,8 @@ var vrButton;
 var scene;
 var stats;
 var clock = new THREE.Clock();
-
+var renderer = null;
+var scene2 = false;
 
 document.onkeydown = checkKey;
 
@@ -19,8 +21,39 @@ function checkKey(e) {
 
     if (e.keyCode === 69) { // 69 keycode for 'e'
         scene.firefly.updateStatus();
-        console.log(scene.firefly.status);
     }
+    else if (e.keyCode === 13) { // 69 keycode for enter
+        
+        if(scene2 === false){
+          scene2 = true;
+          scene = new Scene(2 , animate, renderer);
+        }else {
+          scene2 = false;
+          scene = new Scene(1 , animate, renderer);
+        }
+    }
+}
+
+function initRender(){
+
+  // Setup three.js WebGL renderer. Note: Antialiasing is a big performance hit.
+  // Only enable it if you actually need to.
+  var rendererParams = {};
+  if(!Util.isMobile()) {
+    rendererParams = {antialias : true};
+  }
+  renderer = new THREE.WebGLRenderer(rendererParams);
+  renderer.shadowMap.enabled = true;
+
+  renderer.setPixelRatio(window.devicePixelRatio);
+  if (window.DEBUG) {
+    // Set clear color to white to see better
+    renderer.setClearColor( 0xffffff, 1 );
+  }
+
+  // Append the canvas element created by the renderer to document body element.
+  document.body.appendChild(renderer.domElement);
+
 }
 
 function onLoad() {
@@ -32,7 +65,8 @@ function onLoad() {
     document.body.appendChild( stats.dom );
   }
 
-  scene = new Scene(1, animate);
+  initRender();
+  scene = new Scene(1 , animate, renderer);
 
   window.addEventListener('resize', onResize, true);
   window.addEventListener('vrdisplaypresentchange', onResize, true);
@@ -44,7 +78,7 @@ function onLoad() {
     corners: 'square'
   };
 
-  vrButton = new webvrui.EnterVRButton(scene.renderer.domElement, uiOptions);
+  vrButton = new webvrui.EnterVRButton(renderer.domElement, uiOptions);
 
   vrButton.on('exit', function() {
     scene.camera.quaternion.set(0, 0, 0, 1);

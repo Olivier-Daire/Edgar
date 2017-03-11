@@ -3,10 +3,8 @@ var SCENES = require('./scenes.json');
 var Model = require('./model.js');
 var Character = require('./character.js');
 var Firefly = require('./firefly.js');
-var Util = require('./util.js');
 
-function Scene(number, animate) {
-	this.renderer = null;
+function Scene(number, animate, renderer) {
 	this.scene = null;
 	this.camera = null;
 	this.controls = null;
@@ -19,30 +17,13 @@ function Scene(number, animate) {
 	this.animateFunction = animate;
 	this.firefly = null;
 
-	this.setup(number);
+	this.setup(number, renderer);
 
 	return this;
 }
 
 
-Scene.prototype.setup = function(number) {
-	// Setup three.js WebGL renderer. Note: Antialiasing is a big performance hit.
-	// Only enable it if you actually need to.
-	var rendererParams = {};
-	if(!Util.isMobile()) {
-		rendererParams = {antialias : true};
-	}
-	this.renderer = new THREE.WebGLRenderer(rendererParams);
-	this.renderer.shadowMap.enabled = true;
-
-	this.renderer.setPixelRatio(window.devicePixelRatio);
-	if (window.DEBUG) {
-		// Set clear color to white to see better
-		this.renderer.setClearColor( 0xffffff, 1 );
-	}
-
-	// Append the canvas element created by the renderer to document body element.
-	document.body.appendChild(this.renderer.domElement);
+Scene.prototype.setup = function(number, renderer) {
 
 	// Create a three.js scene.
 	this.scene = new THREE.Scene();
@@ -62,7 +43,7 @@ Scene.prototype.setup = function(number) {
 	this.camera.position.y = this.controls.userHeight;
 
 	// Apply VR stereo rendering to renderer.
-	this.effect = new THREE.VREffect(this.renderer);
+	this.effect = new THREE.VREffect(renderer);
 	this.effect.setSize(window.innerWidth, window.innerHeight);
 
 	this.loadJSON(number);
@@ -243,6 +224,7 @@ Scene.prototype.loadJSON = function(number) {
 			}
 
 			_this.scene.add(model.mesh);
+
 		});
 
 	});

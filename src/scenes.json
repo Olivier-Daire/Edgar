@@ -34,5 +34,41 @@
       "path" : "public/img/sky1.jpg",
       "size" : "50"
     }
+  },
+  {
+    "number": "2",
+    "radius" : "6",
+    "models": [
+      {
+        "path": "public/model/mountain.json",
+        "position": {
+          "x" : "1",
+          "y" : "1",
+          "z" : "1"
+         },
+        "scale": {
+          "x" : "0.075",
+          "y" : "0.01",
+          "z" : "0.075"
+        }
+      },
+      {
+        "path": "public/model/WoodenBox02.json",
+        "position": {
+          "x" : "5",
+          "y" : 0,
+          "z" : "-5"
+         },
+        "scale": {
+          "x" : 1,
+          "y" : 1,
+          "z" : 1
+        }
+      }
+    ],
+    "skybox": {
+      "path" : "public/img/sky1.jpg",
+      "size" : "50"
+    }
   }
 ]
