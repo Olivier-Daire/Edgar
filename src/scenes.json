@@ -7,7 +7,7 @@
         "path": "public/model/house5.json",
         "position": {
           "x" : "2",
-          "y" : 1.2,
+          "y" : 1,
           "z" : "0"
          },
         "scale": {
@@ -20,9 +20,6 @@
     "skybox": {
       "path" : "public/img/sky1.jpg",
       "size" : "50"
-    },
-    "ground": {
-      "path": "public/img/wood.jpg"
     }
   }
 ]
