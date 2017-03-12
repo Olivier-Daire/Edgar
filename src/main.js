@@ -11,9 +11,49 @@ var scene;
 var stats;
 var clock = new THREE.Clock();
 var renderer = null;
-var scene2 = false;
 
 document.onkeydown = checkKey;
+
+function transitionScene(number){
+
+  function opacityHandler(value){
+
+    opacity = opacity+value*negative;
+    screen.style.opacity = opacity;
+
+    if(opacity >= 1.2){
+
+      negative = -1;
+
+    }else if(opacity <= 0){
+
+      var elt = document.getElementById('blackBackground');
+      elt.parentNode.removeChild(elt);
+      clearInterval(blackScreenTransition);
+
+
+    }
+
+  }
+    
+  var screen = document.createElement('div');
+  screen.id="blackBackground";
+  screen.style = "width:100%; height:100%; position:fixed; top:0; left:0; background-color:black; z-index:10000; opacity:0;";
+  document.body.appendChild(screen);
+  var frameRate = 10, totalTime = 1000, opacity = 0, negative = 1;
+  
+  var blackScreenTransition = setInterval(function(){ 
+    
+    opacityHandler(frameRate / totalTime);
+  
+  }, frameRate);
+
+  setTimeout(function(){
+
+    scene = new Scene(number, animate, renderer);
+
+  }, totalTime);
+}
 
 function checkKey(e) {
 
@@ -22,15 +62,10 @@ function checkKey(e) {
     if (e.keyCode === 69) { // 69 keycode for 'e'
         scene.firefly.updateStatus();
     }
-    else if (e.keyCode === 13) { // 69 keycode for enter
-        
-        if(scene2 === false){
-          scene2 = true;
-          scene = new Scene(2 , animate, renderer);
-        }else {
-          scene2 = false;
-          scene = new Scene(1 , animate, renderer);
-        }
+    else if (e.keyCode === 13) { // 13 keycode for enter
+
+      transitionScene(2);
+
     }
 }
 
@@ -66,7 +101,7 @@ function onLoad() {
   }
 
   initRender();
-  scene = new Scene(1 , animate, renderer);
+  scene = new Scene(1, animate, renderer);
 
   window.addEventListener('resize', onResize, true);
   window.addEventListener('vrdisplaypresentchange', onResize, true);
