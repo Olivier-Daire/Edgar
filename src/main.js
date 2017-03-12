@@ -19,7 +19,6 @@ function checkKey(e) {
 
     if (e.keyCode === 69) { // 69 keycode for 'e'
         scene.firefly.updateStatus();
-        console.log(scene.firefly.status);
     }
 }
 
@@ -36,6 +35,18 @@ function onLoad() {
 
   window.addEventListener('resize', onResize, true);
   window.addEventListener('vrdisplaypresentchange', onResize, true);
+  window.addEventListener('interact', function(e) {
+    // e.detail.id contains object id
+    // e.detail.interaction contains interaction type e.g "move"
+    // TODO Add all cases
+    switch(e.detail.interaction) {
+      case 'move':
+          scene.scene.getObjectById(e.detail.id).position.x = 6;
+          break;
+      default:
+          console.log("Implement switch case for " + e.detail.interaction);  // jshint ignore:line
+    }
+  }, false);
 
   // Initialize the WebVR UI.
   var uiOptions = {
@@ -84,11 +95,11 @@ function animate() {
     // Update character nextPosition
     scene.character.nextPosition = scene.camera.getWorldDirection().multiplyScalar(scene.radius);
     // Update character position along path
-    scene.character.updateCharacter(0.4 * delta);
+    scene.character.updateCharacter(0.4 * delta, scene);
   }
 
   var time = Date.now() * 0.003;
-  scene.firefly.updatePosition(time);
+  scene.firefly.updatePosition(time, scene);
 
   scene.controls.update();
 
