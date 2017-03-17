@@ -1,0 +1,37 @@
+{
+    "vertices":[6.2586,-0.088706,-6.71301,-6.28307,-0.088706,-6.71301,6.2586,2.75489,-6.71301,-6.28307,2.75489,-6.71301],
+    "normals":[0,0,1],
+    "faces":[43,1,0,2,3,0,0,1,2,3,0,0,0,0],
+    "metadata":{
+        "vertices":4,
+        "faces":1,
+        "generator":"io_three",
+        "normals":1,
+        "version":3,
+        "type":"Geometry",
+        "uvs":1,
+        "materials":1
+    },
+    "uvs":[[0,0,1,0,1,1,0,1]],
+    "materials":[{
+        "DbgIndex":0,
+        "transparent":false,
+        "depthTest":true,
+        "doubleSided":true,
+        "visible":true,
+        "mapDiffuseAnisotropy":1,
+        "mapDiffuseWrap":["repeat","repeat"],
+        "mapDiffuse":"BakingMurFond.jpg",
+        "opacity":1,
+        "wireframe":false,
+        "shading":"phong",
+        "DbgName":"Material.001",
+        "DbgColor":15658734,
+        "blending":"NormalBlending",
+        "colorEmissive":[0,0,0],
+        "depthWrite":true,
+        "mapDiffuseRepeat":[1,1],
+        "specularCoef":50,
+        "colorDiffuse":[1,1,1]
+    }]
+}

@@ -1,0 +1,36 @@
+{
+    "vertices":[6.14789,-0.145595,-7.05325,6.14789,2.85405,-7.05325,6.14789,-0.145594,7.04148,6.14789,2.85405,7.04148],
+    "normals":[-1,0,-0],
+    "faces":[43,1,0,2,3,0,0,1,2,3,0,0,0,0],
+    "metadata":{
+        "vertices":4,
+        "faces":1,
+        "generator":"io_three",
+        "normals":1,
+        "version":3,
+        "type":"Geometry",
+        "uvs":1,
+        "materials":1
+    },
+    "uvs":[[0,0,1,0,1,1,0,1]],
+    "materials":[{
+        "DbgIndex":0,
+        "transparent":false,
+        "depthTest":true,
+        "doubleSided":true,
+        "visible":true,
+        "mapDiffuseAnisotropy":1,
+        "mapDiffuseWrap":["repeat","repeat"],
+        "mapDiffuse":"BakingMurGauche.jpg",
+        "opacity":1,
+        "wireframe":false,
+        "shading":"lambert",
+        "DbgName":"Material.006",
+        "DbgColor":15658734,
+        "blending":"NormalBlending",
+        "colorEmissive":[0,0,0],
+        "depthWrite":true,
+        "mapDiffuseRepeat":[1,1],
+        "colorDiffuse":[1,1,1]
+    }]
+}
