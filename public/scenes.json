@@ -43,7 +43,8 @@
           "y" : "0.3",
           "z" : "0.3"
         },
-        "collisions": false
+        "collisions": true,
+        "interaction": true
       },
       {
         "path": "public/model/MurGauche.json",
