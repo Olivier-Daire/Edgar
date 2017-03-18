@@ -226,7 +226,7 @@
           "y" : "1",
           "z" : "1"
         },
-        "collisions": false
+        "collisions": true
       },
       {
         "path": "public/model/Toit.json",
