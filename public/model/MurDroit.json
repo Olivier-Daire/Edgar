@@ -1,0 +1,36 @@
+{
+    "vertices":[-6.90972,-0.220207,7.71179,-6.90972,4.23776,7.71179,-6.90972,-0.220207,-8.03445,-6.90972,4.23776,-8.03445],
+    "normals":[1,0,0],
+    "uvs":[[0,0,1,0,1,1,0,1]],
+    "faces":[43,1,0,2,3,0,0,1,2,3,0,0,0,0],
+    "metadata":{
+        "normals":1,
+        "version":3,
+        "faces":1,
+        "generator":"io_three",
+        "vertices":4,
+        "uvs":1,
+        "materials":1,
+        "type":"Geometry"
+    },
+    "materials":[{
+        "DbgColor":15658734,
+        "mapDiffuse":"MurDroitText.jpg",
+        "doubleSided":true,
+        "visible":true,
+        "colorDiffuse":[1,1,1],
+        "blending":"NormalBlending",
+        "transparent":false,
+        "depthWrite":true,
+        "mapDiffuseAnisotropy":1,
+        "opacity":1,
+        "DbgName":"Material.002",
+        "mapDiffuseWrap":["repeat","repeat"],
+        "wireframe":false,
+        "DbgIndex":0,
+        "mapDiffuseRepeat":[1,1],
+        "shading":"lambert",
+        "depthTest":true,
+        "colorEmissive":[0,0,0]
+    }]
+}

@@ -1,0 +1,36 @@
+{
+    "vertices":[-6.93027,4.1681,7.72896,6.83246,4.1681,7.72896,-6.93027,4.1681,-7.97312,6.83246,4.1681,-7.97312],
+    "normals":[-0,-1,0],
+    "uvs":[[0,0,1,0,1,1,0,1]],
+    "faces":[43,1,0,2,3,0,0,1,2,3,0,0,0,0],
+    "metadata":{
+        "normals":1,
+        "version":3,
+        "faces":1,
+        "generator":"io_three",
+        "vertices":4,
+        "uvs":1,
+        "materials":1,
+        "type":"Geometry"
+    },
+    "materials":[{
+        "DbgColor":15658734,
+        "mapDiffuse":"ToitText.jpg",
+        "doubleSided":true,
+        "visible":true,
+        "colorDiffuse":[1,1,1],
+        "blending":"NormalBlending",
+        "transparent":false,
+        "depthWrite":true,
+        "mapDiffuseAnisotropy":1,
+        "opacity":1,
+        "DbgName":"Material.010",
+        "mapDiffuseWrap":["repeat","repeat"],
+        "wireframe":false,
+        "DbgIndex":0,
+        "mapDiffuseRepeat":[1,1],
+        "shading":"lambert",
+        "depthTest":true,
+        "colorEmissive":[0,0,0]
+    }]
+}

@@ -1,0 +1,36 @@
+{
+    "vertices":[7.22533,-0.18695,7.83432,-7.41435,-0.18695,7.83432,7.22533,-0.18695,-8.20517,-7.41435,-0.18695,-8.20517],
+    "normals":[0,1,-0],
+    "uvs":[[0,0,1,0,1,1,0,1]],
+    "faces":[43,1,0,2,3,0,0,1,2,3,0,0,0,0],
+    "metadata":{
+        "normals":1,
+        "version":3,
+        "faces":1,
+        "generator":"io_three",
+        "vertices":4,
+        "uvs":1,
+        "materials":1,
+        "type":"Geometry"
+    },
+    "materials":[{
+        "DbgColor":15658734,
+        "mapDiffuse":"SolText.jpg",
+        "doubleSided":true,
+        "visible":true,
+        "colorDiffuse":[1,1,1],
+        "blending":"NormalBlending",
+        "transparent":false,
+        "depthWrite":true,
+        "mapDiffuseAnisotropy":1,
+        "opacity":1,
+        "DbgName":"Material.009",
+        "mapDiffuseWrap":["repeat","repeat"],
+        "wireframe":false,
+        "DbgIndex":0,
+        "mapDiffuseRepeat":[1,1],
+        "shading":"lambert",
+        "depthTest":true,
+        "colorEmissive":[0,0,0]
+    }]
+}

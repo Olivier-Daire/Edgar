@@ -4,7 +4,7 @@
     "radius" : "6",
     "models": [
       {
-        "path": "public/model/MurDroit.json",
+        "path": "public/model/Boite.json",
         "position": {
           "x" : "0",
           "y" : "1",
@@ -14,6 +14,34 @@
           "x" : "1",
           "y" : "1",
           "z" : "1"
+        },
+        "collisions": false
+      },
+      {
+        "path": "public/model/lamp.json",
+        "position": {
+          "x" : "0",
+          "y" : "2.5",
+          "z" : "0"
+         },
+        "scale": {
+          "x" : "1",
+          "y" : "1",
+          "z" : "1"
+        },
+        "collisions": false
+      },
+      {
+        "path": "public/model/lamp2.json",
+        "position": {
+          "x" : "0",
+          "y" : "5",
+          "z" : "-7.5"
+         },
+        "scale": {
+          "x" : "0.3",
+          "y" : "0.3",
+          "z" : "0.3"
         },
         "collisions": false
       },
@@ -26,13 +54,55 @@
          },
         "scale": {
           "x" : "1",
-          "y" : "1",
+          "y" : "1.7",
           "z" : "1"
         },
         "collisions": false
       },
       {
         "path": "public/model/MurPorte.json",
+        "position": {
+          "x" : "0",
+          "y" : "1.08",
+          "z" : "0"
+         },
+        "scale": {
+          "x" : "1",
+          "y" : "1.7",
+          "z" : "1"
+        },
+        "collisions": false
+      },
+      {
+        "path": "public/model/MurFond.json",
+        "position": {
+          "x" : "0",
+          "y" : "1",
+          "z" : "0"
+         },
+        "scale": {
+          "x" : "1",
+          "y" : "1.7",
+          "z" : "1"
+        },
+        "collisions": false
+      },
+      {
+        "path": "public/model/MurDroit.json",
+        "position": {
+          "x" : "0",
+          "y" : "1",
+          "z" : "0"
+         },
+        "scale": {
+          "x" : "1",
+          "y" : "1.7",
+          "z" : "1"
+        },
+        "collisions": false
+      },
+      {
+        "path": "public/model/Planche1.json",
         "position": {
           "x" : "0",
           "y" : "1",
@@ -46,7 +116,35 @@
         "collisions": false
       },
       {
-        "path": "public/model/MurFond.json",
+        "path": "public/model/Planche2.json",
+        "position": {
+          "x" : "0",
+          "y" : "1",
+          "z" : "0"
+         },
+        "scale": {
+          "x" : "1",
+          "y" : "1",
+          "z" : "1"
+        },
+        "collisions": false
+      },
+      {
+        "path": "public/model/Planche3.json",
+        "position": {
+          "x" : "0",
+          "y" : "1",
+          "z" : "0"
+         },
+        "scale": {
+          "x" : "1",
+          "y" : "1",
+          "z" : "1"
+        },
+        "collisions": false
+      },
+      {
+        "path": "public/model/Planche4.json",
         "position": {
           "x" : "0",
           "y" : "1",
@@ -68,7 +166,7 @@
          },
         "scale": {
           "x" : "1",
-          "y" : "1",
+          "y" : "1.7",
           "z" : "1"
         },
         "collisions": false
@@ -88,7 +186,7 @@
         "collisions": false
       },
       {
-        "path": "public/model/Table01.json",
+        "path": "public/model/Table1.json",
         "position": {
           "x" : "0",
           "y" : "1",
@@ -102,7 +200,21 @@
         "collisions": false
       },
       {
-        "path": "public/model/Table02.json",
+        "path": "public/model/Table2.json",
+        "position": {
+          "x" : "0",
+          "y" : "1",
+          "z" : "0"
+         },
+        "scale": {
+          "x" : "1",
+          "y" : "1",
+          "z" : "1"
+        },
+        "collisions": false
+      },
+      {
+        "path": "public/model/TasBoites.json",
         "position": {
           "x" : "0",
           "y" : "1",
@@ -119,7 +231,7 @@
         "path": "public/model/Toit.json",
         "position": {
           "x" : "0",
-          "y" : "1",
+          "y" : "4",
           "z" : "0"
          },
         "scale": {

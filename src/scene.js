@@ -69,7 +69,7 @@ Scene.prototype.setup = function(number) {
 
 	var light = new THREE.AmbientLight( 0x121828 ); // soft white light
 	this.scene.add( light );
-	this.scene.fog = new THREE.FogExp2(0x121828, 0.1);
+	this.scene.fog = new THREE.FogExp2(0x121828, 0.15);
 
 	this.loadJSON(number);
 	this.addGround();
