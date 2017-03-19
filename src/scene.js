@@ -97,7 +97,7 @@ Scene.prototype.addCharacterPath = function() {
   for (i = 0; i <= 360; i++) {
     var angle = Math.PI/180 * i;
     var x = (this.radius) * Math.cos(angle);
-    var y = this.controls.userHeight - 0.5;
+    var y = this.controls.userHeight - 0.75;
     var z = (this.radius) * Math.sin(angle);
 
     points.push(new THREE.Vector3(x, y, z));
