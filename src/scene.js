@@ -74,7 +74,6 @@ Scene.prototype.setup = function(number) {
 	this.scene.fog = new THREE.FogExp2(0x121828, 0.15);
 
 	this.loadJSON(number);
-	//this.addGround();
 	this.addCharacterPath();
 	this.addCharacter();
 	this.addFirefly();
@@ -136,27 +135,6 @@ Scene.prototype.addCharacter = function() {
 
 			_this.character.followPath(_this.characterPath);
 			_this.setupStage();
-		}
-	);
-};
-
-Scene.prototype.addGround = function(path) {
-	var _this = this;
-
-	var loader = new THREE.TextureLoader();
-	loader.load(
-		path,
-		function(texture) {
-			texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-			texture.repeat.set( 10, 10 );
-
-			var groundMaterial = new THREE.MeshPhongMaterial( {map: texture});
-			var ground = new THREE.Mesh( new THREE.PlaneBufferGeometry( 5*_this.radius, 5*_this.radius ), groundMaterial );
-			ground.position.set(0, _this.controls.userHeight - 0.5, 0);
-			ground.rotation.x = - Math.PI / 2;
-			ground.receiveShadow = true;
-
-			_this.scene.add( ground );
 		}
 	);
 };
@@ -301,9 +279,6 @@ Scene.prototype.loadJSON = function(number) {
 
 	if (sceneData.skybox) {
 		this.addSkybox(sceneData.skybox.path, sceneData.skybox.size);
-	}
-	if (sceneData.ground) {
-		this.addGround(sceneData.ground.path);
 	}
 };
 
