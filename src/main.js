@@ -52,6 +52,8 @@ function transitionScene(number){
   setTimeout(function(){
 
     scene.deleteScene();
+
+    scene.controls.resetPose();
     scene = new Scene(number, animate, renderer); 
 
   }, totalTime);
