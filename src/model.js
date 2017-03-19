@@ -6,8 +6,9 @@ var Model = function(){
 	this.mixer = null;
 	this.actions = {};
 	this.activeAction = null;
+	this.bbox = null;
 
-	this.load = function(path, onLoad) {
+	this.load = function(path, receiveShadow, castShadow, onLoad) {
 		var _this = this;
 		var loader = new THREE.JSONLoader();
 
@@ -34,12 +35,18 @@ var Model = function(){
 				_this.initAnimation(geometry);
 			}
 
-			_this.mesh.traverse(function(child) {
-				 if (child instanceof THREE.Mesh) {
-					child.castShadow = true;
-				}
-			});
-			_this.mesh.castShadow = true;
+			if (receiveShadow) {
+				_this.mesh.receiveShadow = true;
+			}
+
+			if (castShadow) {
+				_this.mesh.traverse(function(child) {
+					 if (child instanceof THREE.Mesh) {
+						child.castShadow = true;
+					}
+				});
+				_this.mesh.castShadow = true;
+			}
 
 			onLoad();
 		};

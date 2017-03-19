@@ -4,7 +4,7 @@ var Scene = require('./scene.js');
 var Util = require('./util.js');
 
 window.vrDisplay = null;
-window.DEBUG = true;
+window.DEBUG = false;
 // EnterVRButton for rendering enter/exit UI.
 var vrButton;
 var scene;
@@ -65,9 +65,7 @@ function checkKey(e) {
         scene.firefly.updateStatus();
     }
     else if (e.keyCode === 13) { // 13 keycode for enter
-
       transitionScene(2);
-
     }
 }
 
@@ -115,8 +113,47 @@ function onLoad() {
     }
   });
 
+
   window.addEventListener('resize', onResize, true);
   window.addEventListener('vrdisplaypresentchange', onResize, true);
+  window.addEventListener('interact', function(e) {
+    // e.detail.id contains object id
+    // e.detail.interaction contains interaction type e.g "move"
+
+    // Can only interact if firefly is grouped
+    if (scene.firefly.status === 1) {
+      // TODO Add all cases
+      switch(e.detail.interaction) {
+        case 'move':
+          scene.scene.getObjectById(e.detail.id).position.x = 6;
+          break;
+        case 'light':
+          var object = scene.scene.getObjectById(e.detail.id);
+          var on = false;
+          for (var i = 0; i < object.material.materials.length; i++ ) {
+               if (object.material.materials[i].emissive.getHexString() === '000000') {
+                object.material.materials[i].emissive.setHex(0xfffde5); // Light on
+                on = true;
+               } else {
+                object.material.materials[i].emissive.setHex(0x000000); // Light off
+               }
+          }
+          on ? scene.achievedObjectives++ : scene.achievedObjectives--; // jshint ignore:line
+          break;
+        case 'end-level':
+          if (scene.achievedObjectives === scene.totalObjectives) { // jshint ignore:line
+            // FIXME @Guilhem Load Next level and then remove --> // jshint ignore:line
+          } else { // jshint ignore:line
+            document.getElementById('objectives').style.display = 'block';
+            setTimeout(function() { document.getElementById('objectives').style.display = 'none'; }, 2500);
+          }
+          break;
+        default:
+          console.log("Implement switch case for " + e.detail.interaction);  // jshint ignore:line
+      }
+    }
+
+  }, false);
 
   // Initialize the WebVR UI.
   var uiOptions = {
@@ -149,6 +186,12 @@ function onLoad() {
         document.body.requestPointerLock =  document.body.requestPointerLock ||  document.body.mozRequestPointerLock ||  document.body.webkitRequestPointerLock;
         document.body.requestPointerLock();
     }
+
+    // Group / Ungroup firelfy on click
+    window.addEventListener('click', function(e) {
+      scene.firefly.updateStatus();
+    }, true);
+
     vrButton.requestEnterFullscreen();
   });
 
@@ -165,11 +208,12 @@ function animate() {
     // Update character nextPosition
     scene.character.nextPosition = scene.camera.getWorldDirection().multiplyScalar(scene.radius);
     // Update character position along path
-    scene.character.updateCharacter(0.4 * delta);
+    scene.character.updateCharacter(0.4 * delta, scene);
   }
 
   var time = Date.now() * 0.003;
-  if(scene.firefly.loaded){ scene.firefly.updatePosition(time); }
+
+  if(scene.firefly.loaded){ scene.firefly.updatePosition(time, scene); }
 
   scene.controls.update();
 

@@ -1,7 +1,8 @@
 "use strict";
-var SCENES = require('./scenes.json');
-var Character = require('./character.js');
+
+var SCENES = require('../public/scenes.json');
 var Model = require('./model.js');
+var Character = require('./character.js');
 var Firefly = require('./firefly.js');
 
 function Scene(number, animate, renderer) {
@@ -11,6 +12,8 @@ function Scene(number, animate, renderer) {
 	this.effect = null;
 	this.characterPath = null;
 	this.character = null;
+	this.collideObjects = [];
+	this.interactableObjects = [];
 	this.radius = null;
 	this.skybox = null;
 	this.skyboxSize = null;
@@ -18,6 +21,8 @@ function Scene(number, animate, renderer) {
 	this.firefly = null;
 	this.objectsList = [];
 	this.objectsToDispose = [];
+	this.totalObjectives = 0;
+	this.achievedObjectives = 0;
 
 	this.setup(number, renderer);
 
@@ -47,12 +52,12 @@ Scene.prototype.setup = function(number, renderer) {
 	// Apply VR stereo rendering to renderer.
 	this.effect = new THREE.VREffect(renderer);
 	this.effect.setSize(window.innerWidth, window.innerHeight);
-
-	var light = new THREE.AmbientLight( 0x404040 ); // soft white light
+  
+	var light = new THREE.AmbientLight( 0x121828 ); // soft white light
 	this.scene.add( light );
-
+	this.scene.fog = new THREE.FogExp2(0x121828, 0.15);
+  
 	this.loadJSON(number);
-	this.addGround();
 	this.addCharacterPath();
 	this.addCharacter();
 	this.addFirefly();
@@ -64,14 +69,24 @@ Scene.prototype.setup = function(number, renderer) {
 
 Scene.prototype.addCharacter = function() {
   var _this = this;
-  _this.character = new Character();
-  _this.character.load('public/model/edgaranim.json',
-    function() {
-      _this.character.mesh.scale.x = _this.character.mesh.scale.y = _this.character.mesh.scale.z = 8;
-      _this.character.mesh.geometry.computeVertexNormals();
-      _this.scene.add(_this.character.mesh);
+  this.character = new Character();
+	this.character.load('public/model/edgaranim.json', true, true,
+		function() {
+			_this.character.mesh.scale.x = _this.character.mesh.scale.y = _this.character.mesh.scale.z = 8;
+			_this.character.mesh.geometry.computeVertexNormals();
+			_this.scene.add(_this.character.mesh);
+			_this.character.mesh.geometry.computeBoundingBox();
 
-      _this.character.followPath(_this.characterPath);
+			if (window.DEBUG) {
+				_this.character.bbhelper = new THREE.BoxHelper(_this.character.mesh, 0xffffff);
+				_this.scene.add(_this.character.bbhelper);
+			}
+
+			var box3 = new THREE.Box3();
+			_this.character.bbox = box3.setFromObject( _this.character.mesh );
+
+			_this.character.followPath(_this.characterPath);
+			_this.setupStage();
     }
   );
 };
@@ -111,28 +126,6 @@ Scene.prototype.addCharacterPath = function() {
   }
 };
 
-
-Scene.prototype.addGround = function(path) {
-	var _this = this;
-
-	var loader = new THREE.TextureLoader();
-	loader.load(
-		path,
-		function(texture) {
-			texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-			texture.repeat.set( 10, 10 );
-
-			var groundMaterial = new THREE.MeshPhongMaterial( {map: texture});
-			var ground = new THREE.Mesh( new THREE.PlaneBufferGeometry( 5*_this.radius, 5*_this.radius ), groundMaterial );
-			ground.position.set(0, _this.controls.userHeight - 0.5, 0);
-			ground.rotation.x = - Math.PI / 2;
-			ground.receiveShadow = true;
-
-			_this.scene.add( ground );
-		}
-	);
-};
-
 Scene.prototype.addOriginCube = function() {
 	var cube = new THREE.Mesh(new THREE.CubeGeometry(1, 1, 1), new THREE.MeshNormalMaterial());
 	cube.position.z = -this.radius;
@@ -166,16 +159,21 @@ Scene.prototype.addLightsHemisphere = function() {
 };
 
 Scene.prototype.addFirefly = function() {
+	var _this = this;
 	this.firefly = new Firefly();
-	this.firefly.load();
+	this.firefly.load(function() {
+		_this.firefly.parent.position.set( 0, _this.controls.userHeight-1, -_this.radius+1 );
+		if (window.DEBUG){
+			_this.scene.add(_this.firefly.bbhelper);
+		}
+		_this.scene.add(_this.firefly.parent);
 
-	this.firefly.parent.position.set( 0, this.controls.userHeight-1, -this.radius+1 );
-	this.scene.add(this.firefly.parent);
+		_this.camera.add(_this.firefly.parent);
+		_this.firefly.parent.target = _this.camera;
+	});
 
-	this.camera.add(this.firefly.parent);
-	this.firefly.parent.target = this.camera;
+
 };
-
 
 Scene.prototype.addSkybox= function(path, size) {
 	var loader = new THREE.TextureLoader();
@@ -210,11 +208,17 @@ Scene.prototype.loadJSON = function(number) {
 	var sceneData = SCENES[number-1];
 
 	this.radius = sceneData.radius;
+	this.totalObjectives = sceneData.number_of_objectives;
 	var _this = this;
 
 	sceneData.models.forEach(function(modelData) {
 		var model = new Model();
-		model.load(modelData.path, function() {
+		var receiveShadow = false;
+		var castShadow = false;
+		if (modelData.shadow) {
+			receiveShadow = true;
+		}
+		model.load(modelData.path, receiveShadow, castShadow, function() {
 
 			// Position
 			if (modelData.position) {
@@ -245,6 +249,24 @@ Scene.prototype.loadJSON = function(number) {
 				}
 			}
 
+			if (modelData.collisions) {
+				model.mesh.geometry.computeBoundingBox();
+				var box3 = new THREE.Box3();
+				model.bbox = box3.setFromObject( model.mesh );
+
+				if (window.DEBUG) {
+					var bboxHelper = new THREE.BoxHelper(model.mesh, 0xffffff);
+					_this.scene.add(bboxHelper);
+				}
+
+				_this.collideObjects.push(model);
+			}
+
+			if (modelData.interaction) {
+				var interactableObject = { "id": model.mesh.id, "object": model, "interaction": modelData.interaction_type};
+				_this.interactableObjects.push(interactableObject);
+			}
+
 			_this.scene.add(model.mesh);
 
 		});
@@ -255,7 +277,7 @@ Scene.prototype.loadJSON = function(number) {
 		this.addSkybox(sceneData.skybox.path, sceneData.skybox.size);
 	}
 	if (sceneData.ground) {
-		this.addGround(sceneData.ground.path);
+		//this.addGround(sceneData.ground.path);
 	}
 };
 
