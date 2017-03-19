@@ -33,26 +33,39 @@ function onLoad() {
 
   scene = new Scene(1, animate);
 
+
   window.addEventListener('resize', onResize, true);
   window.addEventListener('vrdisplaypresentchange', onResize, true);
   window.addEventListener('interact', function(e) {
     // e.detail.id contains object id
     // e.detail.interaction contains interaction type e.g "move"
-    // TODO Add all cases
-    switch(e.detail.interaction) {
-      case 'move':
+
+    // Can only interact if firefly is grouped
+    if ( scene.firefly.status === 1 ) {
+      // TODO Add all cases
+      switch(e.detail.interaction) {
+        case 'move':
           scene.scene.getObjectById(e.detail.id).position.x = 6;
           break;
-      case 'light':
+        case 'light':
           var object = scene.scene.getObjectById(e.detail.id);
+
           for (var i = 0; i < object.material.materials.length; i++ ) {
                object.material.materials[i].color.setHex(0xfffde5); //edfdff
-               object.material.materials[i].emissive.setHex(0xfffde5);
+               if (object.material.materials[i].emissive.getHexString() === '000000') {
+                object.material.materials[i].emissive.setHex(0xfffde5); // Light on
+               } else {
+                object.material.materials[i].emissive.setHex(0x000000); // Light off
+               }
+
           }
+
           break;
-      default:
+        default:
           console.log("Implement switch case for " + e.detail.interaction);  // jshint ignore:line
+      }
     }
+
   }, false);
 
   // Initialize the WebVR UI.
@@ -86,6 +99,12 @@ function onLoad() {
         document.body.requestPointerLock =  document.body.requestPointerLock ||  document.body.mozRequestPointerLock ||  document.body.webkitRequestPointerLock;
         document.body.requestPointerLock();
     }
+
+    // Group / Ungroup firelfy on click
+    window.addEventListener('click', function(e) {
+      scene.firefly.updateStatus();
+    }, true);
+
     vrButton.requestEnterFullscreen();
   });
 

@@ -83,6 +83,7 @@ var Firefly = function() {
   };
 
   this.updateStatus = function() {
+    // TODO More semantic status such as grouped / ungrouped
     if(this.status === 0) {
       this.status = 1;
     }
