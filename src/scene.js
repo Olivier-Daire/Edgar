@@ -86,7 +86,6 @@ Scene.prototype.addCharacter = function() {
 			_this.character.bbox = box3.setFromObject( _this.character.mesh );
 
 			_this.character.followPath(_this.characterPath);
-			_this.setupStage();
     }
   );
 };
@@ -275,9 +274,6 @@ Scene.prototype.loadJSON = function(number) {
 
 	if (sceneData.skybox) {
 		this.addSkybox(sceneData.skybox.path, sceneData.skybox.size);
-	}
-	if (sceneData.ground) {
-		//this.addGround(sceneData.ground.path);
 	}
 };
 
