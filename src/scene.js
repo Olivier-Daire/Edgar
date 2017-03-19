@@ -52,11 +52,11 @@ Scene.prototype.setup = function(number, renderer) {
 	// Apply VR stereo rendering to renderer.
 	this.effect = new THREE.VREffect(renderer);
 	this.effect.setSize(window.innerWidth, window.innerHeight);
-  
+
 	var light = new THREE.AmbientLight( 0x121828 ); // soft white light
 	this.scene.add( light );
-	this.scene.fog = new THREE.FogExp2(0x121828, 0.15);
-  
+	this.scene.fog = new THREE.FogExp2(0x121828, 0.07);
+
 	this.loadJSON(number);
 	this.addCharacterPath();
 	this.addCharacter();
