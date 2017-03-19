@@ -43,6 +43,13 @@ function onLoad() {
       case 'move':
           scene.scene.getObjectById(e.detail.id).position.x = 6;
           break;
+      case 'light':
+          var object = scene.scene.getObjectById(e.detail.id);
+          for (var i = 0; i < object.material.materials.length; i++ ) {
+               object.material.materials[i].color.setHex(0xfffde5); //edfdff
+               object.material.materials[i].emissive.setHex(0xfffde5);
+          }
+          break;
       default:
           console.log("Implement switch case for " + e.detail.interaction);  // jshint ignore:line
     }

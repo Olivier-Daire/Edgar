@@ -72,7 +72,7 @@ Scene.prototype.setup = function(number) {
 	this.scene.fog = new THREE.FogExp2(0x121828, 0.15);
 
 	this.loadJSON(number);
-	this.addGround();
+	//this.addGround();
 	this.addCharacterPath();
 	this.addCharacter();
 	this.addFirefly();
@@ -285,7 +285,7 @@ Scene.prototype.loadJSON = function(number) {
 			}
 
 			if (modelData.interaction) {
-				var interactableObject = { "id": model.mesh.id, "object": model };
+				var interactableObject = { "id": model.mesh.id, "object": model, "interaction": modelData.interaction_type};
 				_this.interactableObjects.push(interactableObject);
 			}
 

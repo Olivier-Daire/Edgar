@@ -44,7 +44,8 @@
           "z" : "0.3"
         },
         "collisions": true,
-        "interaction": true
+        "interaction": true,
+        "interaction_type": "light"
       },
       {
         "path": "public/model/MurGauche.json",
