@@ -49,17 +49,16 @@ function onLoad() {
           break;
         case 'light':
           var object = scene.scene.getObjectById(e.detail.id);
-
+          var on = false;
           for (var i = 0; i < object.material.materials.length; i++ ) {
-               object.material.materials[i].color.setHex(0xfffde5); //edfdff
                if (object.material.materials[i].emissive.getHexString() === '000000') {
                 object.material.materials[i].emissive.setHex(0xfffde5); // Light on
+                on = true;
                } else {
                 object.material.materials[i].emissive.setHex(0x000000); // Light off
                }
-
           }
-
+          on ? scene.achievedObjectives++ : scene.achievedObjectives--; // jshint ignore:line
           break;
         case 'end-level':
           if (scene.achievedObjectives === scene.totalObjectives) { // jshint ignore:line
@@ -72,8 +71,6 @@ function onLoad() {
         default:
           console.log("Implement switch case for " + e.detail.interaction);  // jshint ignore:line
       }
-      // TODO check if it works with levels, otherwise put this in every switch case
-      scene.achievedObjectives++;
     }
 
   }, false);
