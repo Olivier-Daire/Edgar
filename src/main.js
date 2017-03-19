@@ -1,6 +1,7 @@
 "use strict";
 
 var Scene = require('./scene.js');
+var Util = require('./util.js');
 
 window.vrDisplay = null;
 window.DEBUG = false;
@@ -9,9 +10,52 @@ var vrButton;
 var scene;
 var stats;
 var clock = new THREE.Clock();
-
+var renderer = null;
 
 document.onkeydown = checkKey;
+
+
+function transitionScene(number){
+
+  function opacityHandler(value){
+
+    opacity = opacity+value*negative;
+    screen.style.opacity = opacity;
+
+    if(opacity >= 1.2){
+
+      negative = -1;
+
+    }else if(opacity <= 0){
+
+      var elt = document.getElementById('blackBackground');
+      elt.parentNode.removeChild(elt);
+      clearInterval(blackScreenTransition);
+
+
+    }
+
+  }
+    
+  var screen = document.createElement('div');
+  screen.id="blackBackground";
+  screen.style = "width:100%; height:100%; position:fixed; top:0; left:0; background-color:black; z-index:10000; opacity:0;";
+  document.body.appendChild(screen);
+  var frameRate = 10, totalTime = 1000, opacity = 0, negative = 1;
+  
+  var blackScreenTransition = setInterval(function(){ 
+    
+    opacityHandler(frameRate / totalTime);
+  
+  }, frameRate);
+
+  setTimeout(function(){
+
+    scene.deleteScene();
+    scene = new Scene(number, animate, renderer); 
+
+  }, totalTime);
+}
 
 function checkKey(e) {
 
@@ -20,6 +64,31 @@ function checkKey(e) {
     if (e.keyCode === 69) { // 69 keycode for 'e'
         scene.firefly.updateStatus();
     }
+    else if (e.keyCode === 13) { // 13 keycode for enter
+      transitionScene(2);
+    }
+}
+
+function initRender(){
+
+  // Setup three.js WebGL renderer. Note: Antialiasing is a big performance hit.
+  // Only enable it if you actually need to.
+  var rendererParams = {};
+  if(!Util.isMobile()) {
+    rendererParams = {antialias : true};
+  }
+  renderer = new THREE.WebGLRenderer(rendererParams);
+  renderer.shadowMap.enabled = true;
+
+  renderer.setPixelRatio(window.devicePixelRatio);
+  if (window.DEBUG) {
+    // Set clear color to white to see better
+    renderer.setClearColor( 0xffffff, 1 );
+  }
+
+  // Append the canvas element created by the renderer to document body element.
+  document.body.appendChild(renderer.domElement);
+
 }
 
 function onLoad() {
@@ -31,7 +100,18 @@ function onLoad() {
     document.body.appendChild( stats.dom );
   }
 
-  scene = new Scene(1, animate);
+  initRender();
+  scene = new Scene(1, animate, renderer);
+
+  navigator.getVRDisplays().then(function(displays) {
+    if (displays.length > 0) {
+      window.vrDisplay = displays[0];
+      if (window.vrDisplay.stageParameters) {
+        scene.setStageDimensions(window.vrDisplay.stageParameters);
+      }
+      window.vrDisplay.requestAnimationFrame(animate);
+    }
+  });
 
 
   window.addEventListener('resize', onResize, true);
@@ -82,7 +162,7 @@ function onLoad() {
     corners: 'square'
   };
 
-  vrButton = new webvrui.EnterVRButton(scene.renderer.domElement, uiOptions);
+  vrButton = new webvrui.EnterVRButton(renderer.domElement, uiOptions);
 
   vrButton.on('exit', function() {
     scene.camera.quaternion.set(0, 0, 0, 1);
@@ -132,7 +212,8 @@ function animate() {
   }
 
   var time = Date.now() * 0.003;
-  scene.firefly.updatePosition(time, scene);
+
+  if(scene.firefly.loaded){ scene.firefly.updatePosition(time, scene); }
 
   scene.controls.update();
 
