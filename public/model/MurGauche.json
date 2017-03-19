@@ -32,7 +32,7 @@
         "shading":"phong",
         "depthTest":true,
         "colorEmissive":[0,0,0],
-        "specularCoef":4,
+        "specularCoef":2,
         "colorSpecular":[0.8,0.8,0.8]
     }]
 }
