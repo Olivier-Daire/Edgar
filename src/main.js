@@ -14,6 +14,7 @@ var renderer = null;
 
 document.onkeydown = checkKey;
 
+
 function transitionScene(number){
 
   function opacityHandler(value){
@@ -50,7 +51,8 @@ function transitionScene(number){
 
   setTimeout(function(){
 
-    scene = new Scene(number, animate, renderer);
+    scene.deleteScene();
+    scene = new Scene(number, animate, renderer); 
 
   }, totalTime);
 }
@@ -102,6 +104,16 @@ function onLoad() {
 
   initRender();
   scene = new Scene(1, animate, renderer);
+
+  navigator.getVRDisplays().then(function(displays) {
+    if (displays.length > 0) {
+      window.vrDisplay = displays[0];
+      if (window.vrDisplay.stageParameters) {
+        scene.setStageDimensions(window.vrDisplay.stageParameters);
+      }
+      window.vrDisplay.requestAnimationFrame(animate);
+    }
+  });
 
   window.addEventListener('resize', onResize, true);
   window.addEventListener('vrdisplaypresentchange', onResize, true);

@@ -1,7 +1,7 @@
 "use strict";
 var SCENES = require('./scenes.json');
-var Model = require('./model.js');
 var Character = require('./character.js');
+var Model = require('./model.js');
 var Firefly = require('./firefly.js');
 
 function Scene(number, animate, renderer) {
@@ -16,6 +16,8 @@ function Scene(number, animate, renderer) {
 	this.skyboxSize = null;
 	this.animateFunction = animate;
 	this.firefly = null;
+	this.objectsList = [];
+	this.objectsToDispose = [];
 
 	this.setup(number, renderer);
 
@@ -60,52 +62,55 @@ Scene.prototype.setup = function(number, renderer) {
 	}
 };
 
-Scene.prototype.addCharacterPath = function() {
-	var points = [];
-	var i = 0;
-	// Fill the points array with all the points necessary to draw a circle
-	for (i = 0; i <= 360; i++) {
-		var angle = Math.PI/180 * i;
-		var x = (this.radius) * Math.cos(angle);
-		var y = this.controls.userHeight - 0.5;
-		var z = (this.radius) * Math.sin(angle);
-
-		points.push(new THREE.Vector3(x, y, z));
-	}
-
-	// Create curve using theses points
-	this.characterPath = new THREE.SplineCurve3(points );
-
-	if (window.DEBUG) {
-		var geometry = new THREE.Geometry();
-		var splinePoints = this.characterPath.getPoints(50); // nbr of point to smoothen curve
-
-		for (i = 0; i < splinePoints.length; i++) {
-			geometry.vertices.push(splinePoints[i]);
-		}
-
-		var material = new THREE.LineBasicMaterial( { color : 0xff0000 } );
-
-		// Create the final Object3d to add to the scene
-		var line = new THREE.Line( geometry, material );
-		this.scene.add(line);
-	}
-};
-
 Scene.prototype.addCharacter = function() {
-	var _this = this;
-	this.character = new Character();
-	this.character.load('public/model/edgaranim.json',
-		function() {
-			_this.character.mesh.scale.x = _this.character.mesh.scale.y = _this.character.mesh.scale.z = 8;
-			_this.character.mesh.geometry.computeVertexNormals();
-			_this.scene.add(_this.character.mesh);
+  var _this = this;
+  _this.character = new Character();
+  _this.character.load('public/model/edgaranim.json',
+    function() {
+      _this.character.mesh.scale.x = _this.character.mesh.scale.y = _this.character.mesh.scale.z = 8;
+      _this.character.mesh.geometry.computeVertexNormals();
+      _this.scene.add(_this.character.mesh);
 
-			_this.character.followPath(_this.characterPath);
-			_this.setupStage();
-		}
-	);
+      _this.character.followPath(_this.characterPath);
+    }
+  );
 };
+
+Scene.prototype.addCharacterPath = function() {
+  var points = [];
+  var i = 0;
+  // Fill the points array with all the points necessary to draw a circle
+  for (i = 0; i <= 360; i++) {
+    var angle = Math.PI/180 * i;
+    var x = (this.radius) * Math.cos(angle);
+    var y = this.controls.userHeight - 0.5;
+    var z = (this.radius) * Math.sin(angle);
+
+    points.push(new THREE.Vector3(x, y, z));
+  }
+
+  // Create curve using theses points
+  this.characterPath = new THREE.SplineCurve3(points );
+
+  if (window.DEBUG) {
+    var geometry = new THREE.Geometry();
+    var splinePoints = this.characterPath.getPoints(50); // nbr of point to smoothen curve
+
+    for (i = 0; i < splinePoints.length; i++) {
+      geometry.vertices.push(splinePoints[i]);
+    }
+
+    var material = new THREE.LineBasicMaterial( { color : 0xff0000 } );
+
+    // Create the final Object3d to add to the this
+    var line = new THREE.Line( geometry, material );
+    this.scene.add(line);
+
+    this.objectsToDispose.push(geometry);
+
+  }
+};
+
 
 Scene.prototype.addGround = function(path) {
 	var _this = this;
@@ -194,6 +199,9 @@ Scene.prototype.addSkybox= function(path, size) {
 
 		_this.skybox.scale.set(-1, 1, 1);
 		_this.scene.add(_this.skybox);
+
+		_this.objectsToDispose.push(geometry);
+		_this.objectsToDispose.push(material);
 	}
 
 };
@@ -251,20 +259,6 @@ Scene.prototype.loadJSON = function(number) {
 	}
 };
 
-// Get the HMD, and if we're dealing with something that specifies
-// stageParameters, rearrange the scene.
-Scene.prototype.setupStage = function() {
-	var _this = this;
-	navigator.getVRDisplays().then(function(displays) {
-		if (displays.length > 0) {
-			window.vrDisplay = displays[0];
-			if (window.vrDisplay.stageParameters) {
-				_this.setStageDimensions(window.vrDisplay.stageParameters);
-			}
-			window.vrDisplay.requestAnimationFrame(_this.animateFunction);
-		}
-	});
-};
 
 Scene.prototype.setStageDimensions = function(stage) {
   // Make the skybox fit the stage.
@@ -278,6 +272,26 @@ Scene.prototype.setStageDimensions = function(stage) {
   // Place it on the floor.
   this.skybox.position.y = this.skyboxSize/2;
   this.scene.add(this.skybox);
+
+  this.objectsToDispose.push(geometry);
+
+};
+
+Scene.prototype.deleteScene = function(){
+
+	var _this = this;
+	this.scene.children.forEach(function(object){
+		_this.objectsList.push(object);
+	});
+
+	_this.objectsList.forEach(function(object){
+		_this.scene.remove(object);
+	});
+
+	_this.objectsToDispose.forEach(function(object){
+		object.dispose();
+	});
+
 
 };
 
