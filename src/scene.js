@@ -118,7 +118,7 @@ Scene.prototype.addCharacterPath = function() {
 Scene.prototype.addCharacter = function() {
 	var _this = this;
 	this.character = new Character();
-	this.character.load('public/model/edgaranim.json',
+	this.character.load('public/model/edgaranim.json', true, true,
 		function() {
 			_this.character.mesh.scale.x = _this.character.mesh.scale.y = _this.character.mesh.scale.z = 8;
 			_this.character.mesh.geometry.computeVertexNormals();
@@ -223,7 +223,12 @@ Scene.prototype.loadJSON = function(number) {
 
 	sceneData.models.forEach(function(modelData) {
 		var model = new Model();
-		model.load(modelData.path, function() {
+		var receiveShadow = false;
+		var castShadow = false;
+		if (modelData.shadow) {
+			receiveShadow = true;
+		}
+		model.load(modelData.path, receiveShadow, castShadow, function() {
 
 			// Position
 			if (modelData.position) {

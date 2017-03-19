@@ -60,7 +60,8 @@
           "y" : "1.7",
           "z" : "1"
         },
-        "collisions": false
+        "collisions": false,
+        "shadow" : true
       },
       {
         "path": "public/model/MurPorte.json",
@@ -74,7 +75,8 @@
           "y" : "1.7",
           "z" : "1"
         },
-        "collisions": false
+        "collisions": false,
+        "shadow" : true
       },
       {
         "path": "public/model/MurFond.json",
@@ -88,7 +90,8 @@
           "y" : "1.7",
           "z" : "1"
         },
-        "collisions": false
+        "collisions": false,
+        "shadow" : true
       },
       {
         "path": "public/model/MurDroit.json",
@@ -102,7 +105,8 @@
           "y" : "1.7",
           "z" : "1"
         },
-        "collisions": false
+        "collisions": false,
+        "shadow" : true
       },
       {
         "path": "public/model/Planche1.json",
@@ -173,6 +177,7 @@
           "z" : "1"
         },
         "collisions": true,
+        "shadow" : true,
         "interaction": true,
         "interaction_type": "end-level"
       },
@@ -188,7 +193,8 @@
           "y" : "1",
           "z" : "1"
         },
-        "collisions": false
+        "collisions": false,
+        "shadow" : true
       },
       {
         "path": "public/model/Table1.json",
