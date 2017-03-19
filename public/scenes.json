@@ -257,5 +257,264 @@
       "path" : "public/img/sky1.jpg",
       "size" : "50"
     }
+  },
+  {
+    "number": "1",
+    "radius" : "5.5",
+    "number_of_objectives": 1,
+    "models": [
+      {
+        "path": "public/model/Boite.json",
+        "position": {
+          "x" : "0",
+          "y" : "1",
+          "z" : "0"
+         },
+        "scale": {
+          "x" : "1",
+          "y" : "1",
+          "z" : "1"
+        },
+        "collisions": false
+      },
+      {
+        "path": "public/model/lamp.json",
+        "position": {
+          "x" : "0",
+          "y" : "2.5",
+          "z" : "0"
+         },
+        "scale": {
+          "x" : "1",
+          "y" : "1",
+          "z" : "1"
+        },
+        "collisions": false
+      },
+      {
+        "path": "public/model/lamp2.json",
+        "position": {
+          "x" : "0",
+          "y" : "5",
+          "z" : "-7.5"
+         },
+        "scale": {
+          "x" : "0.3",
+          "y" : "0.3",
+          "z" : "0.3"
+        },
+        "collisions": true,
+        "interaction": true,
+        "interaction_type": "light"
+      },
+      {
+        "path": "public/model/MurGauche.json",
+        "position": {
+          "x" : "0",
+          "y" : "1",
+          "z" : "0"
+         },
+        "scale": {
+          "x" : "1",
+          "y" : "1.7",
+          "z" : "1"
+        },
+        "collisions": false,
+        "shadow" : true
+      },
+      {
+        "path": "public/model/MurPorte.json",
+        "position": {
+          "x" : "0",
+          "y" : "1.08",
+          "z" : "0"
+         },
+        "scale": {
+          "x" : "1",
+          "y" : "1.7",
+          "z" : "1"
+        },
+        "collisions": false,
+        "shadow" : true
+      },
+      {
+        "path": "public/model/MurFond.json",
+        "position": {
+          "x" : "0",
+          "y" : "1",
+          "z" : "0"
+         },
+        "scale": {
+          "x" : "1",
+          "y" : "1.7",
+          "z" : "1"
+        },
+        "collisions": false,
+        "shadow" : true
+      },
+      {
+        "path": "public/model/MurDroit.json",
+        "position": {
+          "x" : "0",
+          "y" : "1",
+          "z" : "0"
+         },
+        "scale": {
+          "x" : "1",
+          "y" : "1.7",
+          "z" : "1"
+        },
+        "collisions": false,
+        "shadow" : true
+      },
+      {
+        "path": "public/model/Planche1.json",
+        "position": {
+          "x" : "0",
+          "y" : "1",
+          "z" : "0"
+         },
+        "scale": {
+          "x" : "1",
+          "y" : "1",
+          "z" : "1"
+        },
+        "collisions": false
+      },
+      {
+        "path": "public/model/Planche2.json",
+        "position": {
+          "x" : "0",
+          "y" : "1",
+          "z" : "0"
+         },
+        "scale": {
+          "x" : "1",
+          "y" : "1",
+          "z" : "1"
+        },
+        "collisions": false
+      },
+      {
+        "path": "public/model/Planche3.json",
+        "position": {
+          "x" : "0",
+          "y" : "1",
+          "z" : "0"
+         },
+        "scale": {
+          "x" : "1",
+          "y" : "1",
+          "z" : "1"
+        },
+        "collisions": false
+      },
+      {
+        "path": "public/model/Planche4.json",
+        "position": {
+          "x" : "0",
+          "y" : "1",
+          "z" : "0"
+         },
+        "scale": {
+          "x" : "1",
+          "y" : "1",
+          "z" : "1"
+        },
+        "collisions": false
+      },
+      {
+        "path": "public/model/Porte.json",
+        "position": {
+          "x" : "0",
+          "y" : "1",
+          "z" : "0"
+         },
+        "scale": {
+          "x" : "1",
+          "y" : "1.7",
+          "z" : "1"
+        },
+        "collisions": true,
+        "shadow" : true,
+        "interaction": true,
+        "interaction_type": "end-level"
+      },
+      {
+        "path": "public/model/Sol.json",
+        "position": {
+          "x" : "0",
+          "y" : "1",
+          "z" : "0"
+         },
+        "scale": {
+          "x" : "1",
+          "y" : "1",
+          "z" : "1"
+        },
+        "collisions": false,
+        "shadow" : true
+      },
+      {
+        "path": "public/model/Table1.json",
+        "position": {
+          "x" : "0",
+          "y" : "1",
+          "z" : "0"
+         },
+        "scale": {
+          "x" : "1",
+          "y" : "1",
+          "z" : "1"
+        },
+        "collisions": false
+      },
+      {
+        "path": "public/model/Table2.json",
+        "position": {
+          "x" : "0",
+          "y" : "1",
+          "z" : "0"
+         },
+        "scale": {
+          "x" : "1",
+          "y" : "1",
+          "z" : "1"
+        },
+        "collisions": false
+      },
+      {
+        "path": "public/model/TasBoites.json",
+        "position": {
+          "x" : "0",
+          "y" : "1",
+          "z" : "0"
+         },
+        "scale": {
+          "x" : "1",
+          "y" : "1",
+          "z" : "1"
+        },
+        "collisions": true
+      },
+      {
+        "path": "public/model/Toit.json",
+        "position": {
+          "x" : "0",
+          "y" : "4",
+          "z" : "0"
+         },
+        "scale": {
+          "x" : "1",
+          "y" : "1",
+          "z" : "1"
+        },
+        "collisions": false
+      }
+    ],
+    "skybox": {
+      "path" : "public/img/sky1.jpg",
+      "size" : "50"
+    }
   }
 ]

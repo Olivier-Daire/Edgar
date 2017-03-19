@@ -142,6 +142,7 @@ function onLoad() {
           break;
         case 'end-level':
           if (scene.achievedObjectives === scene.totalObjectives) { // jshint ignore:line
+            transitionScene(2);
             // FIXME @Guilhem Load Next level and then remove --> // jshint ignore:line
           } else { // jshint ignore:line
             document.getElementById('objectives').style.display = 'block';
