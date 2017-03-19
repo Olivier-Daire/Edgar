@@ -3,7 +3,7 @@
 var Scene = require('./scene.js');
 
 window.vrDisplay = null;
-window.DEBUG = true;
+window.DEBUG = false;
 // EnterVRButton for rendering enter/exit UI.
 var vrButton;
 var scene;
@@ -41,7 +41,7 @@ function onLoad() {
     // e.detail.interaction contains interaction type e.g "move"
 
     // Can only interact if firefly is grouped
-    if ( scene.firefly.status === 1 ) {
+    if (scene.firefly.status === 1) {
       // TODO Add all cases
       switch(e.detail.interaction) {
         case 'move':
@@ -61,9 +61,19 @@ function onLoad() {
           }
 
           break;
+        case 'end-level':
+          if (scene.achievedObjectives === scene.totalObjectives) { // jshint ignore:line
+            // FIXME @Guilhem Load Next level and then remove --> // jshint ignore:line
+          } else { // jshint ignore:line
+            document.getElementById('objectives').style.display = 'block';
+            setTimeout(function() { document.getElementById('objectives').style.display = 'none'; }, 2500);
+          }
+          break;
         default:
           console.log("Implement switch case for " + e.detail.interaction);  // jshint ignore:line
       }
+      // TODO check if it works with levels, otherwise put this in every switch case
+      scene.achievedObjectives++;
     }
 
   }, false);

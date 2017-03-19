@@ -20,6 +20,8 @@ function Scene(number, animate) {
 	this.skyboxSize = null;
 	this.animateFunction = animate;
 	this.firefly = null;
+	this.totalObjectives = 0;
+	this.achievedObjectives = 0;
 
 	this.setup(number);
 
@@ -196,7 +198,9 @@ Scene.prototype.addFirefly = function() {
 	this.firefly = new Firefly();
 	this.firefly.load(function() {
 		_this.firefly.parent.position.set( 0, _this.controls.userHeight-1, -_this.radius+1 );
-		_this.scene.add(_this.firefly.bbhelper);
+		if (window.DEBUG){
+			_this.scene.add(_this.firefly.bbhelper);
+		}
 		_this.scene.add(_this.firefly.parent);
 
 		_this.camera.add(_this.firefly.parent);
@@ -236,6 +240,7 @@ Scene.prototype.loadJSON = function(number) {
 	var sceneData = SCENES[number-1];
 
 	this.radius = sceneData.radius;
+	this.totalObjectives = sceneData.number_of_objectives;
 	var _this = this;
 
 	sceneData.models.forEach(function(modelData) {

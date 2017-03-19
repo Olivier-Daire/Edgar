@@ -2,6 +2,7 @@
   {
     "number": "1",
     "radius" : "6",
+    "number_of_objectives": 1,
     "models": [
       {
         "path": "public/model/Boite.json",
@@ -171,7 +172,9 @@
           "y" : "1.7",
           "z" : "1"
         },
-        "collisions": false
+        "collisions": true,
+        "interaction": true,
+        "interaction_type": "end-level"
       },
       {
         "path": "public/model/Sol.json",
