@@ -29,8 +29,10 @@
         "wireframe":false,
         "DbgIndex":0,
         "mapDiffuseRepeat":[1,1],
-        "shading":"lambert",
+        "shading":"phong",
         "depthTest":true,
-        "colorEmissive":[0,0,0]
+        "colorEmissive":[0,0,0],
+        "specularCoef":4,
+        "colorSpecular":[0.8,0.8,0.8]
     }]
 }
