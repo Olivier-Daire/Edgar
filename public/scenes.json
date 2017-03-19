@@ -8,7 +8,7 @@
           "path": "public/model/lvl3/Bordel1.json",
           "position": {
             "x" : "0",
-            "y" : "1",
+            "y" : "0.85",
             "z" : "0"
            },
           "scale": {
@@ -22,7 +22,7 @@
           "path": "public/model/lvl3/Bordel2.json",
           "position": {
             "x" : "0",
-            "y" : "1",
+            "y" : "0.85",
             "z" : "0"
            },
           "scale": {
@@ -36,7 +36,7 @@
           "path": "public/model/lvl3/Bordel3.json",
           "position": {
             "x" : "0",
-            "y" : "1",
+            "y" : "0.85",
             "z" : "0"
            },
           "scale": {
@@ -50,7 +50,7 @@
           "path": "public/model/lvl3/Corn1.json",
           "position": {
             "x" : "0",
-            "y" : "1",
+            "y" : "0.85",
             "z" : "0"
            },
           "scale": {
@@ -64,7 +64,7 @@
           "path": "public/model/lvl3/Corn2.json",
           "position": {
             "x" : "0",
-            "y" : "1",
+            "y" : "0.85",
             "z" : "0"
            },
           "scale": {
@@ -78,7 +78,7 @@
           "path": "public/model/lvl3/Fence1.json",
           "position": {
             "x" : "0",
-            "y" : "1",
+            "y" : "0.85",
             "z" : "0"
            },
           "scale": {
@@ -92,7 +92,7 @@
           "path": "public/model/lvl3/Fence2.json",
           "position": {
             "x" : "0",
-            "y" : "1",
+            "y" : "0.85",
             "z" : "0"
            },
           "scale": {
@@ -106,7 +106,7 @@
           "path": "public/model/lvl3/Land.json",
           "position": {
             "x" : "0",
-            "y" : "1",
+            "y" : "0.85",
             "z" : "0"
            },
           "scale": {
@@ -120,7 +120,7 @@
           "path": "public/model/lvl3/LightPole.json",
           "position": {
             "x" : "0",
-            "y" : "1",
+            "y" : "0.85",
             "z" : "0"
            },
           "scale": {
@@ -134,7 +134,7 @@
           "path": "public/model/lvl3/PoteauBroken.json",
           "position": {
             "x" : "0",
-            "y" : "1",
+            "y" : "0.85",
             "z" : "0"
            },
           "scale": {
@@ -148,7 +148,7 @@
           "path": "public/model/lvl3/Poteaux.json",
           "position": {
             "x" : "0",
-            "y" : "1",
+            "y" : "0.85",
             "z" : "0"
            },
           "scale": {
@@ -162,7 +162,7 @@
           "path": "public/model/lvl3/Usine.json",
           "position": {
             "x" : "0",
-            "y" : "1",
+            "y" : "0.85",
             "z" : "0"
            },
           "scale": {
