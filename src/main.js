@@ -3,7 +3,7 @@
 var Scene = require('./scene.js');
 
 window.vrDisplay = null;
-window.DEBUG = true;
+window.DEBUG = false;
 // EnterVRButton for rendering enter/exit UI.
 var vrButton;
 var scene;
@@ -33,19 +33,46 @@ function onLoad() {
 
   scene = new Scene(1, animate);
 
+
   window.addEventListener('resize', onResize, true);
   window.addEventListener('vrdisplaypresentchange', onResize, true);
   window.addEventListener('interact', function(e) {
     // e.detail.id contains object id
     // e.detail.interaction contains interaction type e.g "move"
-    // TODO Add all cases
-    switch(e.detail.interaction) {
-      case 'move':
+
+    // Can only interact if firefly is grouped
+    if (scene.firefly.status === 1) {
+      // TODO Add all cases
+      switch(e.detail.interaction) {
+        case 'move':
           scene.scene.getObjectById(e.detail.id).position.x = 6;
           break;
-      default:
+        case 'light':
+          var object = scene.scene.getObjectById(e.detail.id);
+          var on = false;
+          for (var i = 0; i < object.material.materials.length; i++ ) {
+               if (object.material.materials[i].emissive.getHexString() === '000000') {
+                object.material.materials[i].emissive.setHex(0xfffde5); // Light on
+                on = true;
+               } else {
+                object.material.materials[i].emissive.setHex(0x000000); // Light off
+               }
+          }
+          on ? scene.achievedObjectives++ : scene.achievedObjectives--; // jshint ignore:line
+          break;
+        case 'end-level':
+          if (scene.achievedObjectives === scene.totalObjectives) { // jshint ignore:line
+            // FIXME @Guilhem Load Next level and then remove --> // jshint ignore:line
+          } else { // jshint ignore:line
+            document.getElementById('objectives').style.display = 'block';
+            setTimeout(function() { document.getElementById('objectives').style.display = 'none'; }, 2500);
+          }
+          break;
+        default:
           console.log("Implement switch case for " + e.detail.interaction);  // jshint ignore:line
+      }
     }
+
   }, false);
 
   // Initialize the WebVR UI.
@@ -79,6 +106,12 @@ function onLoad() {
         document.body.requestPointerLock =  document.body.requestPointerLock ||  document.body.mozRequestPointerLock ||  document.body.webkitRequestPointerLock;
         document.body.requestPointerLock();
     }
+
+    // Group / Ungroup firelfy on click
+    window.addEventListener('click', function(e) {
+      scene.firefly.updateStatus();
+    }, true);
+
     vrButton.requestEnterFullscreen();
   });
 

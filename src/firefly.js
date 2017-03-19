@@ -83,6 +83,7 @@ var Firefly = function() {
   };
 
   this.updateStatus = function() {
+    // TODO More semantic status such as grouped / ungrouped
     if(this.status === 0) {
       this.status = 1;
     }
@@ -144,7 +145,7 @@ var Firefly = function() {
 
         if (collide) {
           if (!this.interactionFired) {
-            var event = new CustomEvent('interact', {'detail': {'id': objects[i].id, 'interaction': 'move'}});
+            var event = new CustomEvent('interact', {'detail': {'id': objects[i].id, 'interaction': objects[i].interaction}});
             window.dispatchEvent(event);
             this.interactionFired = true;
           }

@@ -1,0 +1,25 @@
+[
+  {
+    "number": "1",
+    "radius" : "6",
+    "models": [
+      {
+        "path": "public/model/house5.json",
+        "position": {
+          "x" : "2",
+          "y" : 1,
+          "z" : "0"
+         },
+        "scale": {
+          "x" : 1.5,
+          "y" : 1.5,
+          "z" : 1.25
+        }
+      }
+    ],
+    "skybox": {
+      "path" : "public/img/sky1.jpg",
+      "size" : "50"
+    }
+  }
+]
