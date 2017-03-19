@@ -345,7 +345,9 @@
             "y" : "1",
             "z" : "1"
           },
-          "collisions": false
+          "collisions": true,
+          "interaction": true,
+          "interaction_type": "light"
         },
         {
           "path": "public/model/lvl3/Fence2.json",
@@ -387,7 +389,9 @@
             "y" : "1",
             "z" : "1"
           },
-          "collisions": false
+          "collisions": true,
+          "interaction": true,
+          "interaction_type": "light"
         },
         {
           "path": "public/model/lvl3/PoteauBroken.json",
