@@ -262,7 +262,7 @@ Scene.prototype.loadJSON = function(number) {
 			}
 
 			if (modelData.interaction) {
-				var interactableObject = { "id": model.mesh.id, "object": model, "interaction": modelData.interaction_type};
+				var interactableObject = { "id": model.mesh.id, "object": model, "interaction": modelData.interaction};
 				_this.interactableObjects.push(interactableObject);
 			}
 

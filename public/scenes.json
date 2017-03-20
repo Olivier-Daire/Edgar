@@ -45,8 +45,9 @@
           "z" : "0.3"
         },
         "collisions": true,
-        "interaction": true,
-        "interaction_type": "light"
+        "interaction": {
+          "type": "light"
+         }
       },
       {
         "path": "public/model/lvl1/MurGauche.json",
@@ -178,8 +179,10 @@
         },
         "collisions": true,
         "shadow" : true,
-        "interaction": true,
-        "interaction_type": "end-level"
+        "interaction": {
+          "type": "end-level",
+          "value": 2,
+         }
       },
       {
         "path": "public/model/lvl1/Sol.json",
@@ -261,7 +264,7 @@
   {
       "number": "2",
       "radius" : "5.5",
-      "number_of_objectives": 1,
+      "number_of_objectives": 2,
       "models": [
         {
           "path": "public/model/lvl3/Bordel1.json",
@@ -346,8 +349,12 @@
             "z" : "1"
           },
           "collisions": true,
-          "interaction": true,
-          "interaction_type": "light"
+          "interaction": {
+            "type": "move",
+            "axis": "x",
+            "operation": "-",
+            "value": 6,
+          }
         },
         {
           "path": "public/model/lvl3/Fence2.json",
@@ -390,8 +397,9 @@
             "z" : "1"
           },
           "collisions": true,
-          "interaction": true,
-          "interaction_type": "light"
+          "interaction": {
+            "type": "light"
+          }
         },
         {
           "path": "public/model/lvl3/PoteauBroken.json",
