@@ -4,7 +4,7 @@ var Scene = require('./scene.js');
 var Util = require('./util.js');
 
 window.vrDisplay = null;
-window.DEBUG = false;
+window.DEBUG = true;
 // EnterVRButton for rendering enter/exit UI.
 var vrButton;
 var scene;
@@ -14,7 +14,7 @@ var renderer = null;
 
 document.onkeydown = checkKey;
 
-
+// TODO : Move this elswhere @Guilhem....
 function transitionScene(number){
 
   function opacityHandler(value){
@@ -132,13 +132,27 @@ function onLoad() {
         case 'light':
           var object = scene.scene.getObjectById(e.detail.id);
           var on = false;
-          for (var i = 0; i < object.material.materials.length; i++ ) {
-               if (object.material.materials[i].emissive.getHexString() === '000000') {
-                object.material.materials[i].emissive.setHex(0xfffde5); // Light on
-                on = true;
-               } else {
-                object.material.materials[i].emissive.setHex(0x000000); // Light off
-               }
+          if (!object.userData.light_on || object.userData.light_on === "undefined") {
+            var light = new THREE.PointLight( 0xfffdcc, 2, 2, 0.9 );
+            // Get real position of object http://stackoverflow.com/a/14225370
+            var position = new THREE.Vector3();
+            var boundingBox = object.geometry.boundingBox;
+            position.subVectors(boundingBox.max, boundingBox.min);
+            position.multiplyScalar( 0.5 );
+            position.add( boundingBox.min );
+            position.applyMatrix4( object.matrixWorld );
+
+            light.position.set(position.x,position.y,position.z);
+            // store light so we can interact with it again
+            object.userData = { light_on: true, light_id: light.id };
+            scene.scene.add( light );
+
+            on = true;
+          } else {
+            scene.scene.remove(scene.scene.getObjectById(object.userData.light_id));
+            object.userData = { light_on: false};
+
+            on = false;
           }
           on ? scene.achievedObjectives++ : scene.achievedObjectives--; // jshint ignore:line
           break;
