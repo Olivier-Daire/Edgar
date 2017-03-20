@@ -92,7 +92,7 @@ function onLoad() {
 
   }, false);
   window.addEventListener('load-level', function(e) {
-     scene = new Scene(e.detail.number, animate, renderer); 
+     scene = new Scene(e.detail.number, animate, renderer);
   } );
 
   // Initialize the WebVR UI.

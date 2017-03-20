@@ -303,13 +303,32 @@ Scene.prototype.deleteScene = function(){
 	});
 
 	_this.objectsList.forEach(function(object){
+		if(object.geometry) {
+			object.geometry.dispose();
+		}
+
+		if(object.material && object.material !== 'undefined') {
+			if(object.material.materials) {
+				for (var i = object.material.materials.length - 1; i >= 0; i--) {
+					object.material.materials[i].dispose();
+				}
+			} else {
+				object.material.dispose();
+			}
+			
+		}
+
+		if(object.texture) {
+			object.texture.dispose();
+		}
+
 		_this.scene.remove(object);
+		object = undefined;
 	});
 
 	_this.objectsToDispose.forEach(function(object){
 		object.dispose();
 	});
-
 
 };
 
