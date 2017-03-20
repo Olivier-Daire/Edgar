@@ -640,7 +640,7 @@
         }
     ],
     "skybox": {
-      "path" : "public/img/sky1.jpg",
+      "path" : "public/img/skybox3.jpg",
       "size" : "50"
     }
   }
