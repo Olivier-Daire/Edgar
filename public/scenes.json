@@ -261,13 +261,13 @@
   {
       "number": "2",
       "radius" : "5.5",
-      "number_of_objectives": 1,
+      "number_of_objectives": 0,
       "models": [
         {
-          "path": "public/model/lvl3/Bordel1.json",
+          "path": "public/model/lvl4/untitled.json",
           "position": {
             "x" : "0",
-            "y" : "0.85",
+            "y" : "1",
             "z" : "0"
            },
           "scale": {
@@ -278,10 +278,10 @@
           "collisions": false
         },
         {
-          "path": "public/model/lvl3/Bordel2.json",
+          "path": "public/model/lvl4/untitled2.json",
           "position": {
             "x" : "0",
-            "y" : "0.85",
+            "y" : "1",
             "z" : "0"
            },
           "scale": {
@@ -292,10 +292,10 @@
           "collisions": false
         },
         {
-          "path": "public/model/lvl3/Bordel3.json",
+          "path": "public/model/lvl4/untitled3.json",
           "position": {
             "x" : "0",
-            "y" : "0.85",
+            "y" : "1",
             "z" : "0"
            },
           "scale": {
@@ -306,10 +306,10 @@
           "collisions": false
         },
         {
-          "path": "public/model/lvl3/Corn1.json",
+          "path": "public/model/lvl4/untitled4.json",
           "position": {
             "x" : "0",
-            "y" : "0.85",
+            "y" : "1",
             "z" : "0"
            },
           "scale": {
@@ -320,10 +320,10 @@
           "collisions": false
         },
         {
-          "path": "public/model/lvl3/Corn2.json",
+          "path": "public/model/lvl4/untitled5.json",
           "position": {
             "x" : "0",
-            "y" : "0.85",
+            "y" : "1",
             "z" : "0"
            },
           "scale": {
@@ -334,26 +334,10 @@
           "collisions": false
         },
         {
-          "path": "public/model/lvl3/Fence1.json",
+          "path": "public/model/lvl4/untitled6.json",
           "position": {
             "x" : "0",
-            "y" : "0.85",
-            "z" : "0"
-           },
-          "scale": {
-            "x" : "1",
             "y" : "1",
-            "z" : "1"
-          },
-          "collisions": true,
-          "interaction": true,
-          "interaction_type": "light"
-        },
-        {
-          "path": "public/model/lvl3/Fence2.json",
-          "position": {
-            "x" : "0",
-            "y" : "0.85",
             "z" : "0"
            },
           "scale": {
@@ -364,10 +348,10 @@
           "collisions": false
         },
         {
-          "path": "public/model/lvl3/Land.json",
+          "path": "public/model/lvl4/untitled7.json",
           "position": {
             "x" : "0",
-            "y" : "0.85",
+            "y" : "1",
             "z" : "0"
            },
           "scale": {
@@ -378,26 +362,10 @@
           "collisions": false
         },
         {
-          "path": "public/model/lvl3/LightPole.json",
+          "path": "public/model/lvl4/mur1.json",
           "position": {
             "x" : "0",
-            "y" : "0.85",
-            "z" : "0"
-           },
-          "scale": {
-            "x" : "1",
             "y" : "1",
-            "z" : "1"
-          },
-          "collisions": true,
-          "interaction": true,
-          "interaction_type": "light"
-        },
-        {
-          "path": "public/model/lvl3/PoteauBroken.json",
-          "position": {
-            "x" : "0",
-            "y" : "0.85",
             "z" : "0"
            },
           "scale": {
@@ -408,10 +376,10 @@
           "collisions": false
         },
         {
-          "path": "public/model/lvl3/Poteaux.json",
+          "path": "public/model/lvl4/mur2.json",
           "position": {
             "x" : "0",
-            "y" : "0.85",
+            "y" : "1",
             "z" : "0"
            },
           "scale": {
@@ -422,10 +390,52 @@
           "collisions": false
         },
         {
-          "path": "public/model/lvl3/Usine.json",
+          "path": "public/model/lvl4/mur3.json",
           "position": {
             "x" : "0",
-            "y" : "0.85",
+            "y" : "1",
+            "z" : "0"
+           },
+          "scale": {
+            "x" : "1",
+            "y" : "1",
+            "z" : "1"
+          },
+          "collisions": false
+        },
+        {
+          "path": "public/model/lvl4/mur4.json",
+          "position": {
+            "x" : "0",
+            "y" : "1",
+            "z" : "0"
+           },
+          "scale": {
+            "x" : "1",
+            "y" : "1",
+            "z" : "1"
+          },
+          "collisions": false
+        },
+        {
+          "path": "public/model/lvl4/toit.json",
+          "position": {
+            "x" : "0",
+            "y" : "1",
+            "z" : "0"
+           },
+          "scale": {
+            "x" : "1",
+            "y" : "1",
+            "z" : "1"
+          },
+          "collisions": false
+        },
+        {
+          "path": "public/model/lvl4/sol.json",
+          "position": {
+            "x" : "0",
+            "y" : "1",
             "z" : "0"
            },
           "scale": {
