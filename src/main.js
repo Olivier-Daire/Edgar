@@ -4,13 +4,14 @@ var Scene = require('./scene.js');
 var Util = require('./util.js');
 
 window.vrDisplay = null;
-window.DEBUG = true;
+window.DEBUG = false;
 // EnterVRButton for rendering enter/exit UI.
 var vrButton;
 var scene;
 var stats;
 var clock = new THREE.Clock();
 var renderer = null;
+var inGame = false;
 
 document.onkeydown = checkKey;
 
@@ -118,6 +119,11 @@ function onLoad() {
 
   window.addEventListener('resize', onResize, true);
   window.addEventListener('vrdisplaypresentchange', onResize, true);
+  window.addEventListener('click', function(e) {
+    if (inGame) { // Prevent click on VR/not VR buttons
+      scene.firefly.updateStatus();
+    }
+  }, true);
   window.addEventListener('interact', function(e) {
     // e.detail.id contains object id
     // e.detail.interaction contains interaction type e.g "move"
@@ -184,6 +190,7 @@ function onLoad() {
   vrButton.on('exit', function() {
     scene.camera.quaternion.set(0, 0, 0, 1);
     scene.camera.position.set(0, scene.controls.userHeight, 0);
+    inGame = false;
   });
 
   vrButton.on('hide', function() {
@@ -204,10 +211,7 @@ function onLoad() {
         document.body.requestPointerLock();
     }
 
-    // Group / Ungroup firelfy on click
-    window.addEventListener('click', function(e) {
-      scene.firefly.updateStatus();
-    }, true);
+    inGame = true;
 
     vrButton.requestEnterFullscreen();
   });
