@@ -2,6 +2,7 @@
 
 var Scene = require('./scene.js');
 var Util = require('./util.js');
+var SceneUtil = require('./sceneUtil.js');
 
 window.vrDisplay = null;
 window.DEBUG = false;
@@ -15,60 +16,15 @@ var inGame = false;
 
 document.onkeydown = checkKey;
 
-// TODO : Move this elswhere @Guilhem....
-function transitionScene(number){
-
-  function opacityHandler(value){
-
-    opacity = opacity+value*negative;
-    screen.style.opacity = opacity;
-
-    if(opacity >= 1.2){
-
-      negative = -1;
-
-    }else if(opacity <= 0){
-
-      var elt = document.getElementById('blackBackground');
-      elt.parentNode.removeChild(elt);
-      clearInterval(blackScreenTransition);
-
-
-    }
-
-  }
-    
-  var screen = document.createElement('div');
-  screen.id="blackBackground";
-  screen.style = "width:100%; height:100%; position:fixed; top:0; left:0; background-color:black; z-index:10000; opacity:0;";
-  document.body.appendChild(screen);
-  var frameRate = 10, totalTime = 1000, opacity = 0, negative = 1;
-  
-  var blackScreenTransition = setInterval(function(){ 
-    
-    opacityHandler(frameRate / totalTime);
-  
-  }, frameRate);
-
-  setTimeout(function(){
-
-    scene.deleteScene();
-
-    scene.controls.resetPose();
-    scene = new Scene(number, animate, renderer); 
-
-  }, totalTime);
-}
-
 function checkKey(e) {
 
     e = e || window.event;
 
     if (e.keyCode === 69) { // 69 keycode for 'e'
-        scene.firefly.updateStatus();
+      scene.firefly.updateStatus();
     }
     else if (e.keyCode === 13) { // 13 keycode for enter
-      transitionScene(2);
+      SceneUtil.transitionScene(2, scene);
     }
 }
 
@@ -131,52 +87,13 @@ function onLoad() {
     // Can only interact if firefly is grouped
     if (scene.firefly.status === 1) {
       // TODO Add all cases
-      switch(e.detail.interaction) {
-        case 'move':
-          scene.scene.getObjectById(e.detail.id).position.x = 6;
-          break;
-        case 'light':
-          var object = scene.scene.getObjectById(e.detail.id);
-          var on = false;
-          if (!object.userData.light_on || object.userData.light_on === "undefined") {
-            var light = new THREE.PointLight( 0xfffdcc, 2, 2, 0.9 );
-            // Get real position of object http://stackoverflow.com/a/14225370
-            var position = new THREE.Vector3();
-            var boundingBox = object.geometry.boundingBox;
-            position.subVectors(boundingBox.max, boundingBox.min);
-            position.multiplyScalar( 0.5 );
-            position.add( boundingBox.min );
-            position.applyMatrix4( object.matrixWorld );
-
-            light.position.set(position.x,position.y,position.z);
-            // store light so we can interact with it again
-            object.userData = { light_on: true, light_id: light.id };
-            scene.scene.add( light );
-
-            on = true;
-          } else {
-            scene.scene.remove(scene.scene.getObjectById(object.userData.light_id));
-            object.userData = { light_on: false};
-
-            on = false;
-          }
-          on ? scene.achievedObjectives++ : scene.achievedObjectives--; // jshint ignore:line
-          break;
-        case 'end-level':
-          if (scene.achievedObjectives === scene.totalObjectives) { // jshint ignore:line
-            transitionScene(2);
-            // FIXME @Guilhem Load Next level and then remove --> // jshint ignore:line
-          } else { // jshint ignore:line
-            document.getElementById('objectives').style.display = 'block';
-            setTimeout(function() { document.getElementById('objectives').style.display = 'none'; }, 2500);
-          }
-          break;
-        default:
-          console.log("Implement switch case for " + e.detail.interaction);  // jshint ignore:line
-      }
+      SceneUtil.interact(e.detail, scene);
     }
 
   }, false);
+  window.addEventListener('load-level', function(e) {
+     scene = new Scene(e.detail.number, animate, renderer); 
+  } );
 
   // Initialize the WebVR UI.
   var uiOptions = {
