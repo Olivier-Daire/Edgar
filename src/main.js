@@ -75,7 +75,7 @@ function onLoad() {
 
   window.addEventListener('resize', onResize, true);
   window.addEventListener('vrdisplaypresentchange', onResize, true);
-  window.addEventListener('click', function(e) {
+  document.addEventListener('mousedown', function(e) {
     if (inGame) { // Prevent click on VR/not VR buttons
       scene.firefly.updateStatus();
     }
@@ -104,6 +104,10 @@ function onLoad() {
 
   vrButton = new webvrui.EnterVRButton(renderer.domElement, uiOptions);
 
+  vrButton.on('enter', function() {
+    inGame = true;
+  });
+
   vrButton.on('exit', function() {
     scene.camera.quaternion.set(0, 0, 0, 1);
     scene.camera.position.set(0, scene.controls.userHeight, 0);
@@ -129,7 +133,6 @@ function onLoad() {
     }
 
     inGame = true;
-
     vrButton.requestEnterFullscreen();
   });
 
