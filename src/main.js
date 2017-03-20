@@ -11,10 +11,11 @@ var scene;
 var stats;
 var clock = new THREE.Clock();
 var renderer = null;
+var inGame = false;
 
 document.onkeydown = checkKey;
 
-
+// TODO : Move this elswhere @Guilhem....
 function transitionScene(number){
 
   function opacityHandler(value){
@@ -52,6 +53,8 @@ function transitionScene(number){
   setTimeout(function(){
 
     scene.deleteScene();
+
+    scene.controls.resetPose();
     scene = new Scene(number, animate, renderer); 
 
   }, totalTime);
@@ -116,6 +119,11 @@ function onLoad() {
 
   window.addEventListener('resize', onResize, true);
   window.addEventListener('vrdisplaypresentchange', onResize, true);
+  window.addEventListener('click', function(e) {
+    if (inGame) { // Prevent click on VR/not VR buttons
+      scene.firefly.updateStatus();
+    }
+  }, true);
   window.addEventListener('interact', function(e) {
     // e.detail.id contains object id
     // e.detail.interaction contains interaction type e.g "move"
@@ -130,13 +138,27 @@ function onLoad() {
         case 'light':
           var object = scene.scene.getObjectById(e.detail.id);
           var on = false;
-          for (var i = 0; i < object.material.materials.length; i++ ) {
-               if (object.material.materials[i].emissive.getHexString() === '000000') {
-                object.material.materials[i].emissive.setHex(0xfffde5); // Light on
-                on = true;
-               } else {
-                object.material.materials[i].emissive.setHex(0x000000); // Light off
-               }
+          if (!object.userData.light_on || object.userData.light_on === "undefined") {
+            var light = new THREE.PointLight( 0xfffdcc, 2, 2, 0.9 );
+            // Get real position of object http://stackoverflow.com/a/14225370
+            var position = new THREE.Vector3();
+            var boundingBox = object.geometry.boundingBox;
+            position.subVectors(boundingBox.max, boundingBox.min);
+            position.multiplyScalar( 0.5 );
+            position.add( boundingBox.min );
+            position.applyMatrix4( object.matrixWorld );
+
+            light.position.set(position.x,position.y,position.z);
+            // store light so we can interact with it again
+            object.userData = { light_on: true, light_id: light.id };
+            scene.scene.add( light );
+
+            on = true;
+          } else {
+            scene.scene.remove(scene.scene.getObjectById(object.userData.light_id));
+            object.userData = { light_on: false};
+
+            on = false;
           }
           on ? scene.achievedObjectives++ : scene.achievedObjectives--; // jshint ignore:line
           break;
@@ -168,6 +190,7 @@ function onLoad() {
   vrButton.on('exit', function() {
     scene.camera.quaternion.set(0, 0, 0, 1);
     scene.camera.position.set(0, scene.controls.userHeight, 0);
+    inGame = false;
   });
 
   vrButton.on('hide', function() {
@@ -188,10 +211,7 @@ function onLoad() {
         document.body.requestPointerLock();
     }
 
-    // Group / Ungroup firelfy on click
-    window.addEventListener('click', function(e) {
-      scene.firefly.updateStatus();
-    }, true);
+    inGame = true;
 
     vrButton.requestEnterFullscreen();
   });
