@@ -70,7 +70,7 @@ Scene.prototype.setup = function(number, renderer) {
 Scene.prototype.addCharacter = function() {
   var _this = this;
   this.character = new Character();
-	this.character.load('public/model/edgaranim.json', true, true,
+	this.character.load('public/model/edgaranim.json', false, true, // receive, cast shadows
 		function() {
 			_this.character.mesh.scale.x = _this.character.mesh.scale.y = _this.character.mesh.scale.z = 8;
 			_this.character.mesh.geometry.computeVertexNormals();
