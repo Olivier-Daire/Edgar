@@ -69,7 +69,7 @@ var Firefly = function() {
     // Update particles gravity & intensity when switching firefly status
     this.updateGravity();
     this.updateLightIntensity();
-    this.interact(scene.interactableObjects, scene.character.theta); // Passer theta du perso ?
+    this.interact(scene.interactableObjects, scene.character.theta);
 
     // TODO : Update particles scale
     this.part1.position.x = Math.sin( time * 0.7 ) / this.gravityCoeff;
