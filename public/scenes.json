@@ -353,7 +353,9 @@
             "type": "move",
             "axis": "x",
             "operation": "-",
-            "value": 3,
+            "value": 6,
+            "end": true,
+            "goto": 3
           }
         },
         {

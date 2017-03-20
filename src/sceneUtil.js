@@ -10,7 +10,7 @@ SceneUtil.interact = function(e, scene) {
     case 'move':
       object = scene.scene.getObjectById(e.id);
       this.moveInteraction(e.interaction, object);
-
+      scene.achievedObjectives++;
       break;
 
     case 'light':
@@ -21,57 +21,73 @@ SceneUtil.interact = function(e, scene) {
       break;
 
     case 'end-level':
-      if (scene.achievedObjectives === scene.totalObjectives) {
-        this.transitionScene(e.interaction.value, scene);
-      } else {
-        document.getElementById('objectives').style.display = 'block';
-        setTimeout(function() { document.getElementById('objectives').style.display = 'none'; }, 2500);
-      }
+      this.endLevelInteraction(e.interaction.value, scene);
 
       break;
 
     default:
       console.log("Implement switch case for " + e.interaction.type);  // jshint ignore:line
   }
+
+  // If an object trigger an event that should end the level
+  // e.g move an object then end level
+  if(e.interaction.end) {
+    this.endLevelInteraction(e.interaction.goto, scene);
+  }
 };
 
 SceneUtil.moveInteraction = function(interaction, object) {
+  var movementStep = 0.05;
+  var intervalStep = 10;
+
   switch(interaction.operation) {
     case '+':
       switch(interaction.axis) {
         case 'x':
-          while (object.position.x < interaction.value) {
-            object.position.x += 1;
-          }
+            setInterval(function(){ 
+              if(object.position.x < -interaction.value){
+                object.position.x += movementStep;
+              }
+            }, intervalStep);
           break;
         case 'y':
-          while (object.position.y < interaction.value) {
-            object.position.y += 1;
-          }
+            setInterval(function(){ 
+              if(object.position.y < -interaction.value){
+                object.position.y += movementStep;
+              }
+            }, intervalStep);
           break;
         case 'z':
-          while (object.position.z < interaction.value) {
-            object.position.z += 1;
-          }
+            setInterval(function(){ 
+              if(object.position.z < -interaction.value){
+                object.position.z += movementStep;
+              }
+            }, intervalStep);
           break;
       }
       break;
     case '-':
       switch(interaction.axis) {
         case 'x':
-          while (object.position.x > interaction.value) {
-            object.position.x -= 1;
-          }
+            setInterval(function(){ 
+              if(object.position.x > -interaction.value){
+                object.position.x -= movementStep;
+              }
+            }, intervalStep);
           break;
         case 'y':
-          while (object.position.y > interaction.value) {
-            object.position.y -= 1;
-          }
+            setInterval(function(){ 
+              if(object.position.y > -interaction.value){
+                object.position.y -= movementStep;
+              }
+            }, intervalStep);
           break;
         case 'z':
-          while (object.position.z > interaction.value) {
-            object.position.z -= 1;
-          }
+            setInterval(function(){ 
+              if(object.position.z > -interaction.value){
+                object.position.z -= movementStep;
+              }
+            }, intervalStep);
           break;
       }
       break;
@@ -103,6 +119,15 @@ SceneUtil.lightInteraction = function(object, scene) {
     on = false;
   }
   return on;
+};
+
+SceneUtil.endLevelInteraction = function(nextLevel, scene) {
+  if (scene.achievedObjectives === scene.totalObjectives) {
+    this.transitionScene(nextLevel, scene);
+  } else {
+    document.getElementById('objectives').style.display = 'block';
+    setTimeout(function() { document.getElementById('objectives').style.display = 'none'; }, 2500);
+  }
 };
 
 SceneUtil.transitionScene = function(number, scene) {
