@@ -247,6 +247,19 @@ Scene.prototype.loadJSON = function(number) {
 				}
 			}
 
+			// Rotate
+			if(modelData.rotate) {
+				if(modelData.rotate.x) {
+					model.mesh.rotation.set(new THREE.Vector3( Math.PI / 2, 0, 0));
+				}
+				if(modelData.rotate.y) {
+					model.mesh.rotation.x = modelData.rotateY;
+				}
+				if(modelData.rotate.z) {
+					model.mesh.rotation.x = modelData.rotateZ;
+				}
+			}
+
 			if (modelData.collisions) {
 				model.mesh.geometry.computeBoundingBox();
 				var box3 = new THREE.Box3();
@@ -326,7 +339,7 @@ Scene.prototype.deleteScene = function(){
 			} else {
 				object.material.dispose();
 			}
-			
+
 		}
 
 		if(object.texture) {
