@@ -250,13 +250,13 @@ Scene.prototype.loadJSON = function(number) {
 			// Rotate
 			if(modelData.rotate) {
 				if(modelData.rotate.x) {
-					model.mesh.rotation.set(new THREE.Vector3( Math.PI / 2, 0, 0));
+					model.mesh.rotateX( (modelData.rotate.x * Math.PI)/180);
 				}
 				if(modelData.rotate.y) {
-					model.mesh.rotation.x = modelData.rotateY;
+					model.mesh.rotateY( (modelData.rotate.y * Math.PI)/180);
 				}
 				if(modelData.rotate.z) {
-					model.mesh.rotation.x = modelData.rotateZ;
+					model.mesh.rotateZ( (modelData.rotate.z * Math.PI)/180);
 				}
 			}
 
