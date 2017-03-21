@@ -456,7 +456,7 @@
   {
       "number": "3",
       "radius" : "5.5",
-      "number_of_objectives": 0,
+      "number_of_objectives": 3,
       "models": [
         {
           "path": "public/model/lvl4/groupeGears.json",
