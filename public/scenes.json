@@ -259,7 +259,8 @@
     "skybox": {
       "path" : "public/img/sky1.jpg",
       "size" : "50"
-    }
+    },
+    "sound": "public/music/maison.ogg"
   },
   {
       "number": "2",
@@ -449,7 +450,8 @@
     "skybox": {
       "path" : "public/img/sky1.jpg",
       "size" : "50"
-    }
+    },
+    "sound": "public/music/champs.ogg"
   },
   {
       "number": "3",
@@ -642,6 +644,7 @@
     "skybox": {
       "path" : "public/img/skybox3.jpg",
       "size" : "50"
-    }
+    },
+    "sound": "public/music/depression.ogg"
   }
 ]

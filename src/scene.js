@@ -22,6 +22,8 @@ function Scene(number, animate, renderer) {
 	this.objectsToDispose = [];
 	this.totalObjectives = 0;
 	this.achievedObjectives = 0;
+	this.listener = null;
+	this.sound = null;
 
 	this.setup(number, renderer);
 
@@ -51,6 +53,8 @@ Scene.prototype.setup = function(number, renderer) {
 	var light = new THREE.AmbientLight( 0x121828 ); // soft white light
 	this.scene.add( light );
 	this.scene.fog = new THREE.FogExp2(0x121828, 0.07);
+
+	this.listener = new THREE.AudioListener();
 
 	this.loadJSON(number);
 	this.addCharacterPath();
@@ -267,6 +271,18 @@ Scene.prototype.loadJSON = function(number) {
 
 	});
 
+	if (sceneData.sound) {
+		var audioLoader = new THREE.AudioLoader();
+		this.sound = new THREE.Audio( this.listener );
+
+		audioLoader.load(sceneData.sound, function( buffer ) {
+			_this.sound.setBuffer( buffer );
+			_this.sound.setLoop(true);
+			_this.sound.setVolume(0.5);
+			_this.sound.play();
+		});
+	}
+
 	if (sceneData.skybox) {
 		this.addSkybox(sceneData.skybox.path, sceneData.skybox.size);
 	}
@@ -340,6 +356,10 @@ Scene.prototype.deleteScene = function(){
 	this.character = null;
 	this.firefly.delete();
 	this.firefly = null;
+
+	this.sound.stop();
+	this.sound = null;
+	this.listener = null;
 
 	this.scene = null;
 	this.camera = null;
