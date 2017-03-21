@@ -9,7 +9,6 @@ function Scene(number, animate, renderer) {
 	this.scene = null;
 	this.camera = null;
 	this.controls = null;
-	this.effect = null;
 	this.characterPath = null;
 	this.character = null;
 	this.collideObjects = [];
@@ -48,10 +47,6 @@ Scene.prototype.setup = function(number, renderer) {
 	this.controls = new THREE.VRControls(this.camera);
 	this.controls.standing = true;
 	this.camera.position.y = this.controls.userHeight;
-
-	// Apply VR stereo rendering to renderer.
-	this.effect = new THREE.VREffect(renderer);
-	this.effect.setSize(window.innerWidth, window.innerHeight);
 
 	var light = new THREE.AmbientLight( 0x121828 ); // soft white light
 	this.scene.add( light );

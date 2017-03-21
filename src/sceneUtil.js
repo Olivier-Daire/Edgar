@@ -159,7 +159,7 @@ SceneUtil.transitionScene = function(number, scene) {
   setTimeout(function(){
     scene.deleteScene();
     scene.controls.resetPose();
-    
+
     var event = new CustomEvent('load-level', {'detail': {'number':number}});
     window.dispatchEvent(event);
 

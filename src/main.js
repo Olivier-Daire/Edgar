@@ -12,6 +12,7 @@ var scene;
 var stats;
 var clock = new THREE.Clock();
 var renderer = null;
+var effect = null;
 var inGame = false;
 
 document.onkeydown = checkKey;
@@ -47,6 +48,10 @@ function initRender(){
 
   // Append the canvas element created by the renderer to document body element.
   document.body.appendChild(renderer.domElement);
+
+  // Apply VR stereo rendering to renderer.
+  effect = new THREE.VREffect(renderer);
+  effect.setSize(window.innerWidth, window.innerHeight);
 
 }
 
@@ -163,7 +168,7 @@ function animate() {
     scene.controls.update();
   }
 
-  scene.effect.render(scene.scene, scene.camera);
+  effect.render(scene.scene, scene.camera);
   window.vrDisplay.requestAnimationFrame(animate);
 
   if(window.DEBUG) {
@@ -172,7 +177,7 @@ function animate() {
 }
 
 function onResize(e) {
-  scene.effect.setSize(window.innerWidth, window.innerHeight);
+  effect.setSize(window.innerWidth, window.innerHeight);
   scene.camera.aspect = window.innerWidth / window.innerHeight;
   scene.camera.updateProjectionMatrix();
 }
