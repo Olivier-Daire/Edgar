@@ -25,7 +25,17 @@ SceneUtil.interact = function(e, scene) {
 
       case 'rotate':
         object = scene.scene.getObjectById(e.id);
-        this.rotateInteraction(e.interaction, object);
+        interactableObject =  scene.interactableObjects.filter(function( obj ) {
+          return obj.id === e.id;
+        })[0];
+        // Check if interaction not already completed
+        if (!interactableObject.done || interactableObject.done === false) {
+          this.rotateInteraction(e.interaction, object);
+          scene.achievedObjectives++;
+          interactableObject.done = true;
+        }
+
+
         break;
 
     case 'light':
