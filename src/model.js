@@ -47,6 +47,7 @@ var Model = function(){
 				});
 				_this.mesh.castShadow = true;
 			}
+			_this.mesh.name = path;
 
 			onLoad();
 		};

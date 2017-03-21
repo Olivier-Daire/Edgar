@@ -176,6 +176,23 @@ var Character = function() {
 		return collide;
 	};
 
+	this.delete = function() {
+		this.mesh.geometry.dispose();
+
+		for (var i = this.mesh.material.materials.length - 1; i >= 0; i--) {
+			this.mesh.material.materials[i].dispose();
+		}
+
+		this.mesh = null;
+		this.mixer = null;
+		this.currentMovement = null;
+		this.nextPosition = null;
+		this.path = null;
+		this.bbox = null;
+		this.bbhelper = null;
+		this.collisionDirection = null;
+	};
+
 	return this;
 };
 

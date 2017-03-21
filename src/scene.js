@@ -297,7 +297,7 @@ Scene.prototype.deleteScene = function(){
 		_this.objectsList.push(object);
 	});
 
-	_this.objectsList.forEach(function(object){
+	this.objectsList.forEach(function(object){
 		if(object.geometry) {
 			object.geometry.dispose();
 		}
@@ -318,13 +318,36 @@ Scene.prototype.deleteScene = function(){
 		}
 
 		_this.scene.remove(object);
-		object = undefined;
+		object = null;
 	});
 
-	_this.objectsToDispose.forEach(function(object){
+	this.objectsToDispose.forEach(function(object){
 		object.dispose();
 	});
 
+
+	this.collideObjects.length = 0;
+	this.interactableObjects.length = 0;
+	this.objectsList.length = 0;
+	this.objectsToDispose.length = 0;
+
+	this.collideObjects.length = null;
+	this.interactableObjects.length = null;
+	this.objectsList.length = null;
+	this.objectsToDispose.length = null;
+
+	this.character.delete();
+	this.character = null;
+	this.firefly.delete();
+	this.firefly = null;
+
+	this.scene = null;
+	this.camera = null;
+	this.controls = null;
+	this.characterPath = null;
+	this.character = null;
+	this.skybox = null;
+	this.scene = null;
 };
 
 module.exports = Scene;

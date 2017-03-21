@@ -150,18 +150,26 @@ function animate() {
   }
   var delta = clock.getDelta();
 
-  if (scene.character.mesh !== null) {
-    // Update character nextPosition
-    scene.character.nextPosition = scene.camera.getWorldDirection().multiplyScalar(scene.radius);
-    // Update character position along path
-    scene.character.updateCharacter(0.4 * delta, scene);
+  if (scene.character) {
+    if (scene.character.mesh !== null) {
+      // Update character nextPosition
+      scene.character.nextPosition = scene.camera.getWorldDirection().multiplyScalar(scene.radius);
+      // Update character position along path
+      scene.character.updateCharacter(0.4 * delta, scene);
+    }
   }
+  
 
   var time = Date.now() * 0.003;
 
-  if(scene.firefly.loaded){ scene.firefly.updatePosition(time, scene); }
+  if(scene.firefly) {
+    if(scene.firefly.loaded){ scene.firefly.updatePosition(time, scene); }
+  }
+  
 
-  scene.controls.update();
+  if (scene.controls) {
+    scene.controls.update();
+  }
 
    // Only update controls if we're presenting.
   if (vrButton.isPresenting()) {

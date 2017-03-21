@@ -160,6 +160,21 @@ var Firefly = function() {
       if (!collide) {this.interactionFired = false;}
     }
   };
+
+  this.delete = function() {
+    this.parent = null;
+    this.lightEmitter = null;
+
+    this.particleMaterial.dispose();
+    this.particleMaterial = null;
+
+    this.part1 = null;
+    this.part2 = null;
+    this.part3 = null;
+
+    this.bbhelper = null;
+    this.bbox = null;
+  };
 };
 
 module.exports = Firefly;
