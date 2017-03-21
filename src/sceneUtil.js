@@ -123,8 +123,6 @@ SceneUtil.rotateInteraction = function(interaction, object) {
   var movementStep = 0.005;
   var intervalStep = 10;
 
-  switch(interaction.operation) {
-    case '+':
       switch(interaction.axis) {
         case 'x':
             setInterval(function(){
@@ -142,33 +140,7 @@ SceneUtil.rotateInteraction = function(interaction, object) {
             }, intervalStep);
           break;
       }
-      break;
-    case '-':
-      switch(interaction.axis) {
-        case 'x':
-            setInterval(function(){
-              if(object.position.x > -interaction.value){
-                object.position.x -= movementStep;
-              }
-            }, intervalStep);
-          break;
-        case 'y':
-            setInterval(function(){
-              if(object.position.y > -interaction.value){
-                object.position.y -= movementStep;
-              }
-            }, intervalStep);
-          break;
-        case 'z':
-            setInterval(function(){
-              if(object.position.z > -interaction.value){
-                object.position.z -= movementStep;
-              }
-            }, intervalStep);
-          break;
-      }
-      break;
-  }
+
 };
 
 SceneUtil.lightInteraction = function(object, scene) {

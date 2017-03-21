@@ -487,8 +487,7 @@
           "collisions": true,
           "interaction": {
             "type": "rotate",
-            "axis": "z",
-            "operation": "+"
+            "axis": "z"
           }
         },
         {
@@ -506,8 +505,7 @@
           "collisions": true,
           "interaction": {
             "type": "rotate",
-            "axis": "y",
-            "operation": "+"
+            "axis": "y"
           }
         },
         {
@@ -525,8 +523,7 @@
           "collisions": true,
           "interaction": {
             "type": "rotate",
-            "axis": "y",
-            "operation": "+"
+            "axis": "y"
           }
         },
         {
