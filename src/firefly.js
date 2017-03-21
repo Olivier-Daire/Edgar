@@ -137,7 +137,7 @@ var Firefly = function() {
       // Size of interaction box depending on angle on the circle
       var boxSize;
       if ( (characterTheta > 0.625 && characterTheta < 0.875) || (characterTheta > 0.125 && characterTheta < 0.375) ) {
-        boxSize = new THREE.Vector3(1, 1, 20);
+        boxSize = new THREE.Vector3(1, 1, 10);
       } else {
         boxSize = new THREE.Vector3(20, 1, 1);
       }
