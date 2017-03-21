@@ -10,7 +10,17 @@ SceneUtil.interact = function(e, scene) {
     case 'move':
       object = scene.scene.getObjectById(e.id);
       this.moveInteraction(e.interaction, object);
-      scene.achievedObjectives++;
+
+      // Get object in interactableObjects array
+      var interactableObject =  scene.interactableObjects.filter(function( obj ) {
+        return obj.id === e.id;
+      })[0];
+
+      // Check if interaction not already completed
+      if (!interactableObject.done || interactableObject.done === false) {
+        scene.achievedObjectives++;
+        interactableObject.done = true;
+      }
       break;
 
     case 'light':

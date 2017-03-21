@@ -65,7 +65,7 @@ function onLoad() {
   }
 
   initRender();
-  scene = new Scene(1, animate, renderer);
+  scene = new Scene(2, animate, renderer);
 
   navigator.getVRDisplays().then(function(displays) {
     if (displays.length > 0) {
