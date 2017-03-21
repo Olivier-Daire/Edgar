@@ -2,7 +2,7 @@
 
 var SceneUtil = {};
 
-// TODO Pass scene ? 
+// TODO Pass scene ?
 SceneUtil.interact = function(e, scene) {
   var object = null;
   switch(e.interaction.type) {
@@ -22,6 +22,11 @@ SceneUtil.interact = function(e, scene) {
         interactableObject.done = true;
       }
       break;
+
+      case 'rotate':
+        object = scene.scene.getObjectById(e.id);
+        this.rotateInteraction(e.interaction, object);
+        break;
 
     case 'light':
       object = scene.scene.getObjectById(e.id);
@@ -54,21 +59,21 @@ SceneUtil.moveInteraction = function(interaction, object) {
     case '+':
       switch(interaction.axis) {
         case 'x':
-            setInterval(function(){ 
+            setInterval(function(){
               if(object.position.x < -interaction.value){
                 object.position.x += movementStep;
               }
             }, intervalStep);
           break;
         case 'y':
-            setInterval(function(){ 
+            setInterval(function(){
               if(object.position.y < -interaction.value){
                 object.position.y += movementStep;
               }
             }, intervalStep);
           break;
         case 'z':
-            setInterval(function(){ 
+            setInterval(function(){
               if(object.position.z < -interaction.value){
                 object.position.z += movementStep;
               }
@@ -79,21 +84,21 @@ SceneUtil.moveInteraction = function(interaction, object) {
     case '-':
       switch(interaction.axis) {
         case 'x':
-            setInterval(function(){ 
+            setInterval(function(){
               if(object.position.x > -interaction.value){
                 object.position.x -= movementStep;
               }
             }, intervalStep);
           break;
         case 'y':
-            setInterval(function(){ 
+            setInterval(function(){
               if(object.position.y > -interaction.value){
                 object.position.y -= movementStep;
               }
             }, intervalStep);
           break;
         case 'z':
-            setInterval(function(){ 
+            setInterval(function(){
               if(object.position.z > -interaction.value){
                 object.position.z -= movementStep;
               }
@@ -101,7 +106,59 @@ SceneUtil.moveInteraction = function(interaction, object) {
           break;
       }
       break;
-  } 
+  }
+};
+
+SceneUtil.rotateInteraction = function(interaction, object) {
+  var movementStep = 0.005;
+  var intervalStep = 10;
+
+  switch(interaction.operation) {
+    case '+':
+      switch(interaction.axis) {
+        case 'x':
+            setInterval(function(){
+              object.rotation.x += movementStep;
+            }, intervalStep);
+          break;
+        case 'y':
+            setInterval(function(){
+              object.rotation.y += movementStep;
+            }, intervalStep);
+          break;
+        case 'z':
+            setInterval(function(){
+              object.rotation.z += movementStep;
+            }, intervalStep);
+          break;
+      }
+      break;
+    case '-':
+      switch(interaction.axis) {
+        case 'x':
+            setInterval(function(){
+              if(object.position.x > -interaction.value){
+                object.position.x -= movementStep;
+              }
+            }, intervalStep);
+          break;
+        case 'y':
+            setInterval(function(){
+              if(object.position.y > -interaction.value){
+                object.position.y -= movementStep;
+              }
+            }, intervalStep);
+          break;
+        case 'z':
+            setInterval(function(){
+              if(object.position.z > -interaction.value){
+                object.position.z -= movementStep;
+              }
+            }, intervalStep);
+          break;
+      }
+      break;
+  }
 };
 
 SceneUtil.lightInteraction = function(object, scene) {
@@ -181,4 +238,3 @@ SceneUtil.transitionScene = function(number, scene) {
 };
 
 module.exports = SceneUtil;
-
