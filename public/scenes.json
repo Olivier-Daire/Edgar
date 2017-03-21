@@ -307,7 +307,7 @@
             "z" : "1"
           },
           "collisions": false
-        },
+        },/*
         {
           "path": "public/model/lvl3/Corn1.json",
           "position": {
@@ -335,7 +335,7 @@
             "z" : "1"
           },
           "collisions": false
-        },
+        },*/
         {
           "path": "public/model/lvl3/Fence1.json",
           "position": {
